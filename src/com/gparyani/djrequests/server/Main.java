@@ -33,8 +33,8 @@ public class Main {
 			for(String newRequest : server.newRequests()) {	//as this only includes the new requests, duplicates are not added
 				SongData requestedSong = SongData.getSong(newRequest);
 				requests.addSong(requestedSong);
-				
 			}
+			top.update();
 			window.repaint();
 		}
 	}
