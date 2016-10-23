@@ -1,5 +1,6 @@
 package com.gparyani.djrequests.server;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +9,7 @@ public class SongData {
 	private String title, artist, album, deepLink;
 	private int timesRequested;
 	
-	private static Set<SongData> cache = new HashSet<>();
+	private static Set<SongData> cache = Collections.synchronizedSet(new HashSet<>());
 
 	private SongData(String title, String artist, String album, String deepLink) {
 		this.title = title;

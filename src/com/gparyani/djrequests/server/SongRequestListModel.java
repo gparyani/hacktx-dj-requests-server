@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import javax.swing.BoxLayout;
@@ -16,6 +19,13 @@ import javax.swing.event.ListDataListener;
 public class SongRequestListModel implements ListModel<JPanel> {
 	
 	private PriorityBlockingQueue<SongData> songs = new PriorityBlockingQueue<>(11, new SongData.TimesComparator());
+	private NetworkServer server;
+	
+	public SongRequestListModel() {}
+	
+	public SongRequestListModel(NetworkServer server) {
+		this.server = server;
+	}
 	
 	private class SongDataPanel extends JPanel {
 		private static final long serialVersionUID = -1467842604567232246L;
@@ -40,12 +50,41 @@ public class SongRequestListModel implements ListModel<JPanel> {
 			left.add(artist);
 			left.add(album);
 			left.add(timesRequested);
+			left.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					try {
+						Runtime.getRuntime().exec(thisSong.getDeepLink());	//open the link in the user's default Web browser, which will open the link in the Spotify software if installed
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+				
+			});
 			add(BorderLayout.CENTER, left);
 			JButton clearButton = new JButton("Clear");
 			clearButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					thisSong.resetTimesRequested();
+					if(server != null)
+						server.addHandledRequest(thisSong.getDeepLink());
 					songs.remove(thisSong);
 				}
 			});
