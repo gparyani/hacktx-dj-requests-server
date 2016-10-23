@@ -109,10 +109,10 @@ public class NetworkServer extends Thread {
 					else
 						switch(request.next()) {
 						case "request":
-							if(!request.hasNextLine())
+							if(!request.hasNext())
 								output.write("Invalid request");
 							else {
-								requests.add(request.nextLine());
+								requests.add(request.next());
 								output.write("Request successful");
 							}
 						case "gethandled":
