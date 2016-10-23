@@ -39,13 +39,13 @@ public class SongRequestListModel implements ListModel<JPanel> {
 			JPanel left = new JPanel();
 			left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
 			JLabel title = new JLabel(song.getTitle());
-			title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+			title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
 			JLabel artist = new JLabel(song.getArtist());
-			artist.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+			artist.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
 			JLabel album = new JLabel(song.getAlbum());
-			album.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+			album.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
 			JLabel timesRequested = new JLabel("Requested " + song.getTimesRequested() + " times");
-			timesRequested.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+			timesRequested.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 			left.add(title);
 			left.add(artist);
 			left.add(album);

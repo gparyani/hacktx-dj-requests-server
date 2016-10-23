@@ -25,8 +25,7 @@ public class Main {
 		
 		SongRequestListModel requests = new SongRequestListModel();
 		window.getContentPane().add(BorderLayout.CENTER, new JScrollPane(new JList<JPanel>(requests)));
-		IPAndClientsLabel top = new IPAndClientsLabel();
-		window.getContentPane().add(BorderLayout.NORTH, top);
+		window.getContentPane().add(BorderLayout.NORTH, new IPAndClientsLabel());
 		window.setVisible(true);
 		
 		while(true) {
@@ -34,7 +33,7 @@ public class Main {
 				SongData requestedSong = SongData.getSong(newRequest);
 				requests.addSong(requestedSong);
 			}
-			top.update();
+			window.getContentPane().add(BorderLayout.NORTH, new IPAndClientsLabel());
 			window.repaint();
 		}
 	}
@@ -42,7 +41,7 @@ public class Main {
 	static class IPAndClientsLabel extends JPanel {
 		private static final long serialVersionUID = 2371626810666570290L;
 		
-		private static Font font = new Font(Font.SANS_SERIF, Font.ITALIC, 11);
+		private static Font font = new Font(Font.SANS_SERIF, Font.ITALIC, 13);
 
 		IPAndClientsLabel() {
 			super();
@@ -50,12 +49,6 @@ public class Main {
 			JLabel ipAddress = new JLabel("IP address: " + server.getIPAddress());
 			ipAddress.setFont(font);
 			add(BorderLayout.WEST, ipAddress);
-			JLabel clients = new JLabel("Guests connected: " + server.numClients());
-			clients.setFont(font);
-			add(BorderLayout.EAST, clients);
-		}
-		
-		void update() {
 			JLabel clients = new JLabel("Guests connected: " + server.numClients());
 			clients.setFont(font);
 			add(BorderLayout.EAST, clients);
