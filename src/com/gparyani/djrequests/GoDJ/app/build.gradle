@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+
+}
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
@@ -26,9 +33,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
-    compile('se.michaelthelin.spotify:spotify-web-api-java:1.5.0') {
-        exclude group: "commons-beanutils", module: "commons-beanutils"
-
-    }
     compile 'commons-beanutils:commons-beanutils:20030211.134440'
+    compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
+
 }
