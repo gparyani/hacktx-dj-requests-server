@@ -1,11 +1,17 @@
 package com.gparyani.djrequests.server;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
 public class SongData {
+	
 	private String title, artist, album, deepLink;
 	private int timesRequested;
 	
@@ -19,8 +25,8 @@ public class SongData {
 	}
 	
 	public static SongData getSong(String deepLink) {
-		//get title, artist, album, and album art from Spotify API
-		SongData toCompare = new SongData(null, null, null, deepLink);
+		String[] statistics = getStatisticsFromDeepLink(deepLink);
+		SongData toCompare = new SongData(statistics[0], statistics[1], statistics[2], deepLink);
 		if(cache.contains(toCompare))
 			for(SongData song : cache)
 				if(toCompare.equals(song)) {
@@ -29,6 +35,35 @@ public class SongData {
 				}
 		cache.add(toCompare);
 		return toCompare;
+	}
+	
+	public static String[] getStatisticsFromDeepLink(String deepLink) {
+		try {
+			System.out.println(deepLink);
+			String[] toReturn = new String[3];
+			String trackID = deepLink.substring(14);	//spotify:track:[ID], get just the ID
+			HttpURLConnection connection = (HttpURLConnection) new URL("https://api.spotify.com/v1/tracks/" + trackID).openConnection();
+			if(connection.getResponseCode() != 200)
+				throw new RuntimeException(connection.getResponseMessage());
+			JsonObject response = Json.createReader(connection.getInputStream()).readObject();
+			toReturn[0] = response.getString("name");
+			String artistURL = response.getJsonArray("artists").getJsonObject(0).getString("href");
+			HttpURLConnection artistConnection = (HttpURLConnection) new URL(artistURL).openConnection();
+			if(artistConnection.getResponseCode() != 200)
+				throw new RuntimeException(artistConnection.getResponseMessage());
+			JsonObject artistResponse = Json.createReader(artistConnection.getInputStream()).readObject();
+			toReturn[1] = artistResponse.getString("name");
+			String albumURL = response.getJsonObject("album").getString("href");
+			HttpURLConnection albumConnection = (HttpURLConnection) new URL(albumURL).openConnection();
+			if(albumConnection.getResponseCode() != 200)
+				throw new RuntimeException(albumConnection.getResponseMessage());
+			JsonObject albumResponse = Json.createReader(albumConnection.getInputStream()).readObject();
+			toReturn[2] = albumResponse.getString("name");
+			return toReturn;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public String getTitle() {
