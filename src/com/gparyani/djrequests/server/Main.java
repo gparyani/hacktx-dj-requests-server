@@ -35,7 +35,7 @@ public class Main {
 				SongData requestedSong = SongData.getSong(newRequest);
 				requests.addSong(requestedSong);
 			}
-			window.getContentPane().add(BorderLayout.NORTH, new IPAndClientsLabel());
+//			window.getContentPane().add(BorderLayout.NORTH, new IPAndClientsLabel());
 			window.repaint();
 		}
 	}
