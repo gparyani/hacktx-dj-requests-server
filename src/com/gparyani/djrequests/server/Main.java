@@ -1,6 +1,7 @@
 package com.gparyani.djrequests.server;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JFrame;
@@ -26,6 +27,7 @@ public class Main {
 		SongRequestListModel requests = new SongRequestListModel();
 		window.getContentPane().add(BorderLayout.CENTER, new JScrollPane(new JList<JPanel>(requests)));
 		window.getContentPane().add(BorderLayout.NORTH, new IPAndClientsLabel());
+		window.setSize(new Dimension(800, 600));	//set a minimum size so it doesn't look collapsed on startup
 		window.setVisible(true);
 		
 		while(true) {
