@@ -49,9 +49,9 @@ public class Main {
 			JLabel ipAddress = new JLabel("IP address: " + server.getIPAddress());
 			ipAddress.setFont(font);
 			add(BorderLayout.WEST, ipAddress);
-			JLabel clients = new JLabel("Guests connected: " + server.numClients());
-			clients.setFont(font);
-			add(BorderLayout.EAST, clients);
+//			JLabel clients = new JLabel("Guests connected: " + server.numClients());
+//			clients.setFont(font);
+//			add(BorderLayout.EAST, clients);
 		}
 	}
 }
