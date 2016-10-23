@@ -98,8 +98,12 @@ public class NetworkServer extends Thread {
 			try (BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 					BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))) {
 				while(true) {
+					String requestSource;
+					do {
+						requestSource = input.readLine();
+					} while(requestSource == null);
 					@SuppressWarnings("resource")
-					Scanner request = new Scanner(input.readLine());
+					Scanner request = new Scanner(requestSource);
 					if(!request.hasNext())
 						output.write("Invalid request");
 					else
