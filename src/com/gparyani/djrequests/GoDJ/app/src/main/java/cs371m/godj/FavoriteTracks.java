@@ -10,15 +10,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 /**
  * Created by Jasmine on 10/23/2016.
  */
 
 public class FavoriteTracks extends AppCompatActivity {
 
-    private ArrayList<String[]> favoriteTracks;
+    //public ArrayList<String[]> favoriteTracks;
     private ListView listView;
     private FavoritesItemAdapter favoritesItemAdapter;
 
@@ -28,20 +26,20 @@ public class FavoriteTracks extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorite_layout);
-        favoriteTracks = new ArrayList<>();
+        //favoriteTracks = new ArrayList<>();
 
-        Intent getTracks = getIntent();
-        int length = getTracks.getIntExtra("listSize", 0);
-        for(int i = 0; i < length; i++) {
-            String[] track = getTracks.getStringArrayExtra("" + i);
-            favoriteTracks.add(track);
-        }
+//        Intent getTracks = getIntent();
+//        int length = getTracks.getIntExtra("listSize", 0);
+//        for(int i = 0; i < length; i++) {
+//            String[] track = getTracks.getStringArrayExtra("" + i);
+//            favoriteTracks.add(track);
+//        }
 
 
         listView = (ListView) findViewById(R.id.fav_list_view);
         favoritesItemAdapter = new FavoritesItemAdapter(this);
         listView.setAdapter(favoritesItemAdapter);
-        favoritesItemAdapter.changeList(favoriteTracks);
+        favoritesItemAdapter.changeList(MainActivity.favoriteTracks);
         favoritesItemAdapter.notifyDataSetChanged();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -87,21 +85,17 @@ public class FavoriteTracks extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.search_ID:
-                finish();
+                Intent goSearch = new Intent(this, MainActivity.class);
+                goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                MainActivity.clearSearch = true;
+                startActivity(goSearch);
                 break;
             case R.id.favorites_ID:
                 break;
-            case R.id.exit_ID:
-                finish();
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-
 
 
 }

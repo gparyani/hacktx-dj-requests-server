@@ -53,11 +53,16 @@ public class TrackPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String[] trackInfo = {trackName, albumName, artistName, imageURL, trackURI};
-
-                Intent sendTrackBack = new Intent();
-                sendTrackBack.putExtra("trackInfo", trackInfo);
-                setResult(RESULT_OK, sendTrackBack);
-                Toast.makeText(getApplicationContext(), "Song Added to Favorites!", Toast.LENGTH_LONG).show();
+                if(!MainActivity.faveTrackMap.containsKey(trackURI)) {
+                    MainActivity.faveTrackMap.put(trackURI, trackName);
+                    MainActivity.favoriteTracks.add(trackInfo);
+                    Toast.makeText(getApplicationContext(), "Added Song to Favorites!", Toast.LENGTH_SHORT).show();
+                } else {
+                    //Intent sendTrackBack = new Intent();
+                    //sendTrackBack.putExtra("trackInfo", trackInfo);
+                    //setResult(RESULT_OK, sendTrackBack);
+                    Toast.makeText(getApplicationContext(), "Song Already in Favorites", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -88,20 +93,23 @@ public class TrackPageActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.search_ID:
-                finish();
+                Intent goSearch = new Intent(this, MainActivity.class);
+                goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                MainActivity.clearSearch = true;
+                startActivity(goSearch);
                 break;
             case R.id.favorites_ID:
-                finish();
+                Intent goFave = new Intent(this, FavoriteTracks.class);
+                goFave.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(goFave);
                 break;
-            case R.id.exit_ID:
-                finish();
         }
+
+
+
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
 
 
 }

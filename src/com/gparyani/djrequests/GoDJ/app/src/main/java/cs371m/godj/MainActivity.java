@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -26,10 +27,12 @@ import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Track> trackList;
-    ListView listView;
-    SpotifyItemAdapter spotifyItemAdapter;
-    ArrayList<String[]> favoriteTracks;
+    private List<Track> trackList;
+    private ListView listView;
+    private SpotifyItemAdapter spotifyItemAdapter;
+    public static ArrayList<String[]> favoriteTracks;
+    public static HashMap<String, String> faveTrackMap; // for checking if track already in list
+    public static boolean clearSearch;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -39,13 +42,16 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list_view);
         spotifyItemAdapter = new SpotifyItemAdapter(this);
         listView.setAdapter(spotifyItemAdapter);
+        faveTrackMap = new HashMap<>();
         favoriteTracks = new ArrayList<>();
+        trackList = new ArrayList<>();
+        clearSearch = false;
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent showTrackPage = new Intent(getApplicationContext(), TrackPageActivity.class);
-                final int result = 1;
+                //final int result = 1;
                 TextView trackName = (TextView) view.findViewById(R.id.track_name);
                 TextView artistName = (TextView) view.findViewById(R.id.artist_name);
                 TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
@@ -59,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 showTrackPage.putExtra("albumName", albumName.getText().toString());
                 showTrackPage.putExtra("trackURI", trackURI.getText().toString());
 
-                startActivityForResult(showTrackPage, result);
+//                startActivityForResult(showTrackPage, result);
+                startActivity(showTrackPage);
             }
         });
 
@@ -107,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.favorites_ID:
                 launchFavorites();
                 break;
-            case R.id.exit_ID:
-                finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -116,24 +121,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchFavorites() {
         Intent startFavorites = new Intent(this, FavoriteTracks.class);
-        for(int i = 0; i < favoriteTracks.size(); i++) {
-            String[] track = favoriteTracks.get(i);
-            startFavorites.putExtra("" + i, track);
-        }
-        startFavorites.putExtra("listSize", favoriteTracks.size());
+        startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        for(int i = 0; i < favoriteTracks.size(); i++) {
+//            String[] track = favoriteTracks.get(i);
+//            startFavorites.putExtra("" + i, track);
+//        }
+//        startFavorites.putExtra("listSize", favoriteTracks.size());
         startActivity(startFavorites);
 
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String[] track = (String[]) data.getStringArrayExtra("trackInfo");
-        favoriteTracks.add(track);
-    }
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if(resultCode == RESULT_OK) {
+//            String[] track = (String[]) data.getStringArrayExtra("trackInfo");
+//            favoriteTracks.add(track);
+//        }
+//    }
 
     protected void processSearch() {
         EditText et = (EditText) findViewById(R.id.searchTerm);
         String searchTerm = et.getText().toString();
-        trackList = new ArrayList<>();
+        trackList.clear();
 
         SpotifyApi api = new SpotifyApi();
         SpotifyService spotify = api.getService();
@@ -163,4 +171,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (clearSearch) {
+            trackList.clear();
+            spotifyItemAdapter.notifyDataSetChanged();
+            EditText et = (EditText) findViewById(R.id.searchTerm);
+            et.setText("");
+            clearSearch = false;
+        }
+    }
 }

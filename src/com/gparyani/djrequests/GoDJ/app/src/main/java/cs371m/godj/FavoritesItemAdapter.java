@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Jasmine on 10/23/2016.
@@ -16,7 +16,8 @@ import java.util.List;
 public class FavoritesItemAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private List<String[]> trackList;
+    private ArrayList<String[]> trackList;
+
 
     public FavoritesItemAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -83,8 +84,10 @@ public class FavoritesItemAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void changeList(List<String[]> newList) {
+    public void changeList(ArrayList<String[]> newList) {
         trackList = newList;
     }
+
+
 
 }
