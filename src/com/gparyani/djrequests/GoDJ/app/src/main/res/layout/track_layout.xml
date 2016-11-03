@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/album_art"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="50dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add_button"
+            android:id="@+id/add_song_button"
+            android:background="@android:color/transparent"
+            android:paddingLeft="15dp"
+             />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/request_button"
+            android:background="@android:color/transparent"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/req_song_button"
+            android:paddingRight="15dp"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/add_song_button"
+            android:layout_toLeftOf="@id/req_song_button">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/add_song_button"
+                android:layout_toLeftOf="@id/req_song_button"
+                android:id="@+id/track_info"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_centerVertical="true"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/add_song_button"
+                android:layout_toLeftOf="@id/req_song_button"
+                android:id="@+id/artist_info"
+                android:textColor="@android:color/white"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_centerVertical="true"
+                />
+        </LinearLayout>
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <item android:id="@+id/search_ID"
+        android:title="Search"
+        android:orderInCategory="100"
+        />
+    <item android:id="@+id/favorites_ID"
+        android:title="Favorites"
+        android:orderInCategory="101"
+        />
+    <item android:id="@+id/exit_ID"
+        android:title="Exit"
+        android:orderInCategory="102"
+        />
+
+
+</menu>
