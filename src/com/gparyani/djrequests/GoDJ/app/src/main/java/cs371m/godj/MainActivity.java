@@ -193,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (clearSearch) {
+            textView.setVisibility(View.INVISIBLE);
+            spotifyItemAdapter.notifyDataSetChanged();
             trackList.clear();
             spotifyItemAdapter.notifyDataSetChanged();
             EditText et = (EditText) findViewById(R.id.searchTerm);
