@@ -2,6 +2,7 @@ package cs371m.godj;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String[]> favoriteTracks;
     public static HashMap<String, String> faveTrackMap; // for checking if track already in list
     public static boolean clearSearch;
+    private TextView textView;
+    private Handler myHandler;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -40,12 +43,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView) findViewById(R.id.list_view);
+        textView = new TextView(this);
+        textView.setText("Songs");
+        textView.setTextColor(0xffffffff);
+        textView.setGravity(0x01);
+        textView.setTextSize(20);
+        textView.setTypeface(textView.getTypeface(), 1);
+        listView.addHeaderView(textView);
+        textView.setVisibility(View.INVISIBLE);
         spotifyItemAdapter = new SpotifyItemAdapter(this);
         listView.setAdapter(spotifyItemAdapter);
         faveTrackMap = new HashMap<>();
         favoriteTracks = new ArrayList<>();
         trackList = new ArrayList<>();
-        clearSearch = false;
+        clearSearch = false; // only clear search if user comes back to search page by selecting from menu, not from back button
+        myHandler = new Handler();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -58,14 +70,12 @@ public class MainActivity extends AppCompatActivity {
                 TextView albumName = (TextView) view.findViewById(R.id.album_name);
                 TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
-
                 showTrackPage.putExtra("trackName", trackName.getText().toString());
                 showTrackPage.putExtra("artistName", artistName.getText().toString());
                 showTrackPage.putExtra("imageURL", imageURL.getText().toString());
                 showTrackPage.putExtra("albumName", albumName.getText().toString());
                 showTrackPage.putExtra("trackURI", trackURI.getText().toString());
 
-//                startActivityForResult(showTrackPage, result);
                 startActivity(showTrackPage);
             }
         });
@@ -119,29 +129,31 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void launchFavorites() {
         Intent startFavorites = new Intent(this, FavoriteTracks.class);
         startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        for(int i = 0; i < favoriteTracks.size(); i++) {
-//            String[] track = favoriteTracks.get(i);
-//            startFavorites.putExtra("" + i, track);
-//        }
-//        startFavorites.putExtra("listSize", favoriteTracks.size());
         startActivity(startFavorites);
-
     }
 
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if(resultCode == RESULT_OK) {
-//            String[] track = (String[]) data.getStringArrayExtra("trackInfo");
-//            favoriteTracks.add(track);
-//        }
-//    }
+
+    class UpdateSearchResults implements Runnable {
+        @Override
+        public void run() {
+            textView.setVisibility(View.VISIBLE);
+            spotifyItemAdapter.notifyDataSetChanged();
+            spotifyItemAdapter.changeList(trackList);
+            spotifyItemAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     protected void processSearch() {
         EditText et = (EditText) findViewById(R.id.searchTerm);
         String searchTerm = et.getText().toString();
+
         trackList.clear();
+        spotifyItemAdapter.notifyDataSetChanged();
 
         SpotifyApi api = new SpotifyApi();
         SpotifyService spotify = api.getService();
@@ -149,6 +161,10 @@ public class MainActivity extends AppCompatActivity {
         // Most (but not all) of the Spotify Web API endpoints require authorisation.
         // If you know you'll only use the ones that don't require authorisation you can skip this step
         //api.setAccessToken("myAccessToken");
+
+        textView.setVisibility(View.INVISIBLE);
+        spotifyItemAdapter.notifyDataSetChanged();
+
 
 
         spotify.searchTracks(searchTerm, new Callback<TracksPager>() {
@@ -158,19 +174,21 @@ public class MainActivity extends AppCompatActivity {
                 for(Track t: trackList) {
                     System.out.println(t.name);
                 }
+
                 Log.d("Tracks:", tracksPager.toString());
-                spotifyItemAdapter.changeList(trackList);
-                spotifyItemAdapter.notifyDataSetChanged();
+                myHandler.post(new UpdateSearchResults());
             }
             @Override
             public void failure(RetrofitError error) {
                 Log.d("Tracks:", "ERROR:" + error.getMessage());
             }
-        });
 
+        });
 
     }
 
+
+    // added
     @Override
     protected void onResume() {
         super.onResume();

@@ -26,15 +26,6 @@ public class FavoriteTracks extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorite_layout);
-        //favoriteTracks = new ArrayList<>();
-
-//        Intent getTracks = getIntent();
-//        int length = getTracks.getIntExtra("listSize", 0);
-//        for(int i = 0; i < length; i++) {
-//            String[] track = getTracks.getStringArrayExtra("" + i);
-//            favoriteTracks.add(track);
-//        }
-
 
         listView = (ListView) findViewById(R.id.fav_list_view);
         favoritesItemAdapter = new FavoritesItemAdapter(this);
@@ -52,7 +43,6 @@ public class FavoriteTracks extends AppCompatActivity {
                 TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
                 TextView albumName = (TextView) view.findViewById(R.id.album_name);
                 TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
-
 
                 showTrackPage.putExtra("trackName", trackName.getText().toString());
                 showTrackPage.putExtra("artistName", artistName.getText().toString());
@@ -82,7 +72,6 @@ public class FavoriteTracks extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.search_ID:
                 Intent goSearch = new Intent(this, MainActivity.class);

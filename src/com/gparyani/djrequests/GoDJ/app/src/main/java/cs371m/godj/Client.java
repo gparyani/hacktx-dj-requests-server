@@ -2,12 +2,12 @@ package cs371m.godj;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -34,12 +34,12 @@ import java.net.UnknownHostException;
             Socket socket = null;
 
             try {
-                socket = new Socket("LAPTOP-6RB3F751", 48736);
+                socket = new Socket(InetAddress.getByName("10.146.229.69").getHostName(), 48736);
                 PrintStream writer = new PrintStream(socket.getOutputStream());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 writer.println("request " + uri);
                 String response = reader.readLine();
-                Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
 
             } catch (UnknownHostException e) {
 

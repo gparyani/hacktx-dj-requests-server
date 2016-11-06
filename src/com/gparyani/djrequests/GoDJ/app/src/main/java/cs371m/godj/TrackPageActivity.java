@@ -3,6 +3,7 @@ package cs371m.godj;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +47,13 @@ public class TrackPageActivity extends AppCompatActivity {
         TextView artistTV = (TextView) findViewById(R.id.artist_info);
 
         trackTV.setText(trackName);
+        trackTV.setSelected(true);
+        trackTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        trackTV.setMarqueeRepeatLimit(-1); // repeat indefinitely
+        trackTV.setMaxLines(1);
+        trackTV.setFocusable(true);
+        trackTV.setFocusableInTouchMode(true);
+        trackTV.setHorizontallyScrolling(true);
         artistTV.setText(artistName);
 
         ImageButton addSongBut = (ImageButton) findViewById(R.id.add_song_button);
@@ -58,9 +66,6 @@ public class TrackPageActivity extends AppCompatActivity {
                     MainActivity.favoriteTracks.add(trackInfo);
                     Toast.makeText(getApplicationContext(), "Added Song to Favorites!", Toast.LENGTH_SHORT).show();
                 } else {
-                    //Intent sendTrackBack = new Intent();
-                    //sendTrackBack.putExtra("trackInfo", trackInfo);
-                    //setResult(RESULT_OK, sendTrackBack);
                     Toast.makeText(getApplicationContext(), "Song Already in Favorites", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -90,7 +95,6 @@ public class TrackPageActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.search_ID:
                 Intent goSearch = new Intent(this, MainActivity.class);
@@ -104,9 +108,6 @@ public class TrackPageActivity extends AppCompatActivity {
                 startActivity(goFave);
                 break;
         }
-
-
-
 
         return super.onOptionsItemSelected(item);
     }
