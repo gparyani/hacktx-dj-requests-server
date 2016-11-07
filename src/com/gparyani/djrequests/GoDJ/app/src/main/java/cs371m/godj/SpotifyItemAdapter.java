@@ -67,7 +67,6 @@ public class SpotifyItemAdapter extends BaseAdapter {
         middleDot.setText("" + c);
         String artURL = data.album.images.get(0).url;
         imageURL.setText(artURL);
-
     }
 
     @Override

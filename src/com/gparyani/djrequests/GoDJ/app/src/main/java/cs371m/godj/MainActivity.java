@@ -20,6 +20,8 @@ import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
@@ -29,12 +31,21 @@ import retrofit.client.Response;
 public class MainActivity extends AppCompatActivity {
 
     private List<Track> trackList;
+    private List<Artist> artistList;
+
     private ListView listView;
+    private ListView artistListView;
+
     private SpotifyItemAdapter spotifyItemAdapter;
+    private ArtistItemAdapter artistItemAdapter;
+
+    private TextView textView;
+    private TextView artistTextView;
+
+
     public static ArrayList<String[]> favoriteTracks;
     public static HashMap<String, String> faveTrackMap; // for checking if track already in list
     public static boolean clearSearch;
-    private TextView textView;
     private Handler myHandler;
 
     @Override
@@ -42,7 +53,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        trackList = new ArrayList<>();
+        artistList = new ArrayList<>();
+
         listView = (ListView) findViewById(R.id.list_view);
+        artistListView = (ListView) findViewById(R.id.artist_list_view);
+
+        spotifyItemAdapter = new SpotifyItemAdapter(this);
+        artistItemAdapter = new ArtistItemAdapter(this);
+
         textView = new TextView(this);
         textView.setText("Songs");
         textView.setTextColor(0xffffffff);
@@ -51,11 +70,21 @@ public class MainActivity extends AppCompatActivity {
         textView.setTypeface(textView.getTypeface(), 1);
         listView.addHeaderView(textView);
         textView.setVisibility(View.INVISIBLE);
-        spotifyItemAdapter = new SpotifyItemAdapter(this);
+
+        artistTextView = new TextView(this);
+        artistTextView.setText("Artists");
+        artistTextView.setTextColor(0xffffffff);
+        artistTextView.setGravity(0x01);
+        artistTextView.setTextSize(20);
+        artistTextView.setTypeface(artistTextView.getTypeface(), 1);
+        artistListView.addHeaderView(artistTextView);
+        artistTextView.setVisibility(View.INVISIBLE);
+        
         listView.setAdapter(spotifyItemAdapter);
+        artistListView.setAdapter(artistItemAdapter);
+
         faveTrackMap = new HashMap<>();
         favoriteTracks = new ArrayList<>();
-        trackList = new ArrayList<>();
         clearSearch = false; // only clear search if user comes back to search page by selecting from menu, not from back button
         myHandler = new Handler();
 
@@ -79,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(showTrackPage);
             }
         });
+
+        // set on item listener for artistListView
+
 
         EditText et = (EditText) findViewById(R.id.searchTerm);
         et.setOnKeyListener(new View.OnKeyListener() {
@@ -144,6 +176,11 @@ public class MainActivity extends AppCompatActivity {
             spotifyItemAdapter.notifyDataSetChanged();
             spotifyItemAdapter.changeList(trackList);
             spotifyItemAdapter.notifyDataSetChanged();
+
+            artistTextView.setVisibility(View.VISIBLE);
+            artistItemAdapter.notifyDataSetChanged();
+            artistItemAdapter.changeList(artistList);
+            artistItemAdapter.notifyDataSetChanged();
         }
     }
 
@@ -153,7 +190,9 @@ public class MainActivity extends AppCompatActivity {
         String searchTerm = et.getText().toString();
 
         trackList.clear();
+        artistList.clear();
         spotifyItemAdapter.notifyDataSetChanged();
+        artistItemAdapter.notifyDataSetChanged();
 
         SpotifyApi api = new SpotifyApi();
         SpotifyService spotify = api.getService();
@@ -164,13 +203,15 @@ public class MainActivity extends AppCompatActivity {
 
         textView.setVisibility(View.INVISIBLE);
         spotifyItemAdapter.notifyDataSetChanged();
-
+        artistTextView.setVisibility(View.INVISIBLE);
+        artistItemAdapter.notifyDataSetChanged();
 
 
         spotify.searchTracks(searchTerm, new Callback<TracksPager>() {
             @Override
             public void success(TracksPager tracksPager, Response response) {
                 trackList = tracksPager.tracks.items;
+
                 for(Track t: trackList) {
                     System.out.println(t.name);
                 }
@@ -180,15 +221,31 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void failure(RetrofitError error) {
-                Log.d("Tracks:", "ERROR:" + error.getMessage());
+                Log.d("Tracks: ", "ERROR: " + error.getMessage());
+            }
+        });
+
+        spotify.searchArtists(searchTerm, new Callback<ArtistsPager>() {
+            @Override
+            public void success(ArtistsPager artistsPager, Response response) {
+                artistList = artistsPager.artists.items;
+
+                for(Artist a: artistList) {
+                    System.out.println(a.name);
+                }
+
+                Log.d("Artist :", artistsPager.toString());
+                myHandler.post(new UpdateSearchResults());
             }
 
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d("Artist: ", "ERROR: " + error.getMessage());
+            }
         });
 
     }
 
-
-    // added
     @Override
     protected void onResume() {
         super.onResume();
