@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         textView.setGravity(0x01);
         textView.setTextSize(20);
         textView.setTypeface(textView.getTypeface(), 1);
+        // add spacing
+
+
         listView.addHeaderView(textView);
         textView.setVisibility(View.INVISIBLE);
 
