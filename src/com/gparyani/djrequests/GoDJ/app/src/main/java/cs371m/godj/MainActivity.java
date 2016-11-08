@@ -9,8 +9,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.MeasureSpec;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         artistTextView.setTypeface(artistTextView.getTypeface(), 1);
         artistListView.addHeaderView(artistTextView);
         artistTextView.setVisibility(View.INVISIBLE);
-        
+
         listView.setAdapter(spotifyItemAdapter);
         artistListView.setAdapter(artistItemAdapter);
 
@@ -134,6 +137,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public static class ListUtils {
+        public static void setDynamicHeight(ListView mListView) {
+            ListAdapter mListAdapter = mListView.getAdapter();
+            if (mListAdapter == null) {
+                return;
+            }
+            int height = 0;
+            int desiredWidth = MeasureSpec.makeMeasureSpec(mListView.getWidth(), MeasureSpec.UNSPECIFIED);
+            for (int i = 0; i < mListAdapter.getCount(); i++) {
+                View listItem = mListAdapter.getView(i, null, mListView);
+                listItem.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
+                height += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = mListView.getLayoutParams();
+            params.height = height + (mListView.getDividerHeight() * (mListAdapter.getCount() - 1));
+            mListView.setLayoutParams(params);
+            mListView.requestLayout();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -175,11 +198,13 @@ public class MainActivity extends AppCompatActivity {
             textView.setVisibility(View.VISIBLE);
             spotifyItemAdapter.notifyDataSetChanged();
             spotifyItemAdapter.changeList(trackList);
+            ListUtils.setDynamicHeight(listView);
             spotifyItemAdapter.notifyDataSetChanged();
 
             artistTextView.setVisibility(View.VISIBLE);
             artistItemAdapter.notifyDataSetChanged();
             artistItemAdapter.changeList(artistList);
+            ListUtils.setDynamicHeight(artistListView);
             artistItemAdapter.notifyDataSetChanged();
         }
     }
