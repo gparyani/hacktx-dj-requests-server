@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         trackFooter = new TextView(this);
         trackFooter.setText("See more songs");
         trackFooter.setTextColor(0xffffffff);
+        trackFooter.setPadding(0,15,0,0);
         listView.addFooterView(trackFooter);
         trackFooter.setVisibility(View.INVISIBLE);
 
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         artistFooter = new TextView(this);
         artistFooter.setText("See more artists");
         artistFooter.setTextColor(0xffffffff);
+        artistFooter.setPadding(0,15,0,0);
         artistListView.addFooterView(artistFooter);
         artistFooter.setVisibility(View.INVISIBLE);
 
