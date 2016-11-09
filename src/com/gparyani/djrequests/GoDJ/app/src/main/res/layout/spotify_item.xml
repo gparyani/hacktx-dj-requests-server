@@ -3,7 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="10dp"
+    >
 
     <TextView
         android:layout_width="match_parent"
@@ -19,14 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
 
         >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/artist_name"
-            android:textColor="@android:color/white"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
             android:layout_marginRight="5dp"/>
 
         <TextView
@@ -35,7 +37,7 @@
             android:textSize="15sp"
             android:layout_marginRight="5dp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textColor="@color/gray"
             android:id="@+id/middle_dot" />
 
         <TextView
@@ -43,7 +45,8 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@android:color/white"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
             android:id="@+id/album_name" />
 
         <TextView

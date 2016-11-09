@@ -23,7 +23,7 @@
 
         <EditText
             android:id="@+id/searchTerm"
-            android:hint="type song, artist...,"
+            android:hint="Search song, artist...,"
             android:textColorHint="@android:color/white"
             android:textSize="20sp"
             android:layout_width="match_parent"

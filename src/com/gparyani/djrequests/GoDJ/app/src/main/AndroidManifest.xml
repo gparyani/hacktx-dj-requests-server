@@ -30,6 +30,21 @@
             >
 
         </activity>
+
+        <activity android:name=".ShowAllSongResultsActivity"
+            android:theme="@style/AppTheme"
+            >
+
+        </activity>
+
+        <activity android:name=".ShowAllArtistResultsActivity"
+            android:theme="@style/AppTheme"
+            >
+
+        </activity>
+
+
+
     </application>
 
 </manifest>
