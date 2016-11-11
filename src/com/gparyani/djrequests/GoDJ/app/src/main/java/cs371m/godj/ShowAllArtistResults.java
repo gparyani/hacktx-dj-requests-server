@@ -15,7 +15,7 @@ import kaaes.spotify.webapi.android.models.Artist;
  * Created by Jasmine on 11/8/2016.
  */
 
-public class ShowAllArtistResultsActivity extends AppCompatActivity {
+public class ShowAllArtistResults extends AppCompatActivity {
 
     private ArtistItemAdapter artistItemAdapter;
     private ListView listView;
@@ -25,14 +25,14 @@ public class ShowAllArtistResultsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.all_artist_results_layout);
+        setContentView(R.layout.all_results_layout);
 
         Intent intent = getIntent();
         String searchTerm = intent.getStringExtra("searchTerm");
         String formatTitle = "\"" + searchTerm + "\"" + " in Artists";
         getSupportActionBar().setTitle(formatTitle);
 
-        listView = (ListView) findViewById(R.id.all_artists_list_view);
+        listView = (ListView) findViewById(R.id.show_all_list_view);
         artists = intent.getParcelableArrayListExtra("list");
         artistItemAdapter = new ArtistItemAdapter(this);
         listView.setAdapter(artistItemAdapter);

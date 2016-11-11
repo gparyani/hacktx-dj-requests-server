@@ -31,13 +31,25 @@
 
         </activity>
 
-        <activity android:name=".ShowAllSongResultsActivity"
+        <activity android:name=".ShowAllSongResults"
             android:theme="@style/AppTheme"
             >
 
         </activity>
 
-        <activity android:name=".ShowAllArtistResultsActivity"
+        <activity android:name=".ShowAllArtistResults"
+            android:theme="@style/AppTheme"
+            >
+
+        </activity>
+
+        <activity android:name=".ShowAllAlbumResults"
+            android:theme="@style/AppTheme"
+            >
+
+        </activity>
+
+        <activity android:name=".AlbumPageActivity"
             android:theme="@style/AppTheme"
             >
 

@@ -38,7 +38,6 @@ public class TrackPageActivity extends AppCompatActivity {
         albumName = loadTrackPage.getExtras().getString("albumName");
         trackURI = loadTrackPage.getExtras().getString("trackURI");
 
-
         ImageView art = (ImageView) findViewById(R.id.album_art);
 
         Picasso.with(this).load(imageURL).into(art);

@@ -18,7 +18,7 @@ import kaaes.spotify.webapi.android.models.Track;
  * Created by Jasmine on 11/8/2016.
  */
 
-public class ShowAllSongResultsActivity extends AppCompatActivity {
+public class ShowAllSongResults extends AppCompatActivity {
 
     private SpotifyItemAdapter spotifyItemAdapter;
     private ListView listView;
@@ -28,14 +28,14 @@ public class ShowAllSongResultsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.all_song_results_layout);
+        setContentView(R.layout.all_results_layout);
         Intent intent = getIntent();
         String searchTerm = intent.getStringExtra("searchTerm");
         String formatTitle = "\"" + searchTerm + "\"" + " in Songs";
         getSupportActionBar().setTitle(formatTitle);
 
 
-        listView = (ListView) findViewById(R.id.all_songs_list_view);
+        listView = (ListView) findViewById(R.id.show_all_list_view);
         tracks = intent.getParcelableArrayListExtra("list");
         spotifyItemAdapter = new SpotifyItemAdapter(this);
         listView.setAdapter(spotifyItemAdapter);

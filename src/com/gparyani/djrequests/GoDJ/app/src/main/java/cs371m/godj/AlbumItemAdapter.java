@@ -8,9 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import kaaes.spotify.webapi.android.models.AlbumSimple;
+import kaaes.spotify.webapi.android.models.Image;
 
 /**
  * Created by rebeccal on 11/10/16.
@@ -55,11 +58,19 @@ public class AlbumItemAdapter extends BaseAdapter {
     public void bindView(AlbumSimple data, View view, ViewGroup parent) {
         ImageView albumImage = (ImageView) view.findViewById(R.id.album_pic);
         TextView albumName = (TextView) view.findViewById(R.id.name_of_album);
+        TextView albumID = (TextView) view.findViewById(R.id.album_id);
         // TextView artistName = (TextView) view.findViewById(R.id.name_of_artist);
 
         // change image
-        albumImage.setImageResource(R.drawable.microphone);
+        List<Image> images = data.images;
+        if (images.size() > 0) {
+            String imageURL = images.get(0).url;
+            Picasso.with(view.getContext()).load(imageURL).into(albumImage);
+        } else {
+            albumImage.setImageResource(R.drawable.microphone);
+        }
         albumName.setText(data.name);
+        albumID.setText(data.id);
 
 
 

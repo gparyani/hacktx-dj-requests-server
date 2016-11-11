@@ -9,7 +9,7 @@
     >
 
     <ListView
-        android:id="@+id/all_artists_list_view"
+        android:id="@+id/show_all_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >

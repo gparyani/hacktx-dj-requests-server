@@ -9,18 +9,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.TrackSimple;
 
 /**
- * Created by Jasmine on 10/23/2016.
+ * Created by Jasmine on 11/11/2016.
  */
 
-public class SpotifyItemAdapter extends BaseAdapter {
+public class AlbumPageAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private List<Track> trackList;
+    private List<TrackSimple> trackList;
 
-    public SpotifyItemAdapter(Context context) {
+    public AlbumPageAdapter(Context context) {
         inflater = LayoutInflater.from(context);
     }
 
@@ -51,14 +51,11 @@ public class SpotifyItemAdapter extends BaseAdapter {
         }
     }
 
-    public void bindView(Track data, View view, ViewGroup parent) {
+    public void bindView(TrackSimple data, View view, ViewGroup parent) {
         TextView trackName = (TextView) view.findViewById(R.id.track_name);
         TextView artistName = (TextView) view.findViewById(R.id.artist_name);
-        TextView albumName = (TextView) view.findViewById(R.id.album_name);
-        TextView middleDot = (TextView) view.findViewById(R.id.middle_dot);
-        TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
-        TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
+        trackName.setText(data.name);
         String artists = "";
         for(int i = 0; i < data.artists.size(); i++) {
             artists += data.artists.get(i).name;
@@ -66,21 +63,12 @@ public class SpotifyItemAdapter extends BaseAdapter {
                 artists += ", ";
             }
         }
-
-        trackName.setText(data.name);
         artistName.setText(artists);
-        trackURI.setText(data.uri);
-        albumName.setText(data.album.name);
-        char c = '\u00b7';
-        middleDot.setText("" + c);
-        String artURL = data.album.images.get(0).url;
-        imageURL.setText(artURL);
-
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Track data = (Track) getItem(position);
+        TrackSimple data = (TrackSimple) getItem(position);
         if (data == null) {
             throw new IllegalStateException("this should be called when list is not null");
         }
@@ -92,7 +80,7 @@ public class SpotifyItemAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void changeList(List<Track> newList) {
+    public void changeList(List<TrackSimple> newList) {
         trackList = newList;
     }
 }

@@ -23,11 +23,15 @@ import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Album;
 import kaaes.spotify.webapi.android.models.AlbumSimple;
 import kaaes.spotify.webapi.android.models.AlbumsPager;
 import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.ArtistSimple;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Image;
 import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.TrackSimple;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
         // album listview footer
         albumFooter = new TextView(this);
-        albumFooter.setText("See more artists");
+        albumFooter.setText("See more albums");
         albumFooter.setTextColor(0xffffffff);
         albumFooter.setPadding(0,15,0,0);
         albumListView.addFooterView(albumFooter);
@@ -167,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 int footerPos = parent.getCount() - 1;
 
                 if (footerPos == position) {
-                    Intent showAllSongResults = new Intent(getApplicationContext(), ShowAllSongResultsActivity.class);
+                    Intent showAllSongResults = new Intent(getApplicationContext(), ShowAllSongResults.class);
                     showAllSongResults.putParcelableArrayListExtra("list", (ArrayList) trackList);
                     showAllSongResults.putExtra("searchTerm", userSearchInput);
                     startActivity(showAllSongResults);
@@ -199,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 int footerPos = parent.getCount() - 1;
 
                 if (footerPos == position) {
-                    Intent showAllArtistResults = new Intent(getApplicationContext(), ShowAllArtistResultsActivity.class);
+                    Intent showAllArtistResults = new Intent(getApplicationContext(), ShowAllArtistResults.class);
                     showAllArtistResults.putParcelableArrayListExtra("list", (ArrayList) artistList);
                     showAllArtistResults.putExtra("searchTerm", userSearchInput);
                     startActivity(showAllArtistResults);
@@ -212,7 +216,34 @@ public class MainActivity extends AppCompatActivity {
         albumListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int footerPos = parent.getCount() - 1;
 
+                if (footerPos == position) {
+                    Intent showAllArtistResults = new Intent(getApplicationContext(), ShowAllAlbumResults.class);
+                    showAllArtistResults.putParcelableArrayListExtra("list", (ArrayList) albumList);
+                    showAllArtistResults.putExtra("searchTerm", userSearchInput);
+                    startActivity(showAllArtistResults);
+                } else {
+                    //Intent showAlbumPage = new Intent(getApplicationContext(), AlbumPageActivity.class);
+                    TextView tv = (TextView) view.findViewById(R.id.album_id);
+                    String albumID = tv.getText().toString();
+
+                    SpotifyApi api = new SpotifyApi();
+                    SpotifyService spotify = api.getService();
+
+                    spotify.getAlbum(albumID, new Callback<Album>() {
+                        @Override
+                        public void success(Album album, Response response) {
+                            myHandler.post(new AlbumSelected(album));
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+
+                }
             }
         });
 
@@ -237,6 +268,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private class AlbumSelected implements Runnable {
+
+        private Album album;
+
+        public AlbumSelected(Album a) {
+            album = a;
+        }
+
+        @Override
+        public void run() {
+            Intent showAlbumPage = new Intent(getApplicationContext(), AlbumPageActivity.class);
+
+
+            List<Image> albumImages = album.images;
+            String albumName = album.name;
+            String albumID = album.id;
+            List<TrackSimple> albumTracks = album.tracks.items;
+            List<ArtistSimple> albumArtists = album.artists;
+
+            showAlbumPage.putParcelableArrayListExtra("albumImages", (ArrayList) albumImages);
+            showAlbumPage.putExtra("albumName", albumName);
+            showAlbumPage.putExtra("albumID", albumID);
+            showAlbumPage.putParcelableArrayListExtra("albumTracks", (ArrayList) albumTracks);
+            showAlbumPage.putParcelableArrayListExtra("albumArtists", (ArrayList) albumArtists);
+
+           // TextView tv = (TextView) findViewById(R.id.album_id);
+            //String albumID = tv.getText().toString();
+            //showAlbumPage.putExtra("albumID", albumID);
+            startActivity(showAlbumPage);
+        }
     }
 
     public static class ListUtils {
