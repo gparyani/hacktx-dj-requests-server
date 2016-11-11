@@ -54,6 +54,7 @@ public class AlbumPageAdapter extends BaseAdapter {
     public void bindView(TrackSimple data, View view, ViewGroup parent) {
         TextView trackName = (TextView) view.findViewById(R.id.track_name);
         TextView artistName = (TextView) view.findViewById(R.id.artist_name);
+        TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
         trackName.setText(data.name);
         String artists = "";
@@ -64,6 +65,7 @@ public class AlbumPageAdapter extends BaseAdapter {
             }
         }
         artistName.setText(artists);
+        trackURI.setText(data.uri);
     }
 
     @Override
