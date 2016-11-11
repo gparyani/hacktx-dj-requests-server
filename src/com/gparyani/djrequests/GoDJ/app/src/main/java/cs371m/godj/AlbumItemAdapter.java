@@ -55,8 +55,10 @@ public class AlbumItemAdapter extends BaseAdapter {
     public void bindView(AlbumSimple data, View view, ViewGroup parent) {
         ImageView albumImage = (ImageView) view.findViewById(R.id.album_pic);
         TextView albumName = (TextView) view.findViewById(R.id.name_of_album);
-        TextView artistName = (TextView) view.findViewById(R.id.name_of_artist);
+        // TextView artistName = (TextView) view.findViewById(R.id.name_of_artist);
 
+        // change image
+        albumImage.setImageResource(R.drawable.microphone);
         albumName.setText(data.name);
 
 

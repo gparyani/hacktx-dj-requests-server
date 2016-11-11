@@ -412,7 +412,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void success(AlbumsPager albumsPager, Response response) {
                 albumList = albumsPager.albums.items;
-                
+
+
                 int displaySize = Math.min(albumList.size(), 5);
                 for(int i = 0; i < displaySize; i++) {
                     displayAlbumList.add(albumList.get(i));
