@@ -23,6 +23,8 @@ import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.AlbumSimple;
+import kaaes.spotify.webapi.android.models.AlbumsPager;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
@@ -35,21 +37,27 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Track> trackList;
     private List<Artist> artistList;
+    private List<AlbumSimple> albumList;
 
     private List<Track> displayTrackList;
     private List<Artist> displayArtistList;
+    private List<AlbumSimple> displayAlbumList;
 
     private ListView listView;
     private ListView artistListView;
+    private ListView albumListView;
 
     private SpotifyItemAdapter spotifyItemAdapter;
     private ArtistItemAdapter artistItemAdapter;
+    private AlbumItemAdapter albumItemAdapter;
 
     private TextView textView;
     private TextView artistTextView;
+    private TextView albumTextView;
 
     private TextView trackFooter;
     private TextView artistFooter;
+    private TextView albumFooter;
 
     private EditText et;
     private String userSearchInput;
@@ -69,15 +77,20 @@ public class MainActivity extends AppCompatActivity {
 
         trackList = new ArrayList<>();
         artistList = new ArrayList<>();
+        albumList = new ArrayList<>();
 
+        // Set of lists for tracks that are displayed (not full track list)
         displayTrackList = new ArrayList<>();
         displayArtistList = new ArrayList<>();
+        displayAlbumList = new ArrayList<>();
 
         listView = (ListView) findViewById(R.id.list_view);
         artistListView = (ListView) findViewById(R.id.artist_list_view);
+        albumListView = (ListView) findViewById(R.id.album_list_view);
 
         spotifyItemAdapter = new SpotifyItemAdapter(this);
         artistItemAdapter = new ArtistItemAdapter(this);
+        albumItemAdapter = new AlbumItemAdapter(this);
 
         // track listview header
         textView = new TextView(this);
@@ -86,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         textView.setGravity(0x01);
         textView.setTextSize(20);
         textView.setTypeface(textView.getTypeface(), 1);
-        // add spacing
         textView.setPadding(0,0,0,50);
         listView.addHeaderView(textView, null, false);
         textView.setVisibility(View.INVISIBLE);
@@ -119,8 +131,29 @@ public class MainActivity extends AppCompatActivity {
         artistListView.addFooterView(artistFooter);
         artistFooter.setVisibility(View.INVISIBLE);
 
+
+        // album listview header
+        albumTextView = new TextView(this);
+        albumTextView.setText("Albums");
+        albumTextView.setTextColor(0xffffffff);
+        albumTextView.setGravity(0x01);
+        albumTextView.setTextSize(20);
+        albumTextView.setTypeface(albumTextView.getTypeface(), 1);
+        albumTextView.setPadding(0,0,0,50);
+        albumListView.addHeaderView(albumTextView, null, false);
+        albumTextView.setVisibility(View.INVISIBLE);
+
+        // album listview footer
+        albumFooter = new TextView(this);
+        albumFooter.setText("See more artists");
+        albumFooter.setTextColor(0xffffffff);
+        albumFooter.setPadding(0,15,0,0);
+        albumListView.addFooterView(albumFooter);
+        albumFooter.setVisibility(View.INVISIBLE);
+
         listView.setAdapter(spotifyItemAdapter);
         artistListView.setAdapter(artistItemAdapter);
+        albumListView.setAdapter(albumItemAdapter);
 
         faveTrackMap = new HashMap<>();
         favoriteTracks = new ArrayList<>();
@@ -173,6 +206,13 @@ public class MainActivity extends AppCompatActivity {
                 } else {
 
                 }
+            }
+        });
+
+        albumListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             }
         });
 
@@ -281,6 +321,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    class UpdateAlbumSearchResults implements Runnable {
+        @Override
+        public void run() {
+            albumTextView.setVisibility(View.VISIBLE);
+            albumItemAdapter.notifyDataSetChanged();
+            albumFooter.setVisibility(View.VISIBLE);
+            albumItemAdapter.notifyDataSetChanged();
+            albumItemAdapter.changeList(displayAlbumList);
+            ListUtils.setDynamicHeight(albumListView);
+            albumItemAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     protected void processSearch() {
         EditText et = (EditText) findViewById(R.id.searchTerm);
@@ -289,12 +342,15 @@ public class MainActivity extends AppCompatActivity {
 
         trackList.clear();
         artistList.clear();
+        albumList.clear();
 
         displayTrackList.clear();
         displayArtistList.clear();
+        displayAlbumList.clear();
 
         spotifyItemAdapter.notifyDataSetChanged();
         artistItemAdapter.notifyDataSetChanged();
+        albumItemAdapter.notifyDataSetChanged();
 
         SpotifyApi api = new SpotifyApi();
         SpotifyService spotify = api.getService();
@@ -352,6 +408,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        spotify.searchAlbums(searchTerm, new Callback<AlbumsPager>() {
+            @Override
+            public void success(AlbumsPager albumsPager, Response response) {
+                albumList = albumsPager.albums.items;
+                
+                int displaySize = Math.min(albumList.size(), 5);
+                for(int i = 0; i < displaySize; i++) {
+                    displayAlbumList.add(albumList.get(i));
+                }
+
+                myHandler.post(new UpdateAlbumSearchResults());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d("Album: ", "ERROR: " + error.getMessage());
+            }
+        });
+
     }
 
     @Override
@@ -373,6 +448,15 @@ public class MainActivity extends AppCompatActivity {
             displayArtistList.clear();
             artistItemAdapter.notifyDataSetChanged();
             artistList.clear();
+
+            albumTextView.setVisibility(View.INVISIBLE);
+            albumItemAdapter.notifyDataSetChanged();
+            albumFooter.setVisibility(View.INVISIBLE);
+            albumItemAdapter.notifyDataSetChanged();
+            displayAlbumList.clear();
+            albumItemAdapter.notifyDataSetChanged();
+            albumList.clear();
+
 
             EditText et = (EditText) findViewById(R.id.searchTerm);
             et.setText("");

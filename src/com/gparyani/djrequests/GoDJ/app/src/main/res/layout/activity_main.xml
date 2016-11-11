@@ -50,5 +50,13 @@
             android:id="@+id/artist_list_view">
         </ListView>
 
+        <ListView
+            android:layout_below="@id/artist_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:id="@+id/album_list_view">
+        </ListView>
+
     </RelativeLayout>
 </ScrollView>

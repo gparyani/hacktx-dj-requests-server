@@ -64,7 +64,7 @@ public class ArtistItemAdapter extends BaseAdapter {
             String imageURL = images.get(0).url;
             Picasso.with(view.getContext()).load(imageURL).into(artistImg);
         } else {
-            // put an empty photo!
+            artistImg.setImageResource(R.drawable.microphone);
         }
 
         artistName.setText(data.name);

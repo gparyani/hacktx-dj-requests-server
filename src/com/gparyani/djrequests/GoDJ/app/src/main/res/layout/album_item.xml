@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <ImageView
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_marginRight="13dp"
         android:layout_marginBottom="15dp"
-        android:id="@+id/artist_pic"/>
+        android:id="@+id/album_pic"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -17,10 +18,17 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textStyle="bold"
         android:gravity="center_vertical"
-        android:paddingTop="25dp"
         android:textColor="@android:color/white"
         android:maxLines="1"
         android:ellipsize="end"
-        android:id="@+id/artist" />
+        android:layout_marginBottom="10dp"
+        android:id="@+id/name_of_album" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/white"
+        android:id="@+id/name_of_artist" />
 </LinearLayout>
