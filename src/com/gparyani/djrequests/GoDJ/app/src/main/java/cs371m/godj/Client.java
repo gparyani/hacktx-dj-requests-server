@@ -34,7 +34,7 @@ import java.net.UnknownHostException;
             Socket socket = null;
 
             try {
-                socket = new Socket(InetAddress.getByName("10.146.229.69").getHostName(), 48736);
+                socket = new Socket(InetAddress.getByName("192.168.1.149").getHostName(), 48736);
                 PrintStream writer = new PrintStream(socket.getOutputStream());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 writer.println("request " + uri);

@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/artist_name"
             android:textColor="@color/gray"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textSize="14sp"
             android:layout_marginRight="5dp"/>
 
@@ -37,6 +39,8 @@
             android:textSize="15sp"
             android:layout_marginRight="5dp"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/gray"
             android:id="@+id/middle_dot" />
 

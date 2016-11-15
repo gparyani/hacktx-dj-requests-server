@@ -9,10 +9,13 @@
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/album_art"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+
         android:layout_marginTop="60dp"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="50dp"
+    />
+
+    <!--android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -61,10 +64,14 @@
                 android:layout_toRightOf="@id/add_song_button"
                 android:layout_toLeftOf="@id/req_song_button"
                 android:id="@+id/artist_info"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textColor="@android:color/white"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_centerVertical="true"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 />
         </LinearLayout>
 
