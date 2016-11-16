@@ -60,9 +60,9 @@ public class TrackPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String[] trackInfo = {trackName, albumName, artistName, imageURL, trackURI};
-                if(!MainActivity.faveTrackMap.containsKey(trackURI)) {
-                    MainActivity.faveTrackMap.put(trackURI, trackName);
-                    MainActivity.favoriteTracks.add(trackInfo);
+                if(!UserMainActivity.faveTrackMap.containsKey(trackURI)) {
+                    UserMainActivity.faveTrackMap.put(trackURI, trackName);
+                    UserMainActivity.favoriteTracks.add(trackInfo);
                     Toast.makeText(getApplicationContext(), "Added Song to Favorites!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Song Already in Favorites", Toast.LENGTH_SHORT).show();
@@ -96,9 +96,9 @@ public class TrackPageActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, MainActivity.class);
+                Intent goSearch = new Intent(this, UserMainActivity.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                MainActivity.clearSearch = true;
+                UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
             case R.id.favorites_ID:

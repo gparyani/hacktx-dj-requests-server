@@ -20,6 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".UserMainActivity"
+            android:theme="@style/AppTheme"
+            >
+
+        </activity>
         <activity android:name=".TrackPageActivity"
             android:theme="@style/AppTheme"
             >

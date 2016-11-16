@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/black"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/email"
+        android:paddingTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:textColorHint="@color/gray"
+        android:inputType="textEmailAddress"
+        android:maxLines="1" />
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="User Name"
+        android:textColorHint="@color/gray"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Choose Password"
+        android:textColorHint="@color/gray"
+        android:inputType="textPassword"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/passwordAgain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Re-enter Password"
+        android:textColorHint="@color/gray"
+        android:imeActionId="@+id/login"
+        android:imeActionLabel="Sign In"
+        android:imeOptions="actionUnspecified"
+        android:inputType="textPassword"
+        android:maxLines="1" />
+
+    <Button
+        android:id="@+id/createAcctButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:text="Create Account" />
+</LinearLayout>

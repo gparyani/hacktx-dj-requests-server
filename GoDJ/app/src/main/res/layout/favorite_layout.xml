@@ -8,7 +8,6 @@
     android:background="@android:color/black">
 
     <ListView
-        android:layout_below="@id/searchTerm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fav_list_view">
