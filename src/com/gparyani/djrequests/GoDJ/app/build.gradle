@@ -36,5 +36,5 @@ dependencies {
     compile 'commons-beanutils:commons-beanutils:20030211.134440'
     compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-
 }
+apply plugin: 'com.google.gms.google-services'

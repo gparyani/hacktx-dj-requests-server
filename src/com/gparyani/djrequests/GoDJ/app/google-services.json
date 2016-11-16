@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "755223950220",
+    "firebase_url": "https://flippedclassroom6-5d0b0.firebaseio.com",
+    "project_id": "flippedclassroom6-5d0b0",
+    "storage_bucket": "flippedclassroom6-5d0b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755223950220:android:eef79516400feb26",
+        "android_client_info": {
+          "package_name": "cs371m.jbg2384.demofirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755223950220-k20bim2enobl12imafvcn5dre34dn23q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cs371m.jbg2384.demofirebase",
+            "certificate_hash": "5BA4B695AEF56D6BE387E08A6AD0D0BEF3A068EC"
+          }
+        },
+        {
+          "client_id": "755223950220-mf4balbuuo7bt8j8fgte5mlim2mgjf2d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKQTZyJpH3bkgjbGeiXGsMshjtMmujqK8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755223950220-mf4balbuuo7bt8j8fgte5mlim2mgjf2d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
