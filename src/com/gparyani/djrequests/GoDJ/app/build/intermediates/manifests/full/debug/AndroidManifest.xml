@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cs371m.godj"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="19"
+        android:targetSdkVersion="24" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="cs371m.godj.MainActivity"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="cs371m.godj.TrackPageActivity"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="cs371m.godj.FavoriteTracks"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="cs371m.godj.ShowAllSongResults"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="cs371m.godj.ShowAllArtistResults"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="cs371m.godj.ShowAllAlbumResults"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="cs371m.godj.AlbumPageActivity"
+            android:theme="@style/AppTheme" >
+        </activity>
+    </application>
+
+</manifest>
