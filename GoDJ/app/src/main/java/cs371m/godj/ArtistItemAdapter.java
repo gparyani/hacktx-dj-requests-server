@@ -58,6 +58,7 @@ public class ArtistItemAdapter extends BaseAdapter {
     public void bindView(Artist data, View view, ViewGroup parent) {
         ImageView artistImg = (ImageView) view.findViewById(R.id.artist_pic);
         TextView artistName = (TextView) view.findViewById(R.id.artist);
+        TextView artistID = (TextView) view.findViewById(R.id.artist_id);
 
         List<Image> images = data.images;
         if (images.size() > 0) {
@@ -68,6 +69,7 @@ public class ArtistItemAdapter extends BaseAdapter {
         }
 
         artistName.setText(data.name);
+        artistID.setText(data.id);
     }
 
     @Override

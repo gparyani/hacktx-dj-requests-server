@@ -26,13 +26,11 @@ import kaaes.spotify.webapi.android.models.TrackSimple;
 
 public class AlbumPageActivity extends AppCompatActivity {
 
-    //private List<TrackSimple> albumTracks;
     private ListView listView;
     private AlbumPageAdapter albumPageAdapter;
     private Handler myHandler;
     private ImageView albumImage;
     private TextView albumNameTV;
-    //private Album thisAlbum;
 
     private List<Image> images;
     private List<TrackSimple> tracks;
@@ -46,7 +44,6 @@ public class AlbumPageActivity extends AppCompatActivity {
         setContentView(R.layout.album_page_layout);
 
         Intent intent = getIntent();
-        //String albumID = intent.getStringExtra("albumID");
 
 
         images = intent.getParcelableArrayListExtra("albumImages");

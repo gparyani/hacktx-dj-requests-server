@@ -30,8 +30,10 @@ import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Image;
+import kaaes.spotify.webapi.android.models.Pager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TrackSimple;
+import kaaes.spotify.webapi.android.models.Tracks;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -209,6 +211,37 @@ public class UserMainActivity extends AppCompatActivity {
                     startActivity(showAllArtistResults);
                 } else {
 
+                    TextView tv = (TextView) findViewById(R.id.artist_id);
+                    String artistID = tv.getText().toString();
+
+                    SpotifyApi api = new SpotifyApi();
+                    SpotifyService spotify = api.getService();
+
+                    spotify.getArtistTopTrack(artistID, "US", new Callback<Tracks>() {
+                                @Override
+                                public void success(Tracks tracks, Response response) {
+                                    myHandler.post(new TopTracks(tracks));
+
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+
+                                }
+                    });
+
+
+                    spotify.getArtistAlbums(artistID, new Callback<Pager<Album>>() {
+                        @Override
+                        public void success(Pager<Album> albumPager, Response response) {
+
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
                 }
             }
         });
@@ -224,7 +257,6 @@ public class UserMainActivity extends AppCompatActivity {
                     showAllArtistResults.putExtra("searchTerm", userSearchInput);
                     startActivity(showAllArtistResults);
                 } else {
-                    //Intent showAlbumPage = new Intent(getApplicationContext(), AlbumPageActivity.class);
                     TextView tv = (TextView) view.findViewById(R.id.album_id);
                     String albumID = tv.getText().toString();
 
@@ -270,6 +302,26 @@ public class UserMainActivity extends AppCompatActivity {
 
     }
 
+    private class TopTracks implements Runnable {
+
+        private Tracks topTracks;
+
+        public TopTracks(Tracks t) {
+            topTracks = t;
+        }
+
+
+        @Override
+        public void run() {
+            Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
+
+
+
+
+        }
+
+    }
+
     private class AlbumSelected implements Runnable {
 
         private Album album;
@@ -295,9 +347,6 @@ public class UserMainActivity extends AppCompatActivity {
             showAlbumPage.putParcelableArrayListExtra("albumTracks", (ArrayList) albumTracks);
             showAlbumPage.putParcelableArrayListExtra("albumArtists", (ArrayList) albumArtists);
 
-            // TextView tv = (TextView) findViewById(R.id.album_id);
-            //String albumID = tv.getText().toString();
-            //showAlbumPage.putExtra("albumID", albumID);
             startActivity(showAlbumPage);
         }
     }

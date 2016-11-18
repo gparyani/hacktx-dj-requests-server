@@ -19,6 +19,8 @@ import kaaes.spotify.webapi.android.models.Album;
 import kaaes.spotify.webapi.android.models.AlbumSimple;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
 import kaaes.spotify.webapi.android.models.Image;
+
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
