@@ -31,6 +31,7 @@ public class TrackPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.track_layout);
 
+
         Intent loadTrackPage = getIntent();
         trackName = loadTrackPage.getExtras().getString("trackName");
         artistName = loadTrackPage.getExtras().getString("artistName");

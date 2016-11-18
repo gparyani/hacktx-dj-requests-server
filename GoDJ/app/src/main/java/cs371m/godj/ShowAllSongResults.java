@@ -29,6 +29,8 @@ public class ShowAllSongResults extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.all_results_layout);
+
+
         Intent intent = getIntent();
         String searchTerm = intent.getStringExtra("searchTerm");
         String formatTitle = "\"" + searchTerm + "\"" + " in Songs";

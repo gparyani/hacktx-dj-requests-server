@@ -10,9 +10,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+
+        >
         <activity android:name=".MainActivity"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,41 +25,42 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserMainActivity"
-            android:theme="@style/AppTheme"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/SecondAppTheme"
             >
 
         </activity>
         <activity android:name=".TrackPageActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/SecondAppTheme"
             >
 
         </activity>
         <activity android:name=".FavoriteTracks"
-            android:theme="@style/AppTheme"
+            android:theme="@style/SecondAppTheme"
             >
 
         </activity>
 
         <activity android:name=".ShowAllSongResults"
-            android:theme="@style/AppTheme"
+            android:theme="@style/SecondAppTheme"
             >
 
         </activity>
 
         <activity android:name=".ShowAllArtistResults"
-            android:theme="@style/AppTheme"
+            android:theme="@style/SecondAppTheme"
             >
 
         </activity>
 
         <activity android:name=".ShowAllAlbumResults"
-            android:theme="@style/AppTheme"
+            android:theme="@style/SecondAppTheme"
             >
 
         </activity>
 
         <activity android:name=".AlbumPageActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/SecondAppTheme"
             >
 
         </activity>
