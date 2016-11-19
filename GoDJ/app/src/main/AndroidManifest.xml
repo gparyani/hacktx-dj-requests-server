@@ -25,8 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserMainActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/SecondAppTheme"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme"
             >
 
         </activity>

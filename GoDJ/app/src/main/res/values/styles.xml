@@ -21,6 +21,10 @@
         <item name="color">@android:color/white</item>
     </style>
 
+    <style name="NavigationMenuItemTextAppearance">
+        <item name="android:ellipsize">end</item>
+    </style>
+
 
 
 </resources>
