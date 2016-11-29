@@ -2,7 +2,6 @@ package cs371m.godj;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +27,6 @@ public class AlbumPageActivity extends AppCompatActivity {
 
     private ListView listView;
     private AlbumPageAdapter albumPageAdapter;
-    private Handler myHandler;
     private ImageView albumImage;
     private TextView albumNameTV;
 
@@ -57,7 +55,6 @@ public class AlbumPageActivity extends AppCompatActivity {
         albumNameTV = (TextView) findViewById(R.id.album_page_album_name);
 
         final String imgURL = images.get(0).url;
-        System.out.println("img url: " + imgURL);
         Picasso.with(getApplicationContext()).load(imgURL).into(albumImage);
         albumNameTV.setText(albumName);
 
