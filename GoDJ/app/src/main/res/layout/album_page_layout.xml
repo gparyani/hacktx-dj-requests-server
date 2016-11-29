@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:paddingTop="15dp"
     android:background="@android:color/black"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/album_page_album_art"

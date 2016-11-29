@@ -30,7 +30,6 @@ import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Image;
-import kaaes.spotify.webapi.android.models.Pager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TrackSimple;
 import kaaes.spotify.webapi.android.models.Tracks;
@@ -211,13 +210,14 @@ public class UserMainActivity extends AppCompatActivity {
                     showAllArtistResults.putExtra("searchTerm", userSearchInput);
                     startActivity(showAllArtistResults);
                 } else {
-
                     TextView tv = (TextView) findViewById(R.id.artist_id);
                     String artistID = tv.getText().toString();
+
 
                     SpotifyApi api = new SpotifyApi();
                     SpotifyService spotify = api.getService();
 
+                    // LIMIT NUM TO 5
                     spotify.getArtistTopTrack(artistID, "US", new Callback<Tracks>() {
                                 @Override
                                 public void success(Tracks tracks, Response response) {
@@ -231,18 +231,31 @@ public class UserMainActivity extends AppCompatActivity {
                                 }
                     });
 
+//                    spotify.getArtistAlbums(artistID, new Callback<Pager<Album>>() {
+//                        @Override
+//                        public void success(Pager<Album> albumPager, Response response) {
+//                            // myHandler.post(new ArtistAlbums(albumPager));
+//
+//                        }
+//
+//                        @Override
+//                        public void failure(RetrofitError error) {
+//
+//                        }
+//                    });
 
-                    spotify.getArtistAlbums(artistID, new Callback<Pager<Album>>() {
-                        @Override
-                        public void success(Pager<Album> albumPager, Response response) {
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                        }
-                    });
+//                    spotify.getRelatedArtists(artistID, new Callback<Artists>() {
+//                        @Override
+//                        public void success(Artists artists, Response response) {
+//                            // myHandler.post(new RelatedArtists(artists));
+//
+//                        }
+//
+//                        @Override
+//                        public void failure(RetrofitError error) {
+//
+//                        }
+//                    });
                 }
             }
         });
@@ -307,6 +320,7 @@ public class UserMainActivity extends AppCompatActivity {
 
         private Tracks topTracks;
 
+
         public TopTracks(Tracks t) {
             topTracks = t;
         }
@@ -314,14 +328,45 @@ public class UserMainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            List<Track> popTrackList = topTracks.tracks;
+
             Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
 
+            TextView artistURL = (TextView) findViewById(R.id.artist_image_url);
+            TextView artistNameTV = (TextView) findViewById(R.id.artist);
 
-
-
+            showArtistPage.putParcelableArrayListExtra("popTrackList", (ArrayList) popTrackList);
+            showArtistPage.putExtra("artistURL", artistURL.getText().toString());
+            showArtistPage.putExtra("artistName", artistNameTV.getText().toString());
+            startActivity(showArtistPage);
         }
-
     }
+
+//    private class ArtistAlbums implements Runnable {
+//
+//        private Pager<Album> albumPager;
+//
+//        public ArtistAlbums(Pager<Album> aP) {
+//            albumPager = aP;
+//        }
+//
+//        @Override
+//        public void run() {
+//
+//        }
+//
+//
+//    }
+
+//    private class RelatedArtists implements Runnable {
+//
+//        private Artist artists;
+//
+//        public RelatedArtists() {
+//
+//        }
+//
+//    }
 
     private class AlbumSelected implements Runnable {
 

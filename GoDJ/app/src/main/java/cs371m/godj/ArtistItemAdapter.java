@@ -59,12 +59,15 @@ public class ArtistItemAdapter extends BaseAdapter {
         ImageView artistImg = (ImageView) view.findViewById(R.id.artist_pic);
         TextView artistName = (TextView) view.findViewById(R.id.artist);
         TextView artistID = (TextView) view.findViewById(R.id.artist_id);
+        TextView artistURL = (TextView) view.findViewById(R.id.artist_image_url);
 
         List<Image> images = data.images;
         if (images.size() > 0) {
             String imageURL = images.get(0).url;
+            artistURL.setText(imageURL);
             Picasso.with(view.getContext()).load(imageURL).into(artistImg);
         } else {
+            artistURL.setText("");
             artistImg.setImageResource(R.drawable.microphone);
         }
 
