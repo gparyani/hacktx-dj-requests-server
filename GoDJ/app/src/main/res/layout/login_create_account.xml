@@ -26,7 +26,9 @@
         android:inputType="textEmailAddress"
         android:maxLines="1"
         android:textColor="@android:color/white"
-        android:paddingTop="40dp" />
+        android:paddingTop="40dp"
+        android:backgroundTint="@android:color/white"
+        />
 
     <EditText
         android:id="@+id/password"
@@ -39,6 +41,7 @@
         android:imeActionLabel="Sign In"
         android:imeOptions="actionUnspecified"
         android:inputType="textPassword"
+        android:backgroundTint="@android:color/white"
         android:maxLines="1" />
 
     <Button

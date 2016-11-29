@@ -25,10 +25,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
         NavigationView.OnNavigationItemSelectedListener, FirebaseLoginFragment.FirebaseLoginInterface{
 
     protected Menu drawerMenu;
-    protected ActionBarDrawerToggle toggle;
+    protected static ActionBarDrawerToggle toggle;
     protected String userName;
-    protected FirebaseAuth mAuth;
-    protected FirebaseAuth.AuthStateListener mAuthListener;
+    protected static FirebaseAuth mAuth;
+    protected static FirebaseAuth.AuthStateListener mAuthListener;
     public static String TAG = "GoDJ";
     private Handler signInHandler;
 
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
         // Ideas on how to transition toggle from
         // https://stackoverflow.com/questions/28263643/tool-bar-setnavigationonclicklistener-breaks-actionbardrawertoggle-functionality/30951016#30951016
         toggle.setDrawerIndicatorEnabled(false);
-        toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
+        //toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
