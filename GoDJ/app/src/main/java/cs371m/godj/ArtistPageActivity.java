@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Tracks;
+import kaaes.spotify.webapi.android.models.Track;
 
 
 /**
@@ -32,11 +32,11 @@ public class ArtistPageActivity extends AppCompatActivity {
     private ListView albumListView;
     private ListView relatedArtistListView;
 
-    private List<Tracks> popularTracks;
+    private List<Track> popularTracks;
 //    private List<Album> albums;
 //    private List<Artist> relatedArtists;
 
-    // private
+    private SpotifyItemAdapter popTracksAdapter;
 
 
     @Override
@@ -60,18 +60,24 @@ public class ArtistPageActivity extends AppCompatActivity {
         relatedTitle.setText("Related Artists");
 
         popularTitle.setTextColor(0xffffffff);
-        popularTitle.setGravity(0x01);
+        // popularTitle.setGravity(0x01);
         popularTitle.setTextSize(20);
         popularTitle.setTypeface(popularTitle.getTypeface(), 1);
-        popularTitle.setPadding(0,0,0,50);
+        popularTitle.setPadding(0,35,0,50);
         popularTrackListView.addHeaderView(popularTitle, null, false);
-        popularTitle.setVisibility(View.VISIBLE); //////////// fix this!
+        popularTitle.setVisibility(View.VISIBLE);
 
         Intent intent = getIntent();
 
         popularTracks = intent.getParcelableArrayListExtra("popTrackList");
         Picasso.with(getApplicationContext()).load(intent.getStringExtra("artistURL")).into(artistImage);
         artistName.setText(intent.getStringExtra("artistName"));
+
+        popTracksAdapter = new SpotifyItemAdapter(this);
+        popularTrackListView.setAdapter(popTracksAdapter);
+        popTracksAdapter.changeList(popularTracks);
+        popTracksAdapter.notifyDataSetChanged();
+
 
     }
 }
