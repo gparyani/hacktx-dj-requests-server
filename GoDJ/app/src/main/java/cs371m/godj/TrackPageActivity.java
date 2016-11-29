@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -64,6 +66,9 @@ public class TrackPageActivity extends AppCompatActivity {
                 if(!UserMainActivity.faveTrackMap.containsKey(trackURI)) {
                     UserMainActivity.faveTrackMap.put(trackURI, trackName);
                     UserMainActivity.favoriteTracks.add(trackInfo);
+                    String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                    String _userName = user.replaceAll("\\.", "@"); // . illegal in Firebase key
+                    FirebaseDatabase.getInstance().getReference("users").child(_userName).child("track").push().setValue(trackURI);
                     Toast.makeText(getApplicationContext(), "Added Song to Favorites!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Song Already in Favorites", Toast.LENGTH_SHORT).show();

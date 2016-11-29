@@ -25,23 +25,23 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  * Created by Jasmine on 11/15/16.
  */
 
-public class FirebaseCreateNewAccountFragment extends Fragment {
+public class FirebaseCreateAccountFragment extends Fragment {
     public interface FirebaseCreateAccountInterface {
         void firebaseLoginFinish();
     }
 
     // We can have this member variable because it is initialized in onAttach
     // If the system kills us when memory is low, it will reattach and reinitialize this variable
-    private FirebaseCreateNewAccountFragment.FirebaseCreateAccountInterface firebaseCreateAccountInterface;
+    private FirebaseCreateAccountFragment.FirebaseCreateAccountInterface firebaseCreateAccountInterface;
     private FirebaseAuth mAuth;
     public static String TAG = "FCreateAcct";
     protected View myRootView;
     protected Button createAcctButton;
 
     // If create is false, log in screen and log in action, otherwise create account screen and action
-    static FirebaseCreateNewAccountFragment newInstance() {
-        FirebaseCreateNewAccountFragment firebaseCreateNewAccountFragment = new FirebaseCreateNewAccountFragment();
-        return firebaseCreateNewAccountFragment;
+    static FirebaseCreateAccountFragment newInstance() {
+        FirebaseCreateAccountFragment firebaseCreateAccountFragment = new FirebaseCreateAccountFragment();
+        return firebaseCreateAccountFragment;
     }
 
     @Override
@@ -110,6 +110,8 @@ public class FirebaseCreateNewAccountFragment extends Fragment {
         // Set up the submit button click handler
         createAcctButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                System.out.println("create acct button pressed");
+
                 final String username = usernameView.getText().toString().trim();
                 String password = passwordView.getText().toString().trim();
                 String passwordAgain = passwordAgainView.getText().toString().trim();
@@ -147,8 +149,14 @@ public class FirebaseCreateNewAccountFragment extends Fragment {
                                 } else {
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(username).build();
+                                    System.out.println("create acct mauth: " + mAuth);
+
                                     mAuth.getCurrentUser().updateProfile(profileUpdates);
+                                    System.out.println("CREATE ACCT prof update: " + profileUpdates.getDisplayName());
+                                    System.out.println("CREATE ACCT: " + mAuth.getCurrentUser().getDisplayName());
+                                    System.out.println("profile updated in create acct");
                                     firebaseCreateAccountInterface.firebaseLoginFinish();
+
                                 }
                             }
                         });

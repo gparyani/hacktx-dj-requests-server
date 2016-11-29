@@ -1,6 +1,5 @@
 package cs371m.godj;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,8 +49,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class UserMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        FirebaseLoginFragment.FirebaseLoginInterface{
+public class UserMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+        {
 
     private List<Track> trackList;
     private List<Artist> artistList;
@@ -86,75 +85,13 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     public static boolean clearSearch;
     private Handler myHandler;
 
-
-    protected FirebaseAuth mAuth;
-    protected FirebaseAuth.AuthStateListener mAuthListener;
     protected Menu drawerMenu;
     protected ActionBarDrawerToggle toggle;
     protected String userName;
-    private Handler signInHandler;
 
     public static String TAG = "GoDJ";
 
 
-    protected void firebaseInit() {
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    userName = user.getDisplayName();
-                    signInHandler.post(new showOpeningScreen(userName));
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    userName = null;
-                    signInHandler.post(new showOpeningScreen(userName));
-                }
-                Log.d(TAG, "userName="+userName);
-//                if( photoFragment != null ) {
-//                    photoFragment.updateCurrentUserName(userName);
-//                }
-                updateUserDisplay();
-            }
-        };
-    }
-
-    class showOpeningScreen implements Runnable {
-
-        private String userName;
-
-        public showOpeningScreen(String user) {
-            userName = user;
-        }
-
-        @Override
-        public void run() {
-            if(userName == null) {
-                toggleHamburgerToBack();
-                EditText et = (EditText) findViewById(R.id.searchTerm);
-                et.setVisibility(View.INVISIBLE);
-//                FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
-//                FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                // Replace any other Fragment with our new Details Fragment with the right data
-//                ft.add(R.id.main_frame, flf);
-//                // Let us come back
-//                ft.addToBackStack(null);
-//                // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-//                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//                ft.commit();
-            } else {
-
-
-                /////temporary
-                EditText et = (EditText) findViewById(R.id.searchTerm);
-                et.setVisibility(View.VISIBLE);
-            }
-        }
-    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -169,7 +106,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         setSupportActionBar(toolbar);
 
 
-        signInHandler = new Handler();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
         toggle = new ActionBarDrawerToggle(
@@ -188,7 +124,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         navigationView.setNavigationItemSelectedListener(this);
         drawerMenu = navigationView.getMenu();
 
-        firebaseInit();
 
         updateUserDisplay();
 
@@ -417,12 +352,13 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     }
 
 
+
+
     // We have logged in or out, update all items that display user name
     protected void updateUserDisplay() {
         String loginString = "";
         String userString = userName;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        ;
         if (user != null) {
             loginString = String.format("Log out as %s", userName);
         } else {
@@ -441,52 +377,8 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         }
     }
 
-    @Override
-    public void firebaseLoginFinish() {
-        // Dismiss the Login fragment
-        getFragmentManager().popBackStack();
-        // Toggle back button to hamburger
-        toggle.setDrawerIndicatorEnabled(true);
 
 
-
-        /////temporary
-
-    }
-
-    @Override
-    public void firebaseFromLoginToCreateAccount() {
-        // Dismiss the Login fragment
-        getFragmentManager().popBackStack();
-        // Toggle back button to hamburger
-        toggle.setDrawerIndicatorEnabled(true);
-        toggleHamburgerToBack();
-
-        // Replace main screen with the create account fragment
-        FirebaseCreateNewAccountFragment fcaf = FirebaseCreateNewAccountFragment.newInstance();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.add(R.id.main_frame, fcaf);
-        // Let us pop without explicit fragment remove
-        ft.addToBackStack(null);
-        // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.commit();
-    }
-
-    protected void toggleHamburgerToBack() {
-        // Ideas on how to transition toggle from
-        // https://stackoverflow.com/questions/28263643/tool-bar-setnavigationonclicklistener-breaks-actionbardrawertoggle-functionality/30951016#30951016
-        toggle.setDrawerIndicatorEnabled(false);
-        toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
-        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firebaseLoginFinish();
-            }
-        });
-        // Maybe this would be better, but above works.
-        //http://stackoverflow.com/questions/27742074/up-arrow-does-not-show-after-calling-actionbardrawertoggle-setdrawerindicatorena
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -496,7 +388,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         if (id == R.id.nav_login) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
-                mAuth.signOut(); // Will call updateUserDisplay via callback
+                FirebaseAuth.getInstance().signOut(); // Will call updateUserDisplay via callback
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
                 drawer.closeDrawer(Gravity.LEFT);
 
@@ -506,18 +398,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
                 startActivity(goHome);
                 return true;
             } else {
-                DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout2);
-                //drawerLayout.setBackgroundColor(0x000);
-                toggleHamburgerToBack();
-                FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                // Replace any other Fragment with our new Details Fragment with the right data
-                ft.add(R.id.main_frame, flf);
-                // Let us come back
-                ft.addToBackStack(null);
-                // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
+
             }
         } else if (id == R.id.song_search) {
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
@@ -812,17 +693,4 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
 }

@@ -21,22 +21,28 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements FirebaseCreateNewAccountFragment.FirebaseCreateAccountInterface,
+public class MainActivity extends AppCompatActivity implements FirebaseCreateAccountFragment.FirebaseCreateAccountInterface,
         NavigationView.OnNavigationItemSelectedListener, FirebaseLoginFragment.FirebaseLoginInterface{
 
     protected Menu drawerMenu;
     protected static ActionBarDrawerToggle toggle;
     protected String userName;
-    protected static FirebaseAuth mAuth;
-    protected static FirebaseAuth.AuthStateListener mAuthListener;
+    protected FirebaseAuth mAuth;
+    protected FirebaseAuth.AuthStateListener mAuthListener;
     public static String TAG = "GoDJ";
+    protected static String ANON_USER = "Anonymous User";
+
     private Handler signInHandler;
+
+    private DatabaseHelper dbHelper;
 
 
 
 
     protected void firebaseInit() {
+        System.out.println("firebase init called");
         mAuth = FirebaseAuth.getInstance();
+        System.out.println("firebaseinit mauth: " + mAuth);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -45,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     userName = user.getDisplayName();
-                    signInHandler.post(new showOpeningScreen(userName));
+
+                    //signInHandler.post(new showOpeningScreen(userName));
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -53,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
                     signInHandler.post(new showOpeningScreen(userName));
                 }
                 Log.d(TAG, "userName="+userName);
-//                if( photoFragment != null ) {
-//                    photoFragment.updateCurrentUserName(userName);
-//                }
+                if( dbHelper != null ) {
+                    dbHelper.updateCurrentUserName(userName);
+                }
                 updateUserDisplay();
             }
         };
@@ -72,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
         setSupportActionBar(toolbar);
 
         signInHandler = new Handler();
+
+        dbHelper = new DatabaseHelper();
 
 
 
@@ -142,7 +151,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
         String loginString = "";
         String userString = userName;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if (user != null) {
+            System.out.println("update username: " + userName);
             loginString = String.format("Log out as %s", userName);
         } else {
             userString = "Please log in";
@@ -184,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
         toggle.setDrawerIndicatorEnabled(true);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setBackgroundColor(0xffffffff);
+        System.out.println("LOOOOOGIN FINISHHHHHHHHH");
 
 
         /////temporary
@@ -199,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
         toggleHamburgerToBack();
 
         // Replace main screen with the create account fragment
-        FirebaseCreateNewAccountFragment fcaf = FirebaseCreateNewAccountFragment.newInstance();
+        FirebaseCreateAccountFragment fcaf = FirebaseCreateAccountFragment.newInstance();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(R.id.main_frame, fcaf);
         // Let us pop without explicit fragment remove
@@ -250,6 +262,17 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateNew
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
             }
+        } else if(id == R.id.host_event) {
+            toggleHamburgerToBack();
+            CreateEventFragment cef = CreateEventFragment.newInstance();
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            // Replace any other Fragment with our new Details Fragment with the right data
+            ft.add(R.id.main_frame, cef);
+            // Let us come back
+            ft.addToBackStack(null);
+            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.commit();
         } else if (id == R.id.song_search) {
             Intent startUserMain = new Intent(getApplicationContext(), UserMainActivity.class);
             startActivity(startUserMain);

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="40dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    >
+
+    <TextView
+        android:id="@+id/event_name_tv_oncreateevent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="Event Name: "
+        android:paddingBottom="10dp"
+        />
+
+    <EditText
+        android:id="@+id/create_event_nm_et"
+        android:layout_below="@+id/event_name_tv_oncreateevent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Event Name"
+        android:textColorHint="@color/gray"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/host_name_tv_oncreateevent"
+        android:layout_below="@+id/create_event_nm_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="Host Name: "
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        />
+
+    <EditText
+        android:id="@+id/create_host_nm_et"
+        android:layout_below="@+id/host_name_tv_oncreateevent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Host Name"
+        android:textColorHint="@color/gray"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/event_date_tv_oncreateevent"
+        android:layout_below="@+id/create_host_nm_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textStyle="bold"
+        android:text="Date of Event: "
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        />
+
+    <EditText
+        android:id="@+id/event_date_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:layout_below="@+id/event_date_tv_oncreateevent"
+         />
+
+    <LinearLayout
+        android:id="@+id/start_end_lin_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/event_date_et"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/start_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textStyle="bold"
+                android:text="Start Time:"
+                />
+            <EditText
+                android:id="@+id/event_start_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:ems="10"
+                android:layout_below="@+id/event_date_et"
+            />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/end_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textStyle="bold"
+                android:text="End Time:"
+                />
+            <EditText
+                android:id="@+id/event_end_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:ems="10"
+                android:layout_below="@+id/event_date_et"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/create_event_but"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start_end_lin_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Create Event"
+        />
+
+
+
+</RelativeLayout>
