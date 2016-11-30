@@ -1,11 +1,11 @@
 package cs371m.godj;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
             if(userName == null) {
                 toggleHamburgerToBack();
                 FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 // Replace any other Fragment with our new Details Fragment with the right data
                 ft.add(R.id.main_frame, flf);
                 // Let us come back
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
 
         // Replace main screen with the create account fragment
         FirebaseCreateAccountFragment fcaf = FirebaseCreateAccountFragment.newInstance();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.main_frame, fcaf);
         // Let us pop without explicit fragment remove
         ft.addToBackStack(null);
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
                 //drawerLayout.setBackgroundColor(0x000);
                 toggleHamburgerToBack();
                 FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 // Replace any other Fragment with our new Details Fragment with the right data
                 ft.add(R.id.main_frame, flf);
                 // Let us come back
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         } else if(id == R.id.host_event) {
             toggleHamburgerToBack();
             CreateEventFragment cef = CreateEventFragment.newInstance();
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             // Replace any other Fragment with our new Details Fragment with the right data
             ft.add(R.id.main_frame, cef);
             // Let us come back
@@ -276,10 +276,19 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         } else if (id == R.id.song_search) {
             Intent startUserMain = new Intent(getApplicationContext(), UserMainActivity.class);
             startActivity(startUserMain);
-
-        //} else if (id == R.id.nav_send) {
-
+        } else if(id == R.id.find_event) {
+            EventSearchFragment esf = new EventSearchFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            // Replace any other Fragment with our new Details Fragment with the right data
+            ft.add(R.id.main_frame, esf);
+            // Let us come back
+            ft.addToBackStack(null);
+            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.commit();
         }
+        //} else if (id == R.id.nav_send) {
+        //}
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

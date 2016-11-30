@@ -67,6 +67,9 @@
         android:layout_height="wrap_content"
         android:inputType="date"
         android:ems="10"
+        android:focusable="false"
+        android:textColorHint="@color/gray"
+        android:hint="MM-DD-YYYY"
         android:layout_below="@+id/event_date_tv_oncreateevent"
          />
 
@@ -82,6 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginRight="75dp"
             >
             <TextView
                 android:id="@+id/start_time_tv"
@@ -93,10 +97,14 @@
                 />
             <EditText
                 android:id="@+id/event_start_et"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:inputType="time"
-                android:ems="10"
+                android:layout_gravity="center_horizontal"
+                android:hint="00:00"
+                android:textColorHint="@color/gray"
+                android:textAlignment="center"
+                android:focusable="false"
                 android:layout_below="@+id/event_date_et"
             />
 
@@ -117,10 +125,14 @@
                 />
             <EditText
                 android:id="@+id/event_end_et"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:inputType="time"
-                android:ems="10"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:hint="00:00"
+                android:textColorHint="@color/gray"
+                android:focusable="false"
                 android:layout_below="@+id/event_date_et"
                 />
 
