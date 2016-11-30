@@ -42,14 +42,14 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Image;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TrackSimple;
-import kaaes.spotify.webapi.android.models.Tracks;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class UserMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        {
+import static cs371m.godj.R.id.artist;
+
+public class UserMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private List<Track> trackList;
     private List<Artist> artistList;
@@ -91,19 +91,16 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     public static String TAG = "GoDJ";
 
 
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_activity_main);
 
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         toolbar.setTitle(""); // MIGHT JUST CHANGE THEME IN STYLE XML INSTEAD
 
         setSupportActionBar(toolbar);
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
@@ -125,8 +122,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
 
 
         updateUserDisplay();
-
-
 
 
         trackList = new ArrayList<>();
@@ -153,7 +148,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         textView.setGravity(0x01);
         textView.setTextSize(20);
         textView.setTypeface(textView.getTypeface(), 1);
-        textView.setPadding(0,0,0,50);
+        textView.setPadding(0, 0, 0, 50);
         listView.addHeaderView(textView, null, false);
         textView.setVisibility(View.INVISIBLE);
 
@@ -161,7 +156,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         trackFooter = new TextView(this);
         trackFooter.setText("See more songs");
         trackFooter.setTextColor(0xffffffff);
-        trackFooter.setPadding(0,15,0,0);
+        trackFooter.setPadding(0, 15, 0, 0);
         listView.addFooterView(trackFooter);
         trackFooter.setVisibility(View.INVISIBLE);
 
@@ -173,7 +168,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         artistTextView.setGravity(0x01);
         artistTextView.setTextSize(20);
         artistTextView.setTypeface(artistTextView.getTypeface(), 1);
-        artistTextView.setPadding(0,0,0,50);
+        artistTextView.setPadding(0, 0, 0, 50);
         artistListView.addHeaderView(artistTextView, null, false);
         artistTextView.setVisibility(View.INVISIBLE);
 
@@ -181,7 +176,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         artistFooter = new TextView(this);
         artistFooter.setText("See more artists");
         artistFooter.setTextColor(0xffffffff);
-        artistFooter.setPadding(0,15,0,0);
+        artistFooter.setPadding(0, 15, 0, 0);
         artistListView.addFooterView(artistFooter);
         artistFooter.setVisibility(View.INVISIBLE);
 
@@ -193,7 +188,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         albumTextView.setGravity(0x01);
         albumTextView.setTextSize(20);
         albumTextView.setTypeface(albumTextView.getTypeface(), 1);
-        albumTextView.setPadding(0,0,0,50);
+        albumTextView.setPadding(0, 0, 0, 50);
         albumListView.addHeaderView(albumTextView, null, false);
         albumTextView.setVisibility(View.INVISIBLE);
 
@@ -201,7 +196,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         albumFooter = new TextView(this);
         albumFooter.setText("See more albums");
         albumFooter.setTextColor(0xffffffff);
-        albumFooter.setPadding(0,15,0,0);
+        albumFooter.setPadding(0, 15, 0, 0);
         albumListView.addFooterView(albumFooter);
         albumFooter.setVisibility(View.INVISIBLE);
 
@@ -258,52 +253,16 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
                     showAllArtistResults.putExtra("searchTerm", userSearchInput);
                     startActivity(showAllArtistResults);
                 } else {
-                    TextView tv = (TextView) findViewById(R.id.artist_id);
-                    String artistID = tv.getText().toString();
+                    TextView artistID = (TextView) findViewById(R.id.artist_id);
+                    TextView artistName = (TextView) findViewById(artist);
+                    TextView artistURL = (TextView) findViewById(R.id.artist_image_url);
 
 
-                    SpotifyApi api = new SpotifyApi();
-                    SpotifyService spotify = api.getService();
-
-                    // LIMIT NUM TO 5
-                    spotify.getArtistTopTrack(artistID, "US", new Callback<Tracks>() {
-                                @Override
-                                public void success(Tracks tracks, Response response) {
-                                    myHandler.post(new TopTracks(tracks));
-
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-
-                                }
-                    });
-
-//                    spotify.getArtistAlbums(artistID, new Callback<Pager<Album>>() {
-//                        @Override
-//                        public void success(Pager<Album> albumPager, Response response) {
-//                            // myHandler.post(new ArtistAlbums(albumPager));
-//
-//                        }
-//
-//                        @Override
-//                        public void failure(RetrofitError error) {
-//
-//                        }
-//                    });
-
-//                    spotify.getRelatedArtists(artistID, new Callback<Artists>() {
-//                        @Override
-//                        public void success(Artists artists, Response response) {
-//                            // myHandler.post(new RelatedArtists(artists));
-//
-//                        }
-//
-//                        @Override
-//                        public void failure(RetrofitError error) {
-//
-//                        }
-//                    });
+                    Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
+                    showArtistPage.putExtra("artistID", artistID.getText().toString());
+                    showArtistPage.putExtra("artistName", artistName.getText().toString());
+                    showArtistPage.putExtra("artistURL", artistURL.getText().toString());
+                    startActivity(showArtistPage);
                 }
             }
         });
@@ -344,12 +303,9 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
 
         et = (EditText) findViewById(R.id.searchTerm);
         et.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
-            {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
-                {
-                    switch (keyCode)
-                    {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
                             processSearch();
@@ -363,8 +319,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         });
 
     }
-
-
 
 
     // We have logged in or out, update all items that display user name
@@ -389,8 +343,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             logMenu.setTitleCondensed(loginString);
         }
     }
-
-
 
 
     @Override
@@ -430,58 +382,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-
-    private class TopTracks implements Runnable {
-
-        private Tracks topTracks;
-
-
-        public TopTracks(Tracks t) {
-            topTracks = t;
-        }
-
-
-        @Override
-        public void run() {
-            List<Track> popTrackList = topTracks.tracks;
-
-            Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
-
-            TextView artistURL = (TextView) findViewById(R.id.artist_image_url);
-            TextView artistNameTV = (TextView) findViewById(R.id.artist);
-
-            showArtistPage.putParcelableArrayListExtra("popTrackList", (ArrayList) popTrackList);
-            showArtistPage.putExtra("artistURL", artistURL.getText().toString());
-            showArtistPage.putExtra("artistName", artistNameTV.getText().toString());
-            startActivity(showArtistPage);
-        }
-    }
-
-//    private class ArtistAlbums implements Runnable {
-//
-//        private Pager<Album> albumPager;
-//
-//        public ArtistAlbums(Pager<Album> aP) {
-//            albumPager = aP;
-//        }
-//
-//        @Override
-//        public void run() {
-//
-//        }
-//
-//
-//    }
-
-//    private class RelatedArtists implements Runnable {
-//
-//        private Artist artists;
-//
-//        public RelatedArtists() {
-//
-//        }
-//
-//    }
 
     private class AlbumSelected implements Runnable {
 
@@ -649,12 +549,13 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
 
                 int displaySize = Math.min(trackList.size(), 5);
 
-                for(int i = 0; i < displaySize; i++) {
+                for (int i = 0; i < displaySize; i++) {
                     displayTrackList.add(trackList.get(i));
                 }
 
                 myHandler.post(new UpdateTrackSearchResults());
             }
+
             @Override
             public void failure(RetrofitError error) {
                 Log.d("Tracks: ", "ERROR: " + error.getMessage());
@@ -668,7 +569,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
 
                 int displaySize = Math.min(artistList.size(), 5);
 
-                for(int i = 0; i < displaySize; i++) {
+                for (int i = 0; i < displaySize; i++) {
                     displayArtistList.add(artistList.get(i));
                 }
 
@@ -688,7 +589,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
 
 
                 int displaySize = Math.min(albumList.size(), 5);
-                for(int i = 0; i < displaySize; i++) {
+                for (int i = 0; i < displaySize; i++) {
                     displayAlbumList.add(albumList.get(i));
                 }
 
@@ -737,5 +638,4 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             clearSearch = false;
         }
     }
-
 }
