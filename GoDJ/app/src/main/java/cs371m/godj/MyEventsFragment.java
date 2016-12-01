@@ -1,12 +1,18 @@
 package cs371m.godj;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,6 +42,8 @@ public class MyEventsFragment extends Fragment {
     protected EventItemAdapter hostAdapter;
     protected EventItemAdapter savedAdapter;
 
+    private static Handler handler = new Handler();
+
     static MyEventsFragment newInstance() {
         MyEventsFragment myEventsFragment = new MyEventsFragment();
         return myEventsFragment;
@@ -47,7 +55,7 @@ public class MyEventsFragment extends Fragment {
         hostedEvents = new ArrayList<>();
         savedEvents = new ArrayList<>();
 
-        String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
+        final String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
         System.out.println("SEARCHING");
         FirebaseDatabase.getInstance().getReference("users")
                 .child(thisUserName)
@@ -65,6 +73,7 @@ public class MyEventsFragment extends Fragment {
 
                         savedEventsLV = (ListView) getActivity().findViewById(R.id.saved_events_lv);
 
+
                         TextView savedHeader = new TextView(getActivity());
                         savedHeader.setText("Saved Events");
                         savedHeader.setTextSize(20);
@@ -80,6 +89,29 @@ public class MyEventsFragment extends Fragment {
                         savedAdapter.changeList(savedEvents);
                         UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
                         savedAdapter.notifyDataSetChanged();
+
+                        savedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                int pos = position - 1;
+                                String eventNm = savedEvents.get(pos).getEventName();
+                                String eventHost = savedEvents.get(pos).getHostName();
+                                long startTime = savedEvents.get(pos).getStartTime();
+                                long endTime = savedEvents.get(pos).getEndTime();
+                                String key = savedEvents.get(pos).getKey();
+                                EventItemOptionsFragment eiof = new EventItemOptionsFragment();
+                                Bundle b = new Bundle();
+                                b.putString("eventNm", eventNm);
+                                b.putString("eventHost", eventHost);
+                                b.putLong("startTime", startTime);
+                                b.putLong("endTime", endTime);
+                                b.putString("key", key);
+                                b.putInt("pos", pos);
+                                eiof.setArguments(b);
+                                eiof.show(getFragmentManager(), "options");
+
+                            }
+                        });
 
 
 
@@ -137,6 +169,66 @@ public class MyEventsFragment extends Fragment {
 
 
         return v;
+    }
+
+    protected void updateSavedAdapter() {
+
+    }
+
+    public static class EventItemOptionsFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String eventNm = getArguments().getString("eventNm");
+            String eventHost = getArguments().getString("eventHost");
+            long startTime = getArguments().getLong("startTime");
+            long endTime = getArguments().getLong("endTime");
+            String key = getArguments().getString("key");
+            final int pos = getArguments().getInt("pos");
+            final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            final String[] options = {"Attend Event", "Delete"};
+            builder.setTitle("Options")
+                    .setItems(options, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // The 'which' argument contains the index position
+                            // of the selected item
+                            if(which == 0) {
+                                String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                                thisUserName = thisUserName.replaceAll("\\.", "@");
+                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName).child("eventAttending").setValue(eventObject.getKey());
+                                /*TODO: ADD TOAST OR SNACKBAR*/
+                            } else if(which == 1) {
+                                //handler.post(new OptionsHelper(pos));
+
+                                /*TODO: ADD TOAST OR SNACKBAR*/
+                            }
+                        }
+                    });
+            return builder.create();
+        }
+    }
+
+    class OptionsHelper implements Runnable {
+
+        private int position;
+
+        public OptionsHelper(int pos) {
+            position = pos;
+        }
+
+        @Override
+        public void run() {
+            String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+            userName = userName.replaceAll("\\.", "@");
+            EventObject eventObject = savedEvents.get(position - 1);
+            savedEvents.remove(position - 1);
+            FirebaseDatabase.getInstance().getReference("users").child(userName)
+                    .child("savedEvents").child(eventObject.getKey()).removeValue();
+            UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+            savedAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

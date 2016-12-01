@@ -30,6 +30,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     protected ActionBarDrawerToggle toggle;
     protected String userName;
     protected boolean screenIsBlank;
+    MyEventsFragment mef = new MyEventsFragment();
 
 
     @Override
@@ -130,7 +131,38 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
+//        String thisUserName = userName.replaceAll("\\.", "@");
+//        FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
+//                .child("savedEvents").addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//                mef.updateSavedAdapter();
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
     }
+
+
 
     // We have logged in or out, update all items that display user name
     protected void updateUserDisplay() {
@@ -259,7 +291,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     protected void showMyEventFrag() {
-        MyEventsFragment mef = new MyEventsFragment();
+        mef = new MyEventsFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace any other Fragment with our new Details Fragment with the right data
         ft.add(R.id.main_frame, mef);

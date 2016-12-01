@@ -138,7 +138,7 @@ public class EventSearchResultsFragment extends Fragment {
                             if(which == 0) {
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 userName = userName.replaceAll("\\.", "@");
-                                FirebaseDatabase.getInstance().getReference("users").child(userName).child("savedEvents").push().setValue(eventObject);
+                                FirebaseDatabase.getInstance().getReference("users").child(userName).child("savedEvents").child(eventObject.getKey()).setValue(eventObject);
                                 /*TODO: ADD TOAST OR SNACKBAR*/
                             } else if(which == 1) {
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();

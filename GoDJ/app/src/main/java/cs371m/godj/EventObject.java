@@ -19,13 +19,6 @@ public class EventObject {
 
     }
 
-    public EventObject(String name, String queryName, String host, long start, long end) {
-        eventName = name;
-        eventQueryName = queryName;
-        hostName = host;
-        startTime = start;
-        endTime = end;
-    }
 
     public EventObject(String name, String queryName, String host, long start, long end, String uniqueKey) {
         eventName = name;
