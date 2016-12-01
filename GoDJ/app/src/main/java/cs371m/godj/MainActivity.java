@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
     @Override
     public void firebaseLoginFinish() {
         // Dismiss the Login fragment
-        getFragmentManager().popBackStack();
+        getSupportFragmentManager().popBackStack();
         // Toggle back button to hamburger
         toggle.setDrawerIndicatorEnabled(true);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
     @Override
     public void firebaseFromLoginToCreateAccount() {
         // Dismiss the Login fragment
-        getFragmentManager().popBackStack();
+        getSupportFragmentManager().popBackStack();
         // Toggle back button to hamburger
         toggle.setDrawerIndicatorEnabled(true);
         toggleHamburgerToBack();
