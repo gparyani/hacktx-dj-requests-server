@@ -20,15 +20,15 @@ import java.util.List;
  */
 
 /*TODO: CHANGE TO ACTIVITY*/
-public class EventSearch extends Fragment {
+public class EventSearchFragment extends Fragment {
 
     protected Button searchBut;
     protected EditText searchET;
     protected List<EventObject> events;
     protected Handler handler;
 
-    static EventSearch newInstance() {
-        EventSearch eventSearchFragment = new EventSearch();
+    static EventSearchFragment newInstance() {
+        EventSearchFragment eventSearchFragment = new EventSearchFragment();
         return eventSearchFragment;
     }
 
@@ -68,43 +68,6 @@ public class EventSearch extends Fragment {
             }
         });
     }
-
-//    private void searchEvents(String searchTerm) {
-//        Query query = FirebaseDatabase.getInstance().getReference()
-//                .child("events")
-//                .orderByChild("eventName")
-//                .equalTo(searchTerm);
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for(DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
-//                    EventObject eventObject = eventSnapshot.getValue(EventObject.class);
-//                    Log.d("eventByName ", eventObject.getEventName());
-//                    events.add(eventObject);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
-
-//    class showSearchResults implements Runnable {
-//        @Override
-//        public void run() {
-//            ShowResultsFragment srf = new ShowResultsFragment();
-//            Bundle b = new Bundle();
-//            b.putParcelableArrayList("events", events);
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.main_frame, srf)
-//                    .addToBackStack(null)
-//                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//                    .commit();
-//        }
-//    }
 
 
     @Override

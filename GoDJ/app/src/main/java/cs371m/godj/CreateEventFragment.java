@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
@@ -117,6 +116,7 @@ public class CreateEventFragment extends Fragment {
 
                     eventObject.setHostName(hostNameStr);
                     eventObject.setEventName(eventNameStr);
+                    eventObject.setEventQueryName(eventNameStr.toLowerCase());
                     eventObject.setStartTime(startMill);
 
                     eventObject.setEndTime(endMill);
@@ -129,11 +129,13 @@ public class CreateEventFragment extends Fragment {
                         sdf.format(c));
 
                     /*TODO: NEED TO FIGURE OUT HOW TO PUT GENERATED KEY IN EVENT OBJECT*/
-                    FirebaseDatabase.getInstance().getReference("events").push().setValue(eventObject);
+                    String key = FirebaseDatabase.getInstance().getReference("events").push().getKey();
+                    eventObject.setKey(key);
+                    FirebaseDatabase.getInstance().getReference("events").child(key).setValue(eventObject);
                     String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                     userName = userName.replaceAll("\\.", "@");
-                    DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child(userName).child("hostedEvents");
-                    db.push().setValue(eventObject);
+                    FirebaseDatabase.getInstance().getReference("users").child(userName)
+                            .child("hostedEvents").push().setValue(eventObject);
                     getFragmentManager().popBackStack();
 
                 } catch (ParseException e) {

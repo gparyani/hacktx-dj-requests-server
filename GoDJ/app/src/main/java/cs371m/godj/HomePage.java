@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -37,6 +38,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         setContentView(R.layout.home_page_events_layout);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
 
         toolbar.setTitle(R.string.app_name);
         toolbar.setTitleTextColor(0xffffffff);
@@ -89,7 +91,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 case R.id.find_event :
                     //getSupportFragmentManager().popBackStack();
                     toggleHamburgerToBack();
-                    EventSearch esf = EventSearch.newInstance();
+                    EventSearchFragment esf = EventSearchFragment.newInstance();
                     getSupportFragmentManager().beginTransaction()
 
                     // Replace any other Fragment with our new Details Fragment with the right data
@@ -111,6 +113,22 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             showMyEventFrag();
 
         }
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+                if(backStackCount == 0) {
+                    toggle.setDrawerIndicatorEnabled(true);
+                    System.out.println("screen is blank: " + screenIsBlank);
+
+                    if(screenIsBlank) {
+                        showMyEventFrag(); ///////////////////////////////////
+                        screenIsBlank = false;
+                    }
+                }
+            }
+        });
 
     }
 
@@ -144,7 +162,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     // make sure drawer is closed
     @Override
     public void onBackPressed() {
-        toggleHelper();
+        //toggleHelper();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -180,7 +198,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     getSupportFragmentManager().popBackStack();
 
                 }
-                toggleHelper();
+               // toggleHelper();
             }
         });
 
@@ -222,7 +240,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             startActivity(startUserMain);
         } else if(id == R.id.find_event) {
             toggleHamburgerToBack();
-            EventSearch esf = EventSearch.newInstance();
+            EventSearchFragment esf = EventSearchFragment.newInstance();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             // Replace any other Fragment with our new Details Fragment with the right data

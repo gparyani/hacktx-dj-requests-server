@@ -7,6 +7,7 @@ package cs371m.godj;
 public class EventObject {
 
     private String eventName;
+    private String eventQueryName;
     private String eventLocation;
     private String hostName;
     private String hostUserName;
@@ -18,15 +19,17 @@ public class EventObject {
 
     }
 
-    public EventObject(String name, String host, long start, long end) {
+    public EventObject(String name, String queryName, String host, long start, long end) {
         eventName = name;
+        eventQueryName = queryName;
         hostName = host;
         startTime = start;
         endTime = end;
     }
 
-    public EventObject(String name, String host, long start, long end, String uniqueKey) {
+    public EventObject(String name, String queryName, String host, long start, long end, String uniqueKey) {
         eventName = name;
+        eventQueryName = queryName;
         hostName = host;
         startTime = start;
         endTime = end;
@@ -34,6 +37,7 @@ public class EventObject {
     }
 
     public String getEventName() { return eventName; }
+    public String getEventQueryName() {return eventQueryName; }
     public String getLocation() { return eventLocation; }
     public String getHostName() {
         return hostName;
@@ -50,6 +54,7 @@ public class EventObject {
     public void setEventName(String name) {
         eventName = name;
     }
+    public void setEventQueryName(String queryName) { eventQueryName = queryName; }
     public void setLocation(String loc) {
         eventLocation = loc;
     }

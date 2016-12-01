@@ -87,9 +87,8 @@ public class EventSearchResultsFragment extends Fragment {
 
         Query query = FirebaseDatabase.getInstance().getReference()
                 .child("events")
-                .orderByChild("eventName")
-                .equalTo(searchTerm);
-        System.out.println("here");
+                .orderByChild("eventQueryName")
+                .equalTo(searchTerm.toLowerCase());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -128,7 +127,7 @@ public class EventSearchResultsFragment extends Fragment {
             long startTime = getArguments().getLong("startTime");
             long endTime = getArguments().getLong("endTime");
             String key = getArguments().getString("key");
-            final EventObject eventObject = new EventObject(eventNm, eventHost, startTime, endTime, key);
+            final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             String[] options = {"Save Event", "Attend Event"};
             builder.setTitle("Options")
