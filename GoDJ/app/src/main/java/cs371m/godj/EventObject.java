@@ -14,6 +14,25 @@ public class EventObject {
     private long startTime;
     private long endTime;
 
+    public EventObject() {
+
+    }
+
+    public EventObject(String name, String host, long start, long end) {
+        eventName = name;
+        hostName = host;
+        startTime = start;
+        endTime = end;
+    }
+
+    public EventObject(String name, String host, long start, long end, String uniqueKey) {
+        eventName = name;
+        hostName = host;
+        startTime = start;
+        endTime = end;
+        key = uniqueKey;
+    }
+
     public String getEventName() { return eventName; }
     public String getLocation() { return eventLocation; }
     public String getHostName() {

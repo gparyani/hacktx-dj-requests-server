@@ -13,7 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -80,8 +85,52 @@ public class TrackPageActivity extends AppCompatActivity {
         reqBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Client client = new Client(getApplicationContext(), trackURI);
-                client.execute();
+                String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                userName = userName.replaceAll("\\.", "@");
+                final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                db.child("users").child(userName).child("eventAttending")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final String currEvent = (String) dataSnapshot.getValue();
+                        if(!currEvent.equals("none")) {
+                            Query q = db.child("eventPlaylists")
+                                    .child(currEvent)
+                                    .orderByChild("trackName")
+                                    .equalTo(trackName);
+                            q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.getValue() == null) {
+                                        TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject();
+                                        trackDatabaseObject.setArtistName(artistName);
+                                        trackDatabaseObject.setAlbumName(albumName);
+                                        trackDatabaseObject.setTrackName(trackName);
+                                        trackDatabaseObject.setTrackURI(trackURI);
+                                        db.child("eventPlaylists")
+                                                .child(currEvent).push().setValue(trackDatabaseObject);
+                            /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
             }
         });
     }

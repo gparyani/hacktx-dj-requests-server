@@ -4,37 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements FirebaseCreateAccountFragment.FirebaseCreateAccountInterface,
-        NavigationView.OnNavigationItemSelectedListener, FirebaseLoginFragment.FirebaseLoginInterface{
+        FirebaseLoginFragment.FirebaseLoginInterface{
 
-    protected Menu drawerMenu;
-    protected static ActionBarDrawerToggle toggle;
     protected String userName;
     protected FirebaseAuth mAuth;
     protected FirebaseAuth.AuthStateListener mAuthListener;
     public static String TAG = "GoDJ";
-    protected static String ANON_USER = "Anonymous User";
 
     private Handler signInHandler;
 
     private DatabaseHelper dbHelper;
+
+
 
 
 
@@ -51,23 +42,94 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     userName = user.getDisplayName();
+                    Intent startHomeActivity = new Intent(getApplicationContext(), HomePage.class);
+                    startHomeActivity.putExtra("userName", userName);
+                    startHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(startHomeActivity);
 
                     //signInHandler.post(new showOpeningScreen(userName));
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     userName = null;
-                    signInHandler.post(new showOpeningScreen(userName));
+                    FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    // Replace any other Fragment with our new Details Fragment with the right data
+                    ft.add(R.id.main_frame, flf);
+                    // Let us come back
+                    //ft.addToBackStack("login");
+                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    ft.commit();
                 }
                 Log.d(TAG, "userName="+userName);
                 if( dbHelper != null ) {
                     dbHelper.updateCurrentUserName(userName);
                 }
-                updateUserDisplay();
             }
         };
     }
 
+//    class ShowEvents implements Runnable {
+//        @Override
+//        public void run() {
+//            String thisUserName = userName.replaceAll("\\.", "@");
+//            FirebaseDatabase.getInstance().getReference(thisUserName)
+//                    .child("savedEvents").
+//                    addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            for(DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
+//                                String key = eventSnapshot.getKey();
+//                                EventObject eventObject = eventSnapshot.getValue(EventObject.class);
+//                                eventObject.setKey(key);
+//                                Log.d("eventByName ", eventObject.getEventName());
+//                                savedEvents.add(eventObject);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//
+//            FirebaseDatabase.getInstance().getReference(thisUserName)
+//                    .child("hostedEvents").
+//                    addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            for(DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
+//                                String key = eventSnapshot.getKey();
+//                                EventObject eventObject = eventSnapshot.getValue(EventObject.class);
+//                                eventObject.setKey(key);
+//                                Log.d("eventByName ", eventObject.getEventName());
+//                                savedEvents.add(eventObject);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//
+//            hostedEventsLV = (ListView) findViewById(R.id.hosted_events_lv);
+//            savedEventsLV = (ListView) findViewById(R.id.saved_events_lv);
+//
+//            hostAdapter = new EventItemAdapter(getApplicationContext());
+//            savedAdapter = new EventItemAdapter(getApplicationContext());
+//
+//            hostedEventsLV.setAdapter(hostAdapter);
+//            savedEventsLV.setAdapter(savedAdapter);
+//
+//            hostAdapter.changeList(hostedEvents);
+//            hostAdapter.notifyDataSetChanged();
+//
+//            savedAdapter.changeList(savedEvents);
+//            savedAdapter.notifyDataSetChanged();
+//        }
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,29 +147,31 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
 
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                // Putting it here means you can see it change
-                updateUserDisplay();
-            }
-        };
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        drawerMenu = navigationView.getMenu();
+
+
+
+
+
 
 
         firebaseInit();
 
-
         // We might still be logged in
-        updateUserDisplay();
+
+//        toggleHamburgerToBack();
+//        MyEventsFragment mef = new MyEventsFragment();
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        // Replace any other Fragment with our new Details Fragment with the right data
+//        ft.add(R.id.main_frame, mef);
+//        // Let us come back
+//        ft.addToBackStack(null);
+//        // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+//        ft.commit();
+
+
 
         //System.out.println("userName is: " + userName);
 
@@ -125,13 +189,14 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         @Override
         public void run() {
             if(userName == null) {
-                toggleHamburgerToBack();
+                //toggleHamburgerToBack();
+               // toggle.setDrawerIndicatorEnabled(false);
                 FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 // Replace any other Fragment with our new Details Fragment with the right data
                 ft.add(R.id.main_frame, flf);
                 // Let us come back
-                ft.addToBackStack(null);
+                //ft.addToBackStack("login");
                 // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
@@ -147,56 +212,27 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
 
 
 
-    // We have logged in or out, update all items that display user name
-    protected void updateUserDisplay() {
-        String loginString = "";
-        String userString = userName;
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null) {
-            System.out.println("update username: " + userName);
-            loginString = String.format("Log out as %s", userName);
-        } else {
-            userString = "Please log in";
-            loginString = "Login";
-        }
-        TextView dit = (TextView) findViewById(R.id.drawerIDText);
-        if (dit != null) {
-            dit.setText(userString);
-        }
-        // findViewById does not work for menu items.
-        MenuItem logMenu = (MenuItem) drawerMenu.findItem(R.id.nav_login);
-        if (logMenu != null) {
-            logMenu.setTitle(loginString);
-            logMenu.setTitleCondensed(loginString);
-        }
-    }
 
 
-    // If we return to MainActivity from fragment via Back button,
-    // make sure drawer is closed
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-        // Toggle back button to hamburger
-        toggle.setDrawerIndicatorEnabled(true);
-    }
+
 
 
     @Override
     public void firebaseLoginFinish() {
+
+        Intent startHomeActivity = new Intent(this, HomePage.class);
+        startHomeActivity.putExtra("userName", userName);
+        finish();
+        startActivity(startHomeActivity);
         // Dismiss the Login fragment
-        getSupportFragmentManager().popBackStack();
+      //  getSupportFragmentManager().popBackStack();
         // Toggle back button to hamburger
-        toggle.setDrawerIndicatorEnabled(true);
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.setBackgroundColor(0xffffffff);
-        System.out.println("LOOOOOGIN FINISHHHHHHHHH");
+//        if(getSupportFragmentManager().getBackStackEntryCount() <= 1) {
+//            //toggle.setDrawerIndicatorEnabled(true);
+//            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//            drawerLayout.setBackgroundColor(0xffffffff);
+//            System.out.println("LOOOOOGIN FINISHHHHHHHHH");
+//        }
 
 
         /////temporary
@@ -206,15 +242,15 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
     @Override
     public void firebaseFromLoginToCreateAccount() {
         // Dismiss the Login fragment
-        getSupportFragmentManager().popBackStack();
+        //getSupportFragmentManager().popBackStack();
         // Toggle back button to hamburger
-        toggle.setDrawerIndicatorEnabled(true);
-        toggleHamburgerToBack();
+        //toggle.setDrawerIndicatorEnabled(false);
+        //toggleHamburgerToBack();
 
         // Replace main screen with the create account fragment
         FirebaseCreateAccountFragment fcaf = FirebaseCreateAccountFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.main_frame, fcaf);
+        ft.replace(R.id.main_frame, fcaf);
         // Let us pop without explicit fragment remove
         ft.addToBackStack(null);
         // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
@@ -222,78 +258,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         ft.commit();
     }
 
-    protected void toggleHamburgerToBack() {
-        // Ideas on how to transition toggle from
-        // https://stackoverflow.com/questions/28263643/tool-bar-setnavigationonclicklistener-breaks-actionbardrawertoggle-functionality/30951016#30951016
-        toggle.setDrawerIndicatorEnabled(false);
-        //toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
-        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firebaseLoginFinish();
-            }
-        });
-        // Maybe this would be better, but above works.
-        //http://stackoverflow.com/questions/27742074/up-arrow-does-not-show-after-calling-actionbardrawertoggle-setdrawerindicatorena
-    }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        Log.d("main", "menu option selected");
-        if (id == R.id.nav_login) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (user != null) {
-                mAuth.signOut(); // Will call updateUserDisplay via callback
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                drawer.closeDrawer(Gravity.LEFT);
-                return true;
-            } else {
-                DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-                //drawerLayout.setBackgroundColor(0x000);
-                toggleHamburgerToBack();
-                FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                // Replace any other Fragment with our new Details Fragment with the right data
-                ft.add(R.id.main_frame, flf);
-                // Let us come back
-                ft.addToBackStack(null);
-                // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
-            }
-        } else if(id == R.id.host_event) {
-            toggleHamburgerToBack();
-            CreateEventFragment cef = CreateEventFragment.newInstance();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            // Replace any other Fragment with our new Details Fragment with the right data
-            ft.add(R.id.main_frame, cef);
-            // Let us come back
-            ft.addToBackStack(null);
-            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.commit();
-        } else if (id == R.id.song_search) {
-            Intent startUserMain = new Intent(getApplicationContext(), UserMainActivity.class);
-            startActivity(startUserMain);
-        } else if(id == R.id.find_event) {
-            EventSearchFragment esf = new EventSearchFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            // Replace any other Fragment with our new Details Fragment with the right data
-            ft.add(R.id.main_frame, esf);
-            // Let us come back
-            ft.addToBackStack(null);
-            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.commit();
-        }
-        //} else if (id == R.id.nav_send) {
-        //}
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
 
     @Override

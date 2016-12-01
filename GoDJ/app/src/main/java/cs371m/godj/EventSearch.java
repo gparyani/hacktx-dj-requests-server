@@ -20,15 +20,15 @@ import java.util.List;
  */
 
 /*TODO: CHANGE TO ACTIVITY*/
-public class EventSearchFragment extends Fragment {
+public class EventSearch extends Fragment {
 
     protected Button searchBut;
     protected EditText searchET;
     protected List<EventObject> events;
     protected Handler handler;
 
-    static EventSearchFragment newInstance() {
-        EventSearchFragment eventSearchFragment = new EventSearchFragment();
+    static EventSearch newInstance() {
+        EventSearch eventSearchFragment = new EventSearch();
         return eventSearchFragment;
     }
 
@@ -62,7 +62,7 @@ public class EventSearchFragment extends Fragment {
                 esrf.setArguments(b);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, esrf)
-                        .addToBackStack(null)
+                        .addToBackStack("eventSearch")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
             }
@@ -107,4 +107,8 @@ public class EventSearchFragment extends Fragment {
 //    }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

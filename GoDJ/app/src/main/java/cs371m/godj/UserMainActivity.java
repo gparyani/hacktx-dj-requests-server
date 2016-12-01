@@ -374,6 +374,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         } else if (id == R.id.my_events) {
             Intent goHome = new Intent(this, MainActivity.class);
             goHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            /*TODO: FLAG_ACTIVITY_CLEAR_TOP TO END ACTIVITY BEFORE STARTING ANOTHER, REPLACE FINISH() WITH THIS IN SOME PLACES*/
             finish();
             startActivity(goHome);
         }

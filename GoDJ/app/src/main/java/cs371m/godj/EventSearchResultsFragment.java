@@ -33,7 +33,7 @@ import java.util.List;
 public class EventSearchResultsFragment extends Fragment {
 
     protected ListView listView;
-    protected EventSearchFragAdapter adapter;
+    protected EventItemAdapter adapter;
     protected String searchTerm;
     protected List<EventObject> events;
     protected Handler handler;
@@ -41,10 +41,10 @@ public class EventSearchResultsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.favorite_layout, container, false);
-        events = new ArrayList<>();
         handler = new Handler();
         listView = (ListView) v.findViewById(R.id.fav_list_view);
-        adapter = new EventSearchFragAdapter(getActivity());
+        events = new ArrayList<>();
+        adapter = new EventItemAdapter(getActivity());
         listView.setAdapter(adapter);
         searchTerm = getArguments().getString("searchTerm");
         TextView header = new TextView(getActivity());
@@ -58,10 +58,20 @@ public class EventSearchResultsFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String eventKey = ((TextView) view.findViewById(R.id.event_item_key)).getText().toString();
+                int pos = position - 1;
+                String eventNm = events.get(pos).getEventName();
+                String eventHost = events.get(pos).getHostName();
+                long startTime = events.get(pos).getStartTime();
+                long endTime = events.get(pos).getEndTime();
+                String key = events.get(pos).getKey();
                 EventItemOptionsFragment eiof = new EventItemOptionsFragment();
                 Bundle b = new Bundle();
-                b.putString("eventKey", eventKey);
+                //b.putString("eventKey", key.getText().toString());
+                b.putString("eventNm", eventNm);
+                b.putString("eventHost", eventHost);
+                b.putLong("startTime", startTime);
+                b.putLong("endTime", endTime);
+                b.putString("key", key);
                 eiof.setArguments(b);
                 eiof.show(getFragmentManager(), "options");
             }
@@ -80,6 +90,7 @@ public class EventSearchResultsFragment extends Fragment {
                 .child("events")
                 .orderByChild("eventName")
                 .equalTo(searchTerm);
+        System.out.println("here");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -111,11 +122,14 @@ public class EventSearchResultsFragment extends Fragment {
 
     public static class EventItemOptionsFragment extends DialogFragment {
 
-        private String eventKey;
-
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            eventKey = getArguments().getString("eventKey");
+            String eventNm = getArguments().getString("eventNm");
+            String eventHost = getArguments().getString("eventHost");
+            long startTime = getArguments().getLong("startTime");
+            long endTime = getArguments().getLong("endTime");
+            String key = getArguments().getString("key");
+            final EventObject eventObject = new EventObject(eventNm, eventHost, startTime, endTime, key);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             String[] options = {"Save Event", "Attend Event"};
             builder.setTitle("Options")
@@ -126,7 +140,13 @@ public class EventSearchResultsFragment extends Fragment {
                             if(which == 0) {
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 userName = userName.replaceAll("\\.", "@");
-                                FirebaseDatabase.getInstance().getReference("users").child(userName).child("events").push().setValue(eventKey);
+                                FirebaseDatabase.getInstance().getReference("users").child(userName).child("savedEvents").push().setValue(eventObject);
+                                /*TODO: ADD TOAST OR SNACKBAR*/
+                            } else if(which == 1) {
+                                String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                                userName = userName.replaceAll("\\.", "@");
+                                FirebaseDatabase.getInstance().getReference("users").child(userName).child("eventAttending").setValue(eventObject.getKey());
+                                /*TODO: ADD TOAST OR SNACKBAR*/
                             }
                         }
                     });

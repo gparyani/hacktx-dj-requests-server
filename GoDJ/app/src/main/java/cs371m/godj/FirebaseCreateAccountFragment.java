@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by Jasmine on 11/15/16.
@@ -152,6 +153,8 @@ public class FirebaseCreateAccountFragment extends Fragment {
                                     System.out.println("create acct mauth: " + mAuth);
 
                                     mAuth.getCurrentUser().updateProfile(profileUpdates);
+                                    String userNameToAdd = username.replaceAll("\\.", "@");
+                                    FirebaseDatabase.getInstance().getReference("users").child(userNameToAdd).child("eventAttending").setValue("none");
                                     System.out.println("CREATE ACCT prof update: " + profileUpdates.getDisplayName());
                                     System.out.println("CREATE ACCT: " + mAuth.getCurrentUser().getDisplayName());
                                     System.out.println("profile updated in create acct");

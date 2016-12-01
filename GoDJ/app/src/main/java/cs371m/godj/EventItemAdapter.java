@@ -17,12 +17,12 @@ import java.util.TimeZone;
  * Created by Jasmine on 11/29/2016.
  */
 
-public class EventSearchFragAdapter extends BaseAdapter {
+public class EventItemAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private List<EventObject> events;
 
-    public EventSearchFragAdapter(Context c) {
+    public EventItemAdapter(Context c) {
         inflater = LayoutInflater.from(c);
 
     }
@@ -80,6 +80,7 @@ public class EventSearchFragAdapter extends BaseAdapter {
 
         eventNm.setText(data.getEventName());
         eventHost.setText("Hosted by: " + data.getHostName());
+        //System.out.println(eventNm.);
 
         String dateString = "";
         long start = data.getStartTime();
