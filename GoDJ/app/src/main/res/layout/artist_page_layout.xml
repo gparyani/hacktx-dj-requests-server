@@ -36,7 +36,7 @@
 
         <ListView
             android:layout_marginLeft="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/popular_tracks">
@@ -44,7 +44,7 @@
 
         <ListView
             android:layout_marginLeft="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/albums">

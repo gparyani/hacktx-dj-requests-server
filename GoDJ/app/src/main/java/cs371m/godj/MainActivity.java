@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page_events_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         toolbar.setTitle(R.string.app_name);
         toolbar.setTitleTextColor(0xffffffff);
         setSupportActionBar(toolbar);

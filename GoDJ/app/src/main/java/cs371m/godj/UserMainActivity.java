@@ -47,8 +47,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import static cs371m.godj.R.id.artist;
-
 public class UserMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private List<Track> trackList;
@@ -230,6 +228,8 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
                     TextView albumName = (TextView) view.findViewById(R.id.album_name);
                     TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
+                    System.out.println("This is the track name in the onClick: " + trackName.getText());
+
                     showTrackPage.putExtra("trackName", trackName.getText().toString());
                     showTrackPage.putExtra("artistName", artistName.getText().toString());
                     showTrackPage.putExtra("imageURL", imageURL.getText().toString());
@@ -253,9 +253,9 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
                     showAllArtistResults.putExtra("searchTerm", userSearchInput);
                     startActivity(showAllArtistResults);
                 } else {
-                    TextView artistID = (TextView) findViewById(R.id.artist_id);
-                    TextView artistName = (TextView) findViewById(artist);
-                    TextView artistURL = (TextView) findViewById(R.id.artist_image_url);
+                    TextView artistID = (TextView) view.findViewById(R.id.artist_id);
+                    TextView artistName = (TextView) view.findViewById(R.id.artist);
+                    TextView artistURL = (TextView) view.findViewById(R.id.artist_image_url);
 
 
                     Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
@@ -383,7 +383,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     }
 
 
-    private class AlbumSelected implements Runnable {
+     private class AlbumSelected implements Runnable {
 
         private Album album;
 

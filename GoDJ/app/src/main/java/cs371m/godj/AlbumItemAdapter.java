@@ -32,7 +32,7 @@ import retrofit.client.Response;
 public class AlbumItemAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private List<? extends AlbumSimple> albumList;
+    private List<AlbumSimple> albumList;
     private Handler myHandler;
 
     public AlbumItemAdapter(Context context) {
@@ -130,7 +130,7 @@ public class AlbumItemAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void changeList(List<? extends AlbumSimple> newList) {
+    public void changeList(List<AlbumSimple> newList) {
         albumList = newList;
     }
 }
