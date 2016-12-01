@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,7 +45,7 @@ import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
+/*TODO: MIGHT WANT TO ADD API KEY*/
 public class UserMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private List<Track> trackList;
@@ -99,6 +98,8 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         toolbar.setTitle(""); // MIGHT JUST CHANGE THEME IN STYLE XML INSTEAD
 
         setSupportActionBar(toolbar);
+
+        userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
@@ -354,34 +355,30 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 FirebaseAuth.getInstance().signOut(); // Will call updateUserDisplay via callback
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
-                drawer.closeDrawer(Gravity.LEFT);
-
-                Intent goHome = new Intent(this, MainActivity.class);
-                goHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                finish();
-                startActivity(goHome);
+                Intent startLoginScreen = new Intent(this, MainActivity.class);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(startLoginScreen);
                 return true;
             } else {
-
+                Intent startLoginScreen = new Intent(this, MainActivity.class);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(startLoginScreen);
+                return true;
             }
-        } else if (id == R.id.song_search) {
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
-            drawer.closeDrawer(Gravity.LEFT);
-//          Intent startUserMain = new Intent(getApplicationContext(), UserMainActivity.class);
-//          startActivity(startUserMain);
-
-        } else if (id == R.id.my_events) {
-            Intent goHome = new Intent(this, MainActivity.class);
-            goHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            /*TODO: FLAG_ACTIVITY_CLEAR_TOP TO END ACTIVITY BEFORE STARTING ANOTHER, REPLACE FINISH() WITH THIS IN SOME PLACES*/
-            finish();
+        } else if(id != R.id.song_search){
+            Intent goHome = new Intent(this, HomePage.class);
+            goHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            goHome.putExtra("menuItemID", id);
             startActivity(goHome);
+           // goHome.putExtra("itemWasSelected", true);
+        } else {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
+            drawer.closeDrawer(GravityCompat.START);
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
-        drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
+
 
 
      private class AlbumSelected implements Runnable {
@@ -434,38 +431,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     }
 
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        switch (id) {
-//            case R.id.search_ID:
-//                break;
-//            case R.id.favorites_ID:
-//                launchFavorites();
-//                break;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-
-    private void launchFavorites() {
-        Intent startFavorites = new Intent(this, FavoriteTracks.class);
-        startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(startFavorites);
-    }
 
 
     class UpdateTrackSearchResults implements Runnable {

@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ListView
-        android:id="@+id/saved_events_lv"
-        android:layout_marginTop="?attr/actionBarSize"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scroll"
+    android:fillViewport="true" >
+    <RelativeLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         >
-    </ListView>
-    <ListView
-        android:id="@+id/hosted_events_lv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/saved_events_lv">
-    </ListView>
 
 
-</RelativeLayout>
+        <ListView
+            android:id="@+id/hosted_events_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:headerDividersEnabled="false"
+            >
+        </ListView>
+
+        <ListView
+            android:id="@+id/saved_events_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:headerDividersEnabled="false"
+            android:layout_below="@+id/hosted_events_lv"
+            >
+        </ListView>
+
+
+    </RelativeLayout>
+</ScrollView>

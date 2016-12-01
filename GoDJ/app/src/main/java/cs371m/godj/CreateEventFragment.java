@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
@@ -53,7 +55,6 @@ public class CreateEventFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 DialogFragment newFragment = new DatePickerFragment();
-//                FragmentManager fragmentManager = getFragmentManager();
                 newFragment.show(getFragmentManager(), "eventDatePicker");
             }
         });
@@ -88,7 +89,7 @@ public class CreateEventFragment extends Fragment {
         createEventBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*TODO: TAKE INFO, CREATE EVENT OBJECT, ADD TO DATABASE UNDER EVENTS*/
+                /*TODO: ERROR CHECK INPUT (I.E. MAKE SURE ALL FIELDS ARE FILLED IN)*/
                 EventObject eventObject = new EventObject();
 
 
@@ -109,10 +110,7 @@ public class CreateEventFragment extends Fragment {
                 sdf.setTimeZone(TimeZone.getDefault());
                 try {
                     Date dStart = sdf.parse(formattedStart);
-                    //long dateMill = dDate.getTime();
-                    //System.out.println("TIME1 IN MILL: " + d.getTime());
-                   // sdf.applyPattern("hh:mm a");
-                    //Date dStart = sdf.parse(formattedStart);
+
                     long startMill = dStart.getTime();
                     Date dEnd = sdf.parse(formattedEnd);
                     long endMill = dEnd.getTime();
@@ -122,6 +120,7 @@ public class CreateEventFragment extends Fragment {
                     eventObject.setStartTime(startMill);
 
                     eventObject.setEndTime(endMill);
+                    eventObject.setKey("null");
 
                     Date b = new Date(startMill);
                     Date c = new Date(System.currentTimeMillis());
@@ -129,13 +128,14 @@ public class CreateEventFragment extends Fragment {
                     System.out.println("SET TIME: " + sdf.format(b) + "\nCURR TIME: " +
                         sdf.format(c));
 
+                    /*TODO: NEED TO FIGURE OUT HOW TO PUT GENERATED KEY IN EVENT OBJECT*/
                     FirebaseDatabase.getInstance().getReference("events").push().setValue(eventObject);
+                    String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                    userName = userName.replaceAll("\\.", "@");
+                    DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child(userName).child("hostedEvents");
+                    db.push().setValue(eventObject);
                     getFragmentManager().popBackStack();
 
-
-                    //System.out.println("TIME2 IN MILL: " + d2.getTime());
-                    //System.out.println("TOTAL TIME IN MILL: " + (d.getTime() + d2.getTime()));
-                    //System.out.println("CURRENT TIME IN MILL: " + System.currentTimeMillis());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

@@ -66,7 +66,6 @@ public class EventSearchResultsFragment extends Fragment {
                 String key = events.get(pos).getKey();
                 EventItemOptionsFragment eiof = new EventItemOptionsFragment();
                 Bundle b = new Bundle();
-                //b.putString("eventKey", key.getText().toString());
                 b.putString("eventNm", eventNm);
                 b.putString("eventHost", eventHost);
                 b.putLong("startTime", startTime);

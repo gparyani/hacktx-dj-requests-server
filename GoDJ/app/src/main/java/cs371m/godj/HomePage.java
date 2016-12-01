@@ -26,8 +26,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     protected Menu drawerMenu;
-    protected static ActionBarDrawerToggle toggle;
+    protected ActionBarDrawerToggle toggle;
     protected String userName;
+    protected boolean screenIsBlank;
 
 
     @Override
@@ -41,7 +42,11 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         toolbar.setTitleTextColor(0xffffffff);
         setSupportActionBar(toolbar);
 
-        userName = getIntent().getStringExtra("userName");
+        if(getIntent().hasExtra("userName")) {
+            userName = getIntent().getStringExtra("userName");
+        } else {
+            userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -60,8 +65,52 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener(this);
         drawerMenu = navigationView.getMenu();
 
-
         updateUserDisplay();
+
+
+        if(getIntent().hasExtra("menuItemID")) {
+            screenIsBlank = true;
+            int id = getIntent().getIntExtra("menuItemID", R.id.my_events);
+            switch(id) {
+                case R.id.host_event :
+                    toggleHamburgerToBack();
+                    //getSupportFragmentManager().popBackStack();
+                    CreateEventFragment cef = CreateEventFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction()
+                    // Replace any other Fragment with our new Details Fragment with the right data
+                    .replace(R.id.main_frame, cef)
+                    // Let us come back
+                    .addToBackStack(null)
+                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+                    break;
+
+                case R.id.find_event :
+                    //getSupportFragmentManager().popBackStack();
+                    toggleHamburgerToBack();
+                    EventSearch esf = EventSearch.newInstance();
+                    getSupportFragmentManager().beginTransaction()
+
+                    // Replace any other Fragment with our new Details Fragment with the right data
+                    .replace(R.id.main_frame, esf)
+                    // Let us come back
+                    .addToBackStack(null)
+                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+                    break;
+
+                default :
+                    screenIsBlank = false;
+                    showMyEventFrag();
+
+            }
+        } else {
+            screenIsBlank = false;
+            showMyEventFrag();
+
+        }
 
     }
 
@@ -95,31 +144,46 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     // make sure drawer is closed
     @Override
     public void onBackPressed() {
+        toggleHelper();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
-        // Toggle back button to hamburger
-        //toggle.setDrawerIndicatorEnabled(true);
+;
+    }
+
+    protected void toggleHelper() {
+        int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+        System.out.println(backStackCount);
+        System.out.println(screenIsBlank);
+        if(backStackCount == 1) {
+            toggle.setDrawerIndicatorEnabled(true);
+            if(screenIsBlank) {
+                showMyEventFrag();
+            }
+        }
     }
 
     protected void toggleHamburgerToBack() {
-        // Ideas on how to transition toggle from
-        // https://stackoverflow.com/questions/28263643/tool-bar-setnavigationonclicklistener-breaks-actionbardrawertoggle-functionality/30951016#30951016
+
         toggle.setDrawerIndicatorEnabled(false);
         toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getSupportFragmentManager().getBackStackEntryCount() <= 1) {
-                    toggle.setDrawerIndicatorEnabled(true);
+                int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+                System.out.println(backStackCount);
+                System.out.println(screenIsBlank);
+                if(backStackCount > 0) {
+                    getSupportFragmentManager().popBackStack();
+
                 }
+                toggleHelper();
             }
         });
-        // Maybe this would be better, but above works.
-        //http://stackoverflow.com/questions/27742074/up-arrow-does-not-show-after-calling-actionbardrawertoggle-setdrawerindicatorena
+
     }
 
     @Override
@@ -136,26 +200,17 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 startActivity(startLoginScreen);
                 return true;
             } else {
-                DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-                //drawerLayout.setBackgroundColor(0x000);
-                toggleHamburgerToBack();
-                FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                // Replace any other Fragment with our new Details Fragment with the right data
-                ft.add(R.id.main_frame, flf);
-                // Let us come back
-                ft.addToBackStack(null);
-                // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
+                Intent startLoginScreen = new Intent(this, MainActivity.class);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(startLoginScreen);
+                return true;
             }
         } else if(id == R.id.host_event) {
             toggleHamburgerToBack();
-            getSupportFragmentManager().popBackStack();
             CreateEventFragment cef = CreateEventFragment.newInstance();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             // Replace any other Fragment with our new Details Fragment with the right data
-            ft.add(R.id.main_frame, cef);
+            ft.replace(R.id.main_frame, cef);
             // Let us come back
             ft.addToBackStack(null);
             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
@@ -166,36 +221,34 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             Intent startUserMain = new Intent(getApplicationContext(), UserMainActivity.class);
             startActivity(startUserMain);
         } else if(id == R.id.find_event) {
-            getSupportFragmentManager().popBackStack();
             toggleHamburgerToBack();
             EventSearch esf = EventSearch.newInstance();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             // Replace any other Fragment with our new Details Fragment with the right data
-            ft.add(R.id.main_frame, esf);
+            ft.replace(R.id.main_frame, esf);
             // Let us come back
             ft.addToBackStack(null);
             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.commit();
-        } else if(id == R.id.my_events) {
-            //toggleHamburgerToBack();
-            getSupportFragmentManager().popBackStack();
 
-            MyEventsFragment mef = new MyEventsFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            // Replace any other Fragment with our new Details Fragment with the right data
-            ft.add(R.id.main_frame, mef);
-            // Let us come back
-            ft.addToBackStack(null);
-            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.commit();
         }
-        //} else if (id == R.id.nav_send) {
-        //}
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    protected void showMyEventFrag() {
+        MyEventsFragment mef = new MyEventsFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        // Replace any other Fragment with our new Details Fragment with the right data
+        ft.add(R.id.main_frame, mef);
+        // Let us come back
+//        ft.addToBackStack(null);
+        // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
     }
 }

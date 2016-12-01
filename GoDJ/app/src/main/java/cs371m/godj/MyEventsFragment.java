@@ -2,6 +2,7 @@ package cs371m.godj;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class MyEventsFragment extends Fragment {
         savedEvents = new ArrayList<>();
 
         String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
+        System.out.println("SEARCHING");
         FirebaseDatabase.getInstance().getReference("users")
                 .child(thisUserName)
                 .child("savedEvents")
@@ -66,9 +68,12 @@ public class MyEventsFragment extends Fragment {
                         TextView savedHeader = new TextView(getActivity());
                         savedHeader.setText("Saved Events");
                         savedHeader.setTextSize(20);
-                        savedHeader.setTextColor(0xffffffff);
+                        savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                        savedHeader.setPadding(0, 0, 0, 50);
+                        savedHeader.setGravity(0x01);
+                        savedHeader.setTypeface(savedHeader.getTypeface(), 1);
 
-                        savedEventsLV.addHeaderView(savedHeader);
+                        savedEventsLV.addHeaderView(savedHeader, null, false);
                         savedAdapter = new EventItemAdapter(getActivity());
                         savedEventsLV.setAdapter(savedAdapter);
 
@@ -106,9 +111,12 @@ public class MyEventsFragment extends Fragment {
                         TextView hostHeader = new TextView(getActivity());
                         hostHeader.setText("Events I'm Hosting");
                         hostHeader.setTextSize(20);
-                        hostHeader.setTextColor(0xffffffff);
+                        hostHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                        hostHeader.setPadding(0, 0, 0, 50);
+                        hostHeader.setGravity(0x01);
+                        hostHeader.setTypeface(hostHeader.getTypeface(), 1);
 
-                        hostedEventsLV.addHeaderView(hostHeader);
+                        hostedEventsLV.addHeaderView(hostHeader, null, false);
 
                         hostAdapter = new EventItemAdapter(getActivity());
 
