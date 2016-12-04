@@ -135,7 +135,7 @@ public class CreateEventFragment extends Fragment {
                     String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                     userName = userName.replaceAll("\\.", "@");
                     FirebaseDatabase.getInstance().getReference("users").child(userName)
-                            .child("hostedEvents").push().setValue(eventObject);
+                            .child("hostedEvents").child(key).setValue(eventObject);
                     getFragmentManager().popBackStack();
 
                 } catch (ParseException e) {

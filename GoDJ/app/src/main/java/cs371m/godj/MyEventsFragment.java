@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -107,6 +108,7 @@ public class MyEventsFragment extends Fragment {
                                 b.putLong("endTime", endTime);
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
+                                b.putBoolean("hosting", false);
                                 eiof.setArguments(b);
                                 eiof.show(getFragmentManager(), "options");
 
@@ -158,6 +160,29 @@ public class MyEventsFragment extends Fragment {
                         UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
                         hostAdapter.notifyDataSetChanged();
 
+                        hostedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                int pos = position - 1;
+                                String eventNm = hostedEvents.get(pos).getEventName();
+                                String eventHost = hostedEvents.get(pos).getHostName();
+                                long startTime = hostedEvents.get(pos).getStartTime();
+                                long endTime = hostedEvents.get(pos).getEndTime();
+                                String key = hostedEvents.get(pos).getKey();
+                                EventItemOptionsFragment eiof = new EventItemOptionsFragment();
+                                Bundle b = new Bundle();
+                                b.putString("eventNm", eventNm);
+                                b.putString("eventHost", eventHost);
+                                b.putLong("startTime", startTime);
+                                b.putLong("endTime", endTime);
+                                b.putString("key", key);
+                                b.putInt("pos", pos);
+                                b.putBoolean("hosting", true);
+                                eiof.setArguments(b);
+                                eiof.show(getActivity().getSupportFragmentManager(), "options");
+                            }
+                        });
+
 
                     }
 
@@ -183,29 +208,84 @@ public class MyEventsFragment extends Fragment {
             String eventHost = getArguments().getString("eventHost");
             long startTime = getArguments().getLong("startTime");
             long endTime = getArguments().getLong("endTime");
-            String key = getArguments().getString("key");
+            final String key = getArguments().getString("key");
             final int pos = getArguments().getInt("pos");
             final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            final String[] options = {"Attend Event", "Delete"};
-            builder.setTitle("Options")
-                    .setItems(options, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // The 'which' argument contains the index position
-                            // of the selected item
-                            if(which == 0) {
-                                String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                                thisUserName = thisUserName.replaceAll("\\.", "@");
-                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName).child("eventAttending").setValue(eventObject.getKey());
-                                /*TODO: ADD TOAST OR SNACKBAR*/
-                            } else if(which == 1) {
-                                //handler.post(new OptionsHelper(pos));
+            boolean hosting = getArguments().getBoolean("hosting");
 
-                                /*TODO: ADD TOAST OR SNACKBAR*/
+            AlertDialog.Builder builder;
+            if (hosting) {
+                builder = new AlertDialog.Builder(getActivity());
+                final String[] options = {"Attend Event", "View Requested Songs", "Cancel Event"};
+                builder.setTitle("Options")
+                        .setItems(options, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                if (which == 0) {
+                                    String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                                    thisUserName = thisUserName.replaceAll("\\.", "@");
+                                    FirebaseDatabase.getInstance().getReference("users").child(thisUserName).child("eventAttending").setValue(eventObject.getKey());
+                                    /*TODO: ADD TOAST OR SNACKBAR*/
+                                } else if (which == 1) {
+                                    showSongRequests showSongRequests = new showSongRequests();
+                                    Bundle b = new Bundle();
+                                    b.putBoolean("hosting", true);
+                                    b.putString("key", key);
+                                    showSongRequests.setArguments(b);
+                                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
+                                    // Replace any other Fragment with our new Details Fragment with the right data
+                                    ft.replace(R.id.main_frame, showSongRequests);
+                                    // Let us come back
+                                    ft.addToBackStack(null);
+                                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+                                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                                    ft.commit();
+
+                                } else if (which == 2) {
+                                    //handler.post(new OptionsHelper(pos));
+                                    /*TODO: ADD TOAST OR SNACKBAR*/
+                                }
                             }
-                        }
-                    });
+                        });
+            } else {
+                builder = new AlertDialog.Builder(getActivity());
+                final String[] options = {"Attend Event", "View Requested Songs", "Delete"};
+                builder.setTitle("Options")
+                        .setItems(options, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                if (which == 0) {
+                                    String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                                    thisUserName = thisUserName.replaceAll("\\.", "@");
+                                    FirebaseDatabase.getInstance().getReference("users").child(thisUserName).child("eventAttending").setValue(eventObject.getKey());
+                                    /*TODO: ADD TOAST OR SNACKBAR*/
+                                } else if (which == 1) {
+                                    showSongRequests showSongRequests = new showSongRequests();
+                                    Bundle b = new Bundle();
+                                    b.putBoolean("hosting", false);
+                                    b.putString("key", key);
+                                    showSongRequests.setArguments(b);
+                                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
+                                    // Replace any other Fragment with our new Details Fragment with the right data
+                                    ft.replace(R.id.main_frame, showSongRequests);
+                                    // Let us come back
+                                    ft.addToBackStack(null);
+                                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+                                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                                    ft.commit();
+
+                                } else if (which == 2) {
+                                    //handler.post(new OptionsHelper(pos));
+                                    /*TODO: ADD TOAST OR SNACKBAR*/
+                                }
+                            }
+                        });
+        }
             return builder.create();
         }
     }
