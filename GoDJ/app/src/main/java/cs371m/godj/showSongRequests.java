@@ -1,16 +1,19 @@
 package cs371m.godj;
 
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -52,7 +54,7 @@ public class showSongRequests extends Fragment {
         final boolean hosting = getArguments().getBoolean("hosting");
         limit = (hosting) ? 20 : 50;
 
-        final String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
+        //final String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
         System.out.println("SEARCHING: " + key);
         FirebaseDatabase.getInstance().getReference("eventPlaylists")
                 .child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -88,6 +90,8 @@ public class showSongRequests extends Fragment {
                         Bundle b = new Bundle();
                         b.putString("uri", uri);
                         b.putBoolean("hosting", hosting);
+                        b.putString("artistName", track.getArtistName());
+                        b.putString("trackName", track.getTrackName());
                         trackItemOptionsFragment.setArguments(b);
                         trackItemOptionsFragment.show(getActivity().getSupportFragmentManager(), "options");
                     }
@@ -115,7 +119,9 @@ public class showSongRequests extends Fragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String uri = getArguments().getString("uri");
+            final String uri = getArguments().getString("uri");
+            final String artistName = getArguments().getString("artistName");
+            final String trackName = getArguments().getString("trackName");
             boolean hosting = getArguments().getBoolean("hosting");
             AlertDialog.Builder builder;
             if(hosting) {
@@ -127,22 +133,14 @@ public class showSongRequests extends Fragment {
                                 // The 'which' argument contains the index position
                                 // of the selected item
                                 if (which == 0) {
-                                    String uri = "spotify:track:<spotify uri>";
-                                    Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
-                                    startActivity(launcher);
-//                                    try {
-//                                        final Intent intent = new Intent(Intent.ACTION_MAIN);
-//                                        intent.setAction(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
-//                                        intent.setComponent(new ComponentName("com.spotify.mobile.android.ui", "com.spotify.mobile.android.ui.Launcher"));
-//                                        intent.putExtra(SearchManager.QUERY, artistName + " " + trackName );
-//                                        context.startActivity(intent);
-//                                    } catch ( ActivityNotFoundException e ) {
-//                                        final Intent intent = new Intent(Intent.ACTION_MAIN);
-//                                        intent.setAction(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
-//                                        intent.setComponent(new ComponentName("com.spotify.mobile.android.ui", "com.spotify.mobile.android.ui.activity.MainActivity"));
-//                                        intent.putExtra(SearchManager.QUERY, artistName + " " + trackName );
-//                                        context.startActivity(intent);
-//                                    }
+//                                    String uri = "spotify:track:<spotify uri>";
+//                                    Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
+//                                    startActivity(launcher);
+                                    Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
+                                    intent.setData(Uri.parse(
+                                            uri));
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
 
                                 /*TODO: ADD TOAST OR SNACKBAR*/
                                 } else if(which == 1) {
@@ -165,6 +163,18 @@ public class showSongRequests extends Fragment {
                         });
             }
             return builder.create();
+        }
+
+        private void playPlayMusic() {
+            Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+            i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+            i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY));
+            //sendOrderedBroadcast(i, null);
+
+            i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+            i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+            i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY));
+            //sendOrderedBroadcast(i, null);
         }
     }
 
