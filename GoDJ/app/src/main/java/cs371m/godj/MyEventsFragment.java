@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -40,6 +39,8 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
     private static Handler handler = new Handler();
 
+    protected String userName;
+
     static MyEventsFragment newInstance() {
         MyEventsFragment myEventsFragment = new MyEventsFragment();
         return myEventsFragment;
@@ -51,8 +52,11 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         hostedEvents = new ArrayList<>();
         savedEvents = new ArrayList<>();
 
-        /*TODO: current user may be null here*/
-        final String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
+        /*TODO: use Homepage.userName in place of get user in other places as well... maybe*/
+        //userName = getArguments().getString("userName");
+        userName = HomePage.userName;
+
+        final String thisUserName = userName.replaceAll("\\.", "@");
         System.out.println("SEARCHING");
         FirebaseDatabase.getInstance().getReference("users")
                 .child(thisUserName)
@@ -68,7 +72,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             savedEvents.add(eventObject);
                         }
 
-                        savedEventsLV = (ListView) getActivity().findViewById(R.id.saved_events_lv);
+                        savedEventsLV = (ListView) getView().findViewById(R.id.saved_events_lv);
 
 
                         TextView savedHeader = new TextView(getActivity());
@@ -202,11 +206,10 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
     public void handleDialogClose(int option, int pos, boolean hosting, boolean remove, String eventNm) {
         if(remove) {
-            String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-            userName = userName.replaceAll("\\.", "@");
+            String thisUserName = userName.replaceAll("\\.", "@");
             EventObject eventObject = savedEvents.get(pos);
             savedEvents.remove(pos);
-            FirebaseDatabase.getInstance().getReference("users").child(userName)
+            FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                     .child("savedEvents").child(eventObject.getKey()).removeValue();
             UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
             savedAdapter.notifyDataSetChanged();
@@ -226,9 +229,8 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         .child(eventObject.getKey()).removeValue();
                 FirebaseDatabase.getInstance().getReference("eventPlaylists")
                         .child(eventObject.getKey()).removeValue();
-                String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                userName = userName.replaceAll("\\.", "@");
-                FirebaseDatabase.getInstance().getReference("users").child(userName)
+                String thisUserName = userName.replaceAll("\\.", "@");
+                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                         .child("hostedEvents").child(eventObject.getKey()).removeValue();
                 FirebaseDatabase.getInstance().getReference("eventPlaylists")
                         .child(eventObject.getKey()).removeValue();
@@ -237,11 +239,10 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 hostAdapter.notifyDataSetChanged();
 
             } else {
-                String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                userName = userName.replaceAll("\\.", "@");
+                String thisUserName = userName.replaceAll("\\.", "@");
                 EventObject eventObject = savedEvents.get(pos);
                 savedEvents.remove(pos);
-                FirebaseDatabase.getInstance().getReference("users").child(userName)
+                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                         .child("savedEvents").child(eventObject.getKey()).removeValue();
                 UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
                 savedAdapter.notifyDataSetChanged();
@@ -249,28 +250,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         }
     }
 
-
-
-    class OptionsHelper implements Runnable {
-
-        private int position;
-
-        public OptionsHelper(int pos) {
-            position = pos;
-        }
-
-        @Override
-        public void run() {
-            String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-            userName = userName.replaceAll("\\.", "@");
-            EventObject eventObject = savedEvents.get(position - 1);
-            savedEvents.remove(position - 1);
-            FirebaseDatabase.getInstance().getReference("users").child(userName)
-                    .child("savedEvents").child(eventObject.getKey()).removeValue();
-            UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
-            savedAdapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

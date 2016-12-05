@@ -140,7 +140,6 @@ public class EventSearchResultsFragment extends Fragment {
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 userName = userName.replaceAll("\\.", "@");
                                 FirebaseDatabase.getInstance().getReference("users").child(userName).child("savedEvents").child(eventObject.getKey()).setValue(eventObject);
-                                /*TODO: fix view for snackbar, currently null for some reason*/
                                 Snackbar snack = Snackbar.make(getActivity().getSupportFragmentManager()
                                         .findFragmentByTag("eventSearch").getView(), "Event Saved!", Snackbar.LENGTH_SHORT);
                                 View view = snack.getView();

@@ -19,7 +19,6 @@ import java.util.List;
  * Created by Jasmine on 11/29/2016.
  */
 
-/*TODO: CHANGE TO ACTIVITY*/
 public class EventSearchFragment extends Fragment {
 
     protected Button searchBut;

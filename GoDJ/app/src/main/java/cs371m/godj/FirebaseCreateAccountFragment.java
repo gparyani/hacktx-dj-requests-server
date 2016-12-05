@@ -153,6 +153,7 @@ public class FirebaseCreateAccountFragment extends Fragment {
                                     System.out.println("create acct mauth: " + mAuth);
 
                                     mAuth.getCurrentUser().updateProfile(profileUpdates);
+                                    MainActivity.userName = username;
                                     String userNameToAdd = username.replaceAll("\\.", "@");
                                     FirebaseDatabase.getInstance().getReference("users").child(userNameToAdd).child("eventAttending").setValue("none");
                                     System.out.println("CREATE ACCT prof update: " + profileUpdates.getDisplayName());
