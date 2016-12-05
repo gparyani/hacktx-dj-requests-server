@@ -102,13 +102,14 @@ public class TrackPageActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if(dataSnapshot.getValue() == null) {
-                                        TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject();
-                                        trackDatabaseObject.setArtistName(artistName);
-                                        trackDatabaseObject.setAlbumName(albumName);
-                                        trackDatabaseObject.setTrackName(trackName);
-                                        trackDatabaseObject.setTrackURI(trackURI);
+                                        TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
+                                                artistName, albumName, trackURI, 1);
+//                                        trackDatabaseObject.setArtistName(artistName);
+//                                        trackDatabaseObject.setAlbumName(albumName);
+//                                        trackDatabaseObject.setTrackName(trackName);
+//                                        trackDatabaseObject.setTrackURI(trackURI);
                                         db.child("eventPlaylists")
-                                                .child(currEvent).push().setValue(trackDatabaseObject);
+                                                .child(currEvent).child(trackURI).setValue(trackDatabaseObject);
                             /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
                                     }
 
