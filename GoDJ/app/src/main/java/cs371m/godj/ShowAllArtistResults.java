@@ -29,7 +29,12 @@ public class ShowAllArtistResults extends AppCompatActivity {
 
         Intent intent = getIntent();
         String searchTerm = intent.getStringExtra("searchTerm");
-        String formatTitle = "\"" + searchTerm + "\"" + " in Artists";
+        String formatTitle;
+        if (searchTerm == null) {
+            formatTitle = "All Related Artists";
+        } else {
+            formatTitle = "\"" + searchTerm + "\"" + " in Artists";
+        }
         getSupportActionBar().setTitle(formatTitle);
 
         listView = (ListView) findViewById(R.id.show_all_list_view);

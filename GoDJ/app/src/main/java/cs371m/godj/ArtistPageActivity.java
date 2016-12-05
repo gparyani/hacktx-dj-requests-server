@@ -45,6 +45,10 @@ public class ArtistPageActivity extends AppCompatActivity {
     private TextView albumTitle;
     private TextView relatedTitle;
 
+    private TextView popTrackFooter;
+    private TextView albumFooter;
+    private TextView relatedArtistFooter;
+
     private ListView popularTrackListView;
     private ListView albumsListView;
     private ListView relatedArtistListView;
@@ -52,6 +56,10 @@ public class ArtistPageActivity extends AppCompatActivity {
     private List<Track> popularTracks;
     private List<AlbumSimple> albums;
     private List<Artist> relatedArtists;
+
+    private List<Track> fullPopTrackList;
+    private List<AlbumSimple> fullAlbumList;
+    private List<Artist> fullRelatedArtistList;
 
     private SpotifyItemAdapter popTracksAdapter;
     private AlbumItemAdapter albumsItemAdapter;
@@ -81,6 +89,13 @@ public class ArtistPageActivity extends AppCompatActivity {
         popularTrackListView.addHeaderView(popularTitle, null, false);
         popularTitle.setVisibility(View.INVISIBLE);
 
+        popTrackFooter = new TextView(this);
+        popTrackFooter.setText("See more popular songs");
+        popTrackFooter.setTextColor(0xffffffff);
+        popTrackFooter.setPadding(0, 15, 0, 0);
+        popularTrackListView.addFooterView(popTrackFooter);
+        popTrackFooter.setVisibility(View.INVISIBLE);
+
         albumTitle = new TextView(this);
         albumTitle.setText("Albums");
         albumTitle.setTextColor(0xffffffff);
@@ -89,6 +104,13 @@ public class ArtistPageActivity extends AppCompatActivity {
         albumTitle.setPadding(350,0,0,50);
         albumsListView.addHeaderView(albumTitle, null, false);
         albumTitle.setVisibility(View.INVISIBLE);
+
+        albumFooter = new TextView(this);
+        albumFooter.setText("See more albums");
+        albumFooter.setTextColor(0xffffffff);
+        albumFooter.setPadding(0, 15, 0, 0);
+        albumsListView.addFooterView(albumFooter);
+        albumFooter.setVisibility(View.INVISIBLE);
 
         relatedTitle = new TextView(this);
         relatedTitle.setText("Related Artists");
@@ -99,9 +121,20 @@ public class ArtistPageActivity extends AppCompatActivity {
         relatedArtistListView.addHeaderView(relatedTitle, null, false);
         relatedTitle.setVisibility(View.INVISIBLE);
 
+        relatedArtistFooter = new TextView(this);
+        relatedArtistFooter.setText("See more related artists");
+        relatedArtistFooter.setTextColor(0xffffffff);
+        relatedArtistFooter.setPadding(0, 15, 0, 0);
+        relatedArtistListView.addFooterView(relatedArtistFooter);
+        relatedArtistFooter.setVisibility(View.INVISIBLE);
+
         popularTracks = new ArrayList<>();
         albums = new ArrayList<>();
         relatedArtists = new ArrayList<>();
+
+        fullPopTrackList = new ArrayList<>();
+        fullAlbumList = new ArrayList<>();
+        fullRelatedArtistList = new ArrayList<>();
 
         popTracksAdapter = new SpotifyItemAdapter(this);
         albumsItemAdapter = new AlbumItemAdapter(this);
@@ -122,6 +155,7 @@ public class ArtistPageActivity extends AppCompatActivity {
         public void run() {
             popularTitle.setVisibility(View.VISIBLE);
             popTracksAdapter.notifyDataSetChanged();
+            popTrackFooter.setVisibility(View.VISIBLE);
             popTracksAdapter.notifyDataSetChanged();
             popTracksAdapter.changeList(popularTracks);
             UserMainActivity.ListUtils.setDynamicHeight(popularTrackListView);
@@ -135,6 +169,7 @@ public class ArtistPageActivity extends AppCompatActivity {
         public void run() {
             albumTitle.setVisibility(View.VISIBLE);
             albumsItemAdapter.notifyDataSetChanged();
+            albumFooter.setVisibility(View.VISIBLE);
             albumsItemAdapter.notifyDataSetChanged();
             albumsItemAdapter.changeList(albums);
             UserMainActivity.ListUtils.setDynamicHeight(albumsListView);
@@ -149,6 +184,7 @@ public class ArtistPageActivity extends AppCompatActivity {
         public void run() {
             relatedTitle.setVisibility(View.VISIBLE);
             relatedArtistsAdapter.notifyDataSetChanged();
+            relatedArtistFooter.setVisibility(View.VISIBLE);
             relatedArtistsAdapter.notifyDataSetChanged();
             relatedArtistsAdapter.changeList(relatedArtists);
             UserMainActivity.ListUtils.setDynamicHeight(relatedArtistListView);
@@ -192,44 +228,62 @@ public class ArtistPageActivity extends AppCompatActivity {
         popularTrackListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent showTrackPage = new Intent(getApplicationContext(), TrackPageActivity.class);
+                int footerPos = parent.getCount() - 1;
 
-                TextView trackName = (TextView) view.findViewById(R.id.track_name);
-                TextView artistName = (TextView) view.findViewById(R.id.artist_name);
-                TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
-                TextView albumName = (TextView) view.findViewById(R.id.album_name);
-                TextView albumArtURL = (TextView) view.findViewById(R.id.album_art_url);
+                if (footerPos == position) {
+                    Intent showAllSongResults = new Intent(getApplicationContext(), ShowAllSongResults.class);
+                    showAllSongResults.putParcelableArrayListExtra("list", (ArrayList) fullPopTrackList);
+                    startActivity(showAllSongResults);
+                } else {
 
-                showTrackPage.putExtra("trackName", trackName.getText().toString());
-                showTrackPage.putExtra("artistName", artistName.getText().toString());
-                showTrackPage.putExtra("imageURL", albumArtURL.getText().toString());
-                showTrackPage.putExtra("albumName", albumName.getText().toString());
-                showTrackPage.putExtra("trackURI", trackURI.getText().toString());
+                    Intent showTrackPage = new Intent(getApplicationContext(), TrackPageActivity.class);
 
-                startActivity(showTrackPage);
+                    TextView trackName = (TextView) view.findViewById(R.id.track_name);
+                    TextView artistName = (TextView) view.findViewById(R.id.artist_name);
+                    TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
+                    TextView albumName = (TextView) view.findViewById(R.id.album_name);
+                    TextView albumArtURL = (TextView) view.findViewById(R.id.album_art_url);
+
+                    showTrackPage.putExtra("trackName", trackName.getText().toString());
+                    showTrackPage.putExtra("artistName", artistName.getText().toString());
+                    showTrackPage.putExtra("imageURL", albumArtURL.getText().toString());
+                    showTrackPage.putExtra("albumName", albumName.getText().toString());
+                    showTrackPage.putExtra("trackURI", trackURI.getText().toString());
+
+                    startActivity(showTrackPage);
+                }
             }
         });
 
         albumsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView tv = (TextView) view.findViewById(R.id.album_id);
-                String albumID = tv.getText().toString();
+                int footerPos = parent.getCount() - 1;
 
-                SpotifyApi api = new SpotifyApi();
-                SpotifyService spotify = api.getService();
+                if (footerPos == position) {
+                    Intent showAllArtistResults = new Intent(getApplicationContext(), ShowAllAlbumResults.class);
+                    showAllArtistResults.putParcelableArrayListExtra("list", (ArrayList) fullAlbumList);
+                    startActivity(showAllArtistResults);
+                } else {
 
-                spotify.getAlbum(albumID, new Callback<Album>() {
-                    @Override
-                    public void success(Album album, Response response) {
-                        myHandler.post(new AlbumSelected(album));
-                    }
+                    TextView tv = (TextView) view.findViewById(R.id.album_id);
+                    String albumID = tv.getText().toString();
 
-                    @Override
-                    public void failure(RetrofitError error) {
+                    SpotifyApi api = new SpotifyApi();
+                    SpotifyService spotify = api.getService();
 
-                    }
-                });
+                    spotify.getAlbum(albumID, new Callback<Album>() {
+                        @Override
+                        public void success(Album album, Response response) {
+                            myHandler.post(new AlbumSelected(album));
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+                }
 
             }
         });
@@ -237,16 +291,25 @@ public class ArtistPageActivity extends AppCompatActivity {
         relatedArtistListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView artistID = (TextView) view.findViewById(R.id.artist_id);
-                TextView artistName = (TextView) view.findViewById(R.id.artist);
-                TextView artistURL = (TextView) view.findViewById(R.id.artist_image_url);
+                int footerPos = parent.getCount() - 1;
+
+                if (footerPos == position) {
+                    Intent showAllArtistResults = new Intent(getApplicationContext(), ShowAllArtistResults.class);
+                    showAllArtistResults.putParcelableArrayListExtra("list", (ArrayList) fullRelatedArtistList);
+                    startActivity(showAllArtistResults);
+                } else {
+
+                    TextView artistID = (TextView) view.findViewById(R.id.artist_id);
+                    TextView artistName = (TextView) view.findViewById(R.id.artist);
+                    TextView artistURL = (TextView) view.findViewById(R.id.artist_image_url);
 
 
-                Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
-                showArtistPage.putExtra("artistID", artistID.getText().toString());
-                showArtistPage.putExtra("artistName", artistName.getText().toString());
-                showArtistPage.putExtra("artistURL", artistURL.getText().toString());
-                startActivity(showArtistPage);
+                    Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
+                    showArtistPage.putExtra("artistID", artistID.getText().toString());
+                    showArtistPage.putExtra("artistName", artistName.getText().toString());
+                    showArtistPage.putExtra("artistURL", artistURL.getText().toString());
+                    startActivity(showArtistPage);
+                }
             }
         });
 
@@ -264,11 +327,11 @@ public class ArtistPageActivity extends AppCompatActivity {
         spotify.getArtistTopTrack(artistID, "US", new Callback<Tracks>() {
             @Override
             public void success(Tracks tracks, Response response) {
-                List<Track> popTrackList = tracks.tracks;
+                fullPopTrackList = tracks.tracks;
 
-                int displaySize = Math.min(popTrackList.size(), 5);
+                int displaySize = Math.min(fullPopTrackList.size(), 5);
                 for (int i = 0; i < displaySize; i++) {
-                    popularTracks.add(popTrackList.get(i));
+                    popularTracks.add(fullPopTrackList.get(i));
                 }
 
                 myHandler.post(new TopTracks());
@@ -284,6 +347,10 @@ public class ArtistPageActivity extends AppCompatActivity {
             @Override
             public void success(Pager<Album> albumPager, Response response) {
                 List<Album> albumList = albumPager.items;
+
+                for (Album a: albumList) {
+                    fullAlbumList.add(a);
+                }
 
                 int displaySize = Math.min(albumList.size(), 5);
                 for (int i = 0; i < displaySize; i++) {
@@ -302,11 +369,11 @@ public class ArtistPageActivity extends AppCompatActivity {
         spotify.getRelatedArtists(artistID, new Callback<Artists>() {
             @Override
             public void success(Artists artists, Response response) {
-                List<Artist> artistList = artists.artists;
+                fullRelatedArtistList = artists.artists;
 
-                int displaySize = Math.min(artistList.size(), 10);
+                int displaySize = Math.min(fullRelatedArtistList.size(), 5);
                 for (int i = 0; i < displaySize; i++) {
-                    relatedArtists.add(artistList.get(i));
+                    relatedArtists.add(fullRelatedArtistList.get(i));
                 }
 
                 myHandler.post(new RelatedArtists());

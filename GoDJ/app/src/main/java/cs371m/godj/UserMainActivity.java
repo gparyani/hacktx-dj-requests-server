@@ -229,8 +229,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
                     TextView albumName = (TextView) view.findViewById(R.id.album_name);
                     TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
-                    System.out.println("This is the track name in the onClick: " + trackName.getText());
-
                     showTrackPage.putExtra("trackName", trackName.getText().toString());
                     showTrackPage.putExtra("artistName", artistName.getText().toString());
                     showTrackPage.putExtra("imageURL", imageURL.getText().toString());
