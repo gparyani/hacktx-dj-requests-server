@@ -44,7 +44,7 @@ public class MyEventsItemFragment extends DialogFragment {
 
         System.out.println("activity: " + getActivity());
         System.out.println("getChildFragmentManager: " + getChildFragmentManager());
-        ((MyDialogCloseListener) HomePage.mef).handleDialogClose(option, itemPos, hosting, remove, eventNm);
+        HomePage.mef.handleDialogClose(option, itemPos, hosting, remove, eventNm);
     }
 
     @Override
@@ -106,23 +106,16 @@ public class MyEventsItemFragment extends DialogFragment {
 
                                                                 case DialogInterface.BUTTON_POSITIVE:
                                                                     //Yes button clicked
-                                                                    ((MyDialogCloseListener) HomePage.mef).handleDialogClose(option, itemPos, hosting, true, eventNm);
+                                                                    HomePage.mef.handleDialogClose(option, itemPos, hosting, true, eventNm);
                                                                     break;
                                                             }
                                                         }
                                                     };
-
-
                                                     alert.setTitle("Event No Longer Exists");
                                                     alert.setMessage("Would you like to remove it from your list?")
                                                             .setNegativeButton("No", dialogClickListener)
                                                             .setPositiveButton("Yes", dialogClickListener).show();
                                                 }
-//                                        for(DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-//
-//                                            if(eventSnapshot.getKey().equals(eventObject.getKey())) {
-//                                            }
-//                                        }
                                             }
 
                                             @Override
