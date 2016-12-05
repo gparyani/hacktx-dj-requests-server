@@ -51,6 +51,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         hostedEvents = new ArrayList<>();
         savedEvents = new ArrayList<>();
 
+        /*TODO: current user may be null here*/
         final String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
         System.out.println("SEARCHING");
         FirebaseDatabase.getInstance().getReference("users")

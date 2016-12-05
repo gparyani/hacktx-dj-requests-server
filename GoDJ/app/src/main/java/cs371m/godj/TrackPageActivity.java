@@ -109,7 +109,9 @@ public class TrackPageActivity extends AppCompatActivity {
 //                                        trackDatabaseObject.setTrackName(trackName);
 //                                        trackDatabaseObject.setTrackURI(trackURI);
                                         db.child("eventPlaylists")
-                                                .child(currEvent).child(trackURI).setValue(trackDatabaseObject);
+                                                .child(currEvent).child(trackURI)
+                                                .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
+
                             /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
                                     }
 

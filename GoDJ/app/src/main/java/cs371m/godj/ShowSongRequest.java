@@ -112,35 +112,52 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String key = (String)dataSnapshot.getValue();
                 System.out.println("event attend val: " + key);
-                FirebaseDatabase.getInstance().getReference("eventPlaylists").child(key).orderByChild("priority").addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        TrackDatabaseObject trackDatabaseObject = dataSnapshot.getValue(TrackDatabaseObject.class);
-                        tracks.add(trackDatabaseObject);
-                        Collections.sort(tracks, new TrackCompare());
-                        songRequestAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        FirebaseDatabase.getInstance().getReference("eventPlaylists").child(key).orderByPriority().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                TrackDatabaseObject trackDatabaseObject = dataSnapshot.getValue(TrackDatabaseObject.class);
+                tracks.add(trackDatabaseObject);
+                //Collections.sort(tracks, new TrackCompare());
+                songRequestAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                System.out.println("onChildChanged");
+                TrackDatabaseObject trackDatabaseObject = dataSnapshot.getValue(TrackDatabaseObject.class);
+                /*TODO: Inefficient while loop*/
+                boolean found = false;
+                int index = 0;
+                while(!found && index < tracks.size()) {
+                    if(tracks.get(index).getTrackURI().equals(trackDatabaseObject.getTrackURI())) {
+                        found = true;
+                        if(tracks.get(index).getPriority() != trackDatabaseObject.getPriority()) {
+                            tracks.get(index).setPriority(trackDatabaseObject.getPriority());
+                            Collections.sort(tracks, new TrackCompare());
+                            songRequestAdapter.notifyDataSetChanged();
+                        }
                     }
+                    index++;
+                }
+            }
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
             }
 
             @Override
@@ -166,14 +183,14 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
     public void handleDialogClose(int pos, int option, boolean hosting) {
         if(option == TrackItemOptionsFragment.PLAY_UPVOTE && !hosting) {
             System.out.println("pos is : " + pos);
-            TrackDatabaseObject track = tracks.get(pos);
-            int priority = track.getPriority() + 1;
-            track.setPriority(priority);
+            int priority = tracks.get(pos).getPriority() + 1;
+            tracks.get(pos).setPriority(priority);
+            songRequestAdapter.notifyDataSetChanged();
+
+            FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                    .child(key).child(tracks.get(pos).getTrackURI()).setValue(tracks.get(pos), 0 - priority); //TODO: workaround for firebase database ordering
             Collections.sort(tracks, new TrackCompare());
             songRequestAdapter.notifyDataSetChanged();
-            FirebaseDatabase.getInstance().getReference("eventPlaylists")
-                    .child(key).child(track.getTrackURI()).setValue(track);
-
             }
     }
 
