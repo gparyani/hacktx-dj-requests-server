@@ -5,22 +5,22 @@
         android:icon="@android:drawable/ic_menu_manage"
         android:title="Login" />
 
-    <item android:title="Communicate">
+    <item android:title="Logistics">
         <menu>
             <item android:id="@+id/my_events"
-                android:icon="@android:drawable/ic_menu_share"
+                android:icon="@drawable/list"
                 android:title="My Events" />
             <item android:id="@+id/find_event"
-                android:icon="@android:drawable/ic_menu_send"
+                android:icon="@drawable/search_property"
                 android:title="Find an Event" />
             <item android:id="@+id/host_event"
-                android:icon="@android:drawable/ic_menu_send"
+                android:icon="@drawable/plus"
                 android:title="Host New Event" />
             <item android:id="@+id/saved_songs"
-                android:icon="@android:drawable/ic_menu_send"
+                android:icon="@drawable/musical_note"
                 android:title="Saved Songs" />
             <item android:id="@+id/song_search"
-                android:icon="@android:drawable/ic_menu_send"
+                android:icon="@drawable/search"
                 android:title="Search" />
         </menu>
     </item>

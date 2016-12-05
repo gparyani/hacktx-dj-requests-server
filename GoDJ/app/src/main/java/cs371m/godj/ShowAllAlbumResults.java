@@ -45,7 +45,12 @@ public class ShowAllAlbumResults extends AppCompatActivity {
 
         Intent intent = getIntent();
         String searchTerm = intent.getStringExtra("searchTerm");
-        String formatTitle = "\"" + searchTerm + "\"" + " in Albums";
+        String formatTitle;
+        if (searchTerm == null) {
+            formatTitle = "All Albums";
+        } else {
+            formatTitle = "\"" + searchTerm + "\"" + " in Songs";
+        }
         getSupportActionBar().setTitle(formatTitle);
 
         myHandler = new Handler();

@@ -32,10 +32,15 @@ public class ShowAllSongResults extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        String searchTerm = intent.getStringExtra("searchTerm");
-        String formatTitle = "\"" + searchTerm + "\"" + " in Songs";
-        getSupportActionBar().setTitle(formatTitle);
 
+        String searchTerm = intent.getStringExtra("searchTerm");
+        String formatTitle;
+        if (searchTerm == null) {
+            formatTitle = "All Popular Songs";
+        } else {
+            formatTitle = "\"" + searchTerm + "\"" + " in Songs";
+        }
+        getSupportActionBar().setTitle(formatTitle);
 
         listView = (ListView) findViewById(R.id.show_all_list_view);
         tracks = intent.getParcelableArrayListExtra("list");
