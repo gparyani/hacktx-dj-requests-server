@@ -50,13 +50,13 @@ public class TrackItemOptionsFragment extends DialogFragment {
                             option = which;
                             // The 'which' argument contains the index position
                             // of the selected item
-                            if (which == 0) {
+                            if (which == PLAY_UPVOTE) {
                                 Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
                                 intent.setData(Uri.parse(uri));
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 /*TODO: ADD TOAST OR SNACKBAR*/
-                            } else if(which == 1) {
+                            } else if(which == REMOVE_SAVE) {
 
                             }
                         }

@@ -44,9 +44,10 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
         listView = (ListView) v.findViewById(R.id.fav_list_view);
         tracks = new ArrayList<>();
         songRequestAdapter = new SongRequestAdapter(getContext());
-       // songRequestAdapter.ch
         key = getArguments().getString("key");
         final boolean hosting = getArguments().getBoolean("hosting");
+
+        /*TODO: set limit for dj view vs. user view*/
         limit = (hosting) ? 20 : 50;
 
         //final String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
@@ -181,6 +182,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
 
     @Override
     public void handleDialogClose(int pos, int option, boolean hosting) {
+        /*TODO: this is upvoting when i click away, fix it*/
         if(option == TrackItemOptionsFragment.PLAY_UPVOTE && !hosting) {
             System.out.println("pos is : " + pos);
             int priority = tracks.get(pos).getPriority() + 1;
@@ -191,7 +193,12 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                     .child(key).child(tracks.get(pos).getTrackURI()).setValue(tracks.get(pos), 0 - priority); //TODO: workaround for firebase database ordering
             Collections.sort(tracks, new TrackCompare());
             songRequestAdapter.notifyDataSetChanged();
-            }
+        } else if(option == TrackItemOptionsFragment.REMOVE_SAVE && hosting) {
+            FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                    .child(key).child(tracks.get(pos).getTrackURI()).removeValue();
+            tracks.remove(pos);
+            songRequestAdapter.notifyDataSetChanged();
+        }
     }
 
     class TrackCompare implements Comparator<TrackDatabaseObject> {

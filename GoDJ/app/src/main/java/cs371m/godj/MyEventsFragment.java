@@ -57,7 +57,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         userName = HomePage.userName;
 
         final String thisUserName = userName.replaceAll("\\.", "@");
-        System.out.println("SEARCHING");
+        System.out.println("SEARCHING: " + thisUserName);
         FirebaseDatabase.getInstance().getReference("users")
                 .child(thisUserName)
                 .child("savedEvents")
