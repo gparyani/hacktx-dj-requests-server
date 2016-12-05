@@ -181,9 +181,8 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
 
 
     @Override
-    public void handleDialogClose(int pos, int option, boolean hosting) {
-        /*TODO: this is upvoting when i click away, fix it*/
-        if(option == TrackItemOptionsFragment.PLAY_UPVOTE && !hosting) {
+    public void handleDialogClose(int pos, int option, boolean hosting, boolean selectedOption) {
+        if(selectedOption && option == TrackItemOptionsFragment.PLAY_UPVOTE && !hosting) {
             System.out.println("pos is : " + pos);
             int priority = tracks.get(pos).getPriority() + 1;
             tracks.get(pos).setPriority(priority);
@@ -193,7 +192,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                     .child(key).child(tracks.get(pos).getTrackURI()).setValue(tracks.get(pos), 0 - priority); //TODO: workaround for firebase database ordering
             Collections.sort(tracks, new TrackCompare());
             songRequestAdapter.notifyDataSetChanged();
-        } else if(option == TrackItemOptionsFragment.REMOVE_SAVE && hosting) {
+        } else if(selectedOption && option == TrackItemOptionsFragment.REMOVE_SAVE && hosting) {
             FirebaseDatabase.getInstance().getReference("eventPlaylists")
                     .child(key).child(tracks.get(pos).getTrackURI()).removeValue();
             tracks.remove(pos);
