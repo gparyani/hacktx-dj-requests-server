@@ -1,14 +1,9 @@
 package cs371m.godj;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +27,7 @@ import java.util.List;
 
 
 
-public class MyEventsFragment extends Fragment {
+public class MyEventsFragment extends Fragment implements MyEventsItemFragment.MyDialogCloseListener {
 
     protected List<EventObject> hostedEvents;
     protected List<EventObject> savedEvents;
@@ -100,7 +95,7 @@ public class MyEventsFragment extends Fragment {
                                 long startTime = savedEvents.get(pos).getStartTime();
                                 long endTime = savedEvents.get(pos).getEndTime();
                                 String key = savedEvents.get(pos).getKey();
-                                EventItemOptionsFragment eiof = new EventItemOptionsFragment();
+                                MyEventsItemFragment eiof = new MyEventsItemFragment();
                                 Bundle b = new Bundle();
                                 b.putString("eventNm", eventNm);
                                 b.putString("eventHost", eventHost);
@@ -169,7 +164,7 @@ public class MyEventsFragment extends Fragment {
                                 long startTime = hostedEvents.get(pos).getStartTime();
                                 long endTime = hostedEvents.get(pos).getEndTime();
                                 String key = hostedEvents.get(pos).getKey();
-                                EventItemOptionsFragment eiof = new EventItemOptionsFragment();
+                                MyEventsItemFragment eiof = new MyEventsItemFragment();
                                 Bundle b = new Bundle();
                                 b.putString("eventNm", eventNm);
                                 b.putString("eventHost", eventHost);
@@ -179,6 +174,7 @@ public class MyEventsFragment extends Fragment {
                                 b.putInt("pos", pos);
                                 b.putBoolean("hosting", true);
                                 eiof.setArguments(b);
+
                                 eiof.show(getActivity().getSupportFragmentManager(), "options");
                             }
                         });
@@ -200,95 +196,57 @@ public class MyEventsFragment extends Fragment {
 
     }
 
-    public static class EventItemOptionsFragment extends DialogFragment {
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String eventNm = getArguments().getString("eventNm");
-            String eventHost = getArguments().getString("eventHost");
-            long startTime = getArguments().getLong("startTime");
-            long endTime = getArguments().getLong("endTime");
-            final String key = getArguments().getString("key");
-            final int pos = getArguments().getInt("pos");
-            final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key);
+    public void handleDialogClose(int option, int pos, boolean hosting, boolean remove, String eventNm) {
+        if(remove) {
+            String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+            userName = userName.replaceAll("\\.", "@");
+            EventObject eventObject = savedEvents.get(pos);
+            savedEvents.remove(pos);
+            FirebaseDatabase.getInstance().getReference("users").child(userName)
+                    .child("savedEvents").child(eventObject.getKey()).removeValue();
+            UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+            savedAdapter.notifyDataSetChanged();
+        } else if(option == 0) {
+//            Snackbar snack = Snackbar.make(getParentFragment().getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
+//            View view = snack.getView();
+//            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+//            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+//            snack.show();
+        } else if(option == 1) {
 
-            boolean hosting = getArguments().getBoolean("hosting");
+        } else if(option == 2) {
+            if(hosting) {
+                EventObject eventObject = hostedEvents.get(pos);
+                System.out.println("canceling: " + eventObject.getKey());
+                FirebaseDatabase.getInstance().getReference("events")
+                        .child(eventObject.getKey()).removeValue();
+                FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                        .child(eventObject.getKey()).removeValue();
+                String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                userName = userName.replaceAll("\\.", "@");
+                FirebaseDatabase.getInstance().getReference("users").child(userName)
+                        .child("hostedEvents").child(eventObject.getKey()).removeValue();
+                FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                        .child(eventObject.getKey()).removeValue();
+                hostedEvents.remove(pos);
+                UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
+                hostAdapter.notifyDataSetChanged();
 
-            AlertDialog.Builder builder;
-            if (hosting) {
-                builder = new AlertDialog.Builder(getActivity());
-                final String[] options = {"Attend Event", "View Requested Songs", "Cancel Event"};
-                builder.setTitle("Options")
-                        .setItems(options, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // The 'which' argument contains the index position
-                                // of the selected item
-                                if (which == 0) {
-                                    String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                                    thisUserName = thisUserName.replaceAll("\\.", "@");
-                                    FirebaseDatabase.getInstance().getReference("users").child(thisUserName).child("eventAttending").setValue(eventObject.getKey());
-                                    /*TODO: ADD TOAST OR SNACKBAR*/
-                                } else if (which == 1) {
-                                    showSongRequests showSongRequests = new showSongRequests();
-                                    Bundle b = new Bundle();
-                                    b.putBoolean("hosting", true);
-                                    b.putString("key", key);
-                                    showSongRequests.setArguments(b);
-                                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-
-                                    // Replace any other Fragment with our new Details Fragment with the right data
-                                    ft.replace(R.id.main_frame, showSongRequests);
-                                    // Let us come back
-                                    ft.addToBackStack(null);
-                                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                                    ft.commit();
-
-                                } else if (which == 2) {
-                                    //handler.post(new OptionsHelper(pos));
-                                    /*TODO: ADD TOAST OR SNACKBAR*/
-                                }
-                            }
-                        });
             } else {
-                builder = new AlertDialog.Builder(getActivity());
-                final String[] options = {"Attend Event", "View Requested Songs", "Delete"};
-                builder.setTitle("Options")
-                        .setItems(options, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // The 'which' argument contains the index position
-                                // of the selected item
-                                if (which == 0) {
-                                    String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                                    thisUserName = thisUserName.replaceAll("\\.", "@");
-                                    FirebaseDatabase.getInstance().getReference("users").child(thisUserName).child("eventAttending").setValue(eventObject.getKey());
-                                    /*TODO: ADD TOAST OR SNACKBAR*/
-                                } else if (which == 1) {
-                                    showSongRequests showSongRequests = new showSongRequests();
-                                    Bundle b = new Bundle();
-                                    b.putBoolean("hosting", false);
-                                    b.putString("key", key);
-                                    showSongRequests.setArguments(b);
-                                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-
-                                    // Replace any other Fragment with our new Details Fragment with the right data
-                                    ft.replace(R.id.main_frame, showSongRequests);
-                                    // Let us come back
-                                    ft.addToBackStack(null);
-                                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                                    ft.commit();
-
-                                } else if (which == 2) {
-                                    //handler.post(new OptionsHelper(pos));
-                                    /*TODO: ADD TOAST OR SNACKBAR*/
-                                }
-                            }
-                        });
-        }
-            return builder.create();
+                String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                userName = userName.replaceAll("\\.", "@");
+                EventObject eventObject = savedEvents.get(pos);
+                savedEvents.remove(pos);
+                FirebaseDatabase.getInstance().getReference("users").child(userName)
+                        .child("savedEvents").child(eventObject.getKey()).removeValue();
+                UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+                savedAdapter.notifyDataSetChanged();
+            }
         }
     }
+
+
 
     class OptionsHelper implements Runnable {
 

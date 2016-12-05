@@ -3,6 +3,7 @@ package cs371m.godj;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -99,50 +101,71 @@ public class CreateEventFragment extends Fragment {
                 EditText startTime = (EditText) getActivity().findViewById(R.id.event_start_et);
                 EditText endTime = (EditText) getActivity().findViewById(R.id.event_end_et);
 
+
                 String hostNameStr = hostName.getText().toString();
                 String eventNameStr = eventName.getText().toString();
                 String formattedDate = date.getText().toString();
-                String formattedStart = formattedDate + " " + startTime.getText().toString();
-                String formattedEnd = formattedDate + " " + endTime.getText().toString();
+                String start = startTime.getText().toString();
+                String end = endTime.getText().toString();
 
-                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy h:mm a");
-                sdf.setTimeZone(TimeZone.getDefault());
-                try {
-                    Date dStart = sdf.parse(formattedStart);
 
-                    long startMill = dStart.getTime();
-                    Date dEnd = sdf.parse(formattedEnd);
-                    long endMill = dEnd.getTime();
 
-                    eventObject.setHostName(hostNameStr);
-                    eventObject.setEventName(eventNameStr);
-                    eventObject.setEventQueryName(eventNameStr.toLowerCase());
-                    eventObject.setStartTime(startMill);
 
-                    eventObject.setEndTime(endMill);
-                    eventObject.setKey("null");
+                if(hostNameStr.equals("") || eventNameStr.equals("") || formattedDate.equals("")
+                        || start.equals("") || end.equals("")) {
+//                    System.out.println("start: " + start);
+                    Snackbar snack = Snackbar.make(getView(), "Please make sure all fields are filled in", Snackbar.LENGTH_LONG);
+                    View view = snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    snack.show();
+                } else {
+                    String formattedStart = formattedDate + " " + start;
+                    String formattedEnd = formattedDate + " " + end;
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy h:mm a");
+                    sdf.setTimeZone(TimeZone.getDefault());
+                    try {
+                        Date dStart = sdf.parse(formattedStart);
 
-                    Date b = new Date(startMill);
-                    Date c = new Date(System.currentTimeMillis());
+                        long startMill = dStart.getTime();
+                        Date dEnd = sdf.parse(formattedEnd);
+                        long endMill = dEnd.getTime();
 
-                    System.out.println("SET TIME: " + sdf.format(b) + "\nCURR TIME: " +
-                        sdf.format(c));
+                        eventObject.setHostName(hostNameStr);
+                        eventObject.setEventName(eventNameStr);
+                        eventObject.setEventQueryName(eventNameStr.toLowerCase());
+                        eventObject.setStartTime(startMill);
+
+                        eventObject.setEndTime(endMill);
+                        eventObject.setKey("null");
+
+                        Date b = new Date(startMill);
+                        Date c = new Date(System.currentTimeMillis());
+
+                        System.out.println("SET TIME: " + sdf.format(b) + "\nCURR TIME: " +
+                                sdf.format(c));
 
                     /*TODO: NEED TO FIGURE OUT HOW TO PUT GENERATED KEY IN EVENT OBJECT*/
-                    String key = FirebaseDatabase.getInstance().getReference("events").push().getKey();
-                    eventObject.setKey(key);
-                    FirebaseDatabase.getInstance().getReference("events").child(key).setValue(eventObject);
-                    String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                    userName = userName.replaceAll("\\.", "@");
-                    FirebaseDatabase.getInstance().getReference("users").child(userName)
-                            .child("hostedEvents").child(key).setValue(eventObject);
-                    getFragmentManager().popBackStack();
+                        String key = FirebaseDatabase.getInstance().getReference("events").push().getKey();
+                        eventObject.setKey(key);
+                        FirebaseDatabase.getInstance().getReference("events").child(key).setValue(eventObject);
+                        String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                        userName = userName.replaceAll("\\.", "@");
+                        FirebaseDatabase.getInstance().getReference("users").child(userName)
+                                .child("hostedEvents").child(key).setValue(eventObject);
+                        Snackbar snack = Snackbar.make(getView(), "Event Created!", Snackbar.LENGTH_SHORT);
+                        View view = snack.getView();
+                        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        snack.show();
+                        getFragmentManager().popBackStack();
 
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }
-
-
             }
         });
     }

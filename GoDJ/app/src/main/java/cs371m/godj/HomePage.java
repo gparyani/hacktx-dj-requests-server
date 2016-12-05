@@ -30,7 +30,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     protected ActionBarDrawerToggle toggle;
     protected String userName;
     protected boolean screenIsBlank;
-    MyEventsFragment mef = new MyEventsFragment();
+    protected static MyEventsFragment mef = new MyEventsFragment();
 
 
     @Override
@@ -96,9 +96,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     getSupportFragmentManager().beginTransaction()
 
                     // Replace any other Fragment with our new Details Fragment with the right data
-                    .replace(R.id.main_frame, esf)
+                    .replace(R.id.main_frame, esf, "searchFrag")
                     // Let us come back
-                    .addToBackStack(null)
+                    .addToBackStack("searchFrag")
                     // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
@@ -118,6 +118,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
+                /*TODO: See if togglehamburgertoback can just be called here*/
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
                 if(backStackCount == 0) {
                     toggle.setDrawerIndicatorEnabled(true);
@@ -127,9 +128,61 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                         showMyEventFrag(); ///////////////////////////////////
                         screenIsBlank = false;
                     }
+                } else if(toggle.isDrawerIndicatorEnabled()) {
+                    toggleHamburgerToBack();
                 }
             }
         });
+
+//        FirebaseDatabase.getInstance().getReference("events").addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//                String key = dataSnapshot.getKey();
+//                Query query = FirebaseDatabase.getInstance().getReference()
+//                        .orderByKey()
+//                        .
+//                //System.out.println("key of child removed: " + key);
+//                query.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+//                            eventSnapshot.getRef().removeValue();
+////                            String key = eventSnapshot.getKey();
+////                            EventObject eventObject = eventSnapshot.getValue(EventObject.class);
+////                            eventObject.setKey(key);
+////                            Log.d("eventByName ", eventObject.getEventName());
+////                            events.add(eventObject);
+////                            handler.post(new EventSearchResultsFragment.showResults());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
 //        String thisUserName = userName.replaceAll("\\.", "@");
 //        FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
@@ -276,9 +329,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             // Replace any other Fragment with our new Details Fragment with the right data
-            ft.replace(R.id.main_frame, esf);
+            ft.replace(R.id.main_frame, esf, "searchFrag");
             // Let us come back
-            ft.addToBackStack(null);
+            ft.addToBackStack("searchFrag");
             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.commit();

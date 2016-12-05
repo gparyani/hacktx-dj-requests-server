@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -122,7 +123,7 @@ public class EventSearchResultsFragment extends Fragment {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String eventNm = getArguments().getString("eventNm");
+            final String eventNm = getArguments().getString("eventNm");
             String eventHost = getArguments().getString("eventHost");
             long startTime = getArguments().getLong("startTime");
             long endTime = getArguments().getLong("endTime");
@@ -139,12 +140,23 @@ public class EventSearchResultsFragment extends Fragment {
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 userName = userName.replaceAll("\\.", "@");
                                 FirebaseDatabase.getInstance().getReference("users").child(userName).child("savedEvents").child(eventObject.getKey()).setValue(eventObject);
-                                /*TODO: ADD TOAST OR SNACKBAR*/
+                                /*TODO: fix view for snackbar, currently null for some reason*/
+                                Snackbar snack = Snackbar.make(getActivity().getSupportFragmentManager()
+                                        .findFragmentByTag("eventSearch").getView(), "Event Saved!", Snackbar.LENGTH_SHORT);
+                                View view = snack.getView();
+                                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                snack.show();
                             } else if(which == 1) {
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 userName = userName.replaceAll("\\.", "@");
                                 FirebaseDatabase.getInstance().getReference("users").child(userName).child("eventAttending").setValue(eventObject.getKey());
-                                /*TODO: ADD TOAST OR SNACKBAR*/
+                                Snackbar snack = Snackbar.make(getActivity().getSupportFragmentManager()
+                                        .findFragmentByTag("eventSearch").getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
+                                View view = snack.getView();
+                                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                snack.show();
                             }
                         }
                     });

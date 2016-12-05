@@ -46,6 +46,7 @@ public class showSongRequests extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.favorite_layout, container, false);
 
+
         listView = (ListView) v.findViewById(R.id.fav_list_view);
         tracks = new ArrayList<>();
         songRequestAdapter = new SongRequestAdapter(getContext());
@@ -133,15 +134,10 @@ public class showSongRequests extends Fragment {
                                 // The 'which' argument contains the index position
                                 // of the selected item
                                 if (which == 0) {
-//                                    String uri = "spotify:track:<spotify uri>";
-//                                    Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
-//                                    startActivity(launcher);
                                     Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
-                                    intent.setData(Uri.parse(
-                                            uri));
+                                    intent.setData(Uri.parse(uri));
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
-
                                 /*TODO: ADD TOAST OR SNACKBAR*/
                                 } else if(which == 1) {
 

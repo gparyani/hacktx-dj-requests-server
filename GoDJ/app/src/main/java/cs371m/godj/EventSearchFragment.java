@@ -61,7 +61,7 @@ public class EventSearchFragment extends Fragment {
                 EventSearchResultsFragment esrf = new EventSearchResultsFragment();
                 esrf.setArguments(b);
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, esrf)
+                        .replace(R.id.main_frame, esrf, "eventSearch")
                         .addToBackStack("eventSearch")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
