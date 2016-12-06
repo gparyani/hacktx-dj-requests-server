@@ -3,14 +3,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:id="@+id/scroll"
-    android:fillViewport="true" >
+    android:fillViewport="true">
     <RelativeLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         >
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/attending_event">
+        </ListView>
 
         <ListView
             android:id="@+id/hosted_events_lv"
@@ -19,6 +25,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:headerDividersEnabled="false"
+            android:layout_below="@+id/attending_event"
             >
         </ListView>
 
@@ -31,7 +38,6 @@
             android:layout_below="@+id/hosted_events_lv"
             >
         </ListView>
-
 
     </RelativeLayout>
 </ScrollView>

@@ -47,7 +47,5 @@ public class TimePickerFragment extends DialogFragment
 
         String formatedTime = sdf.format(c.getTime());
         myField.setText(formatedTime);
-
-        //System.out.println("FORMATTED TIME: " + formatedDate);
     }
 }

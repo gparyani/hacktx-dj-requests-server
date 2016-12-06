@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/nav_login"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:icon="@drawable/wrench"
         android:title="Login" />
 
     <item android:title="Logistics">
@@ -18,10 +18,10 @@
                 android:title="Host New Event" />
             <item android:id="@+id/saved_songs"
                 android:icon="@drawable/musical_note"
-                android:title="Saved Songs" />
+                android:title="Favorite Songs" />
             <item android:id="@+id/song_search"
                 android:icon="@drawable/search"
-                android:title="Search" />
+                android:title="Search for Songs" />
         </menu>
     </item>
 

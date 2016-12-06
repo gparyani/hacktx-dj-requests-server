@@ -28,12 +28,15 @@ import java.util.List;
 
 public class MyEventsFragment extends Fragment implements MyEventsItemFragment.MyDialogCloseListener {
 
+    protected List<EventObject> attendingEvent;
     protected List<EventObject> hostedEvents;
     protected List<EventObject> savedEvents;
 
+    protected ListView attendingEventLV;
     protected ListView hostedEventsLV;
     protected ListView savedEventsLV;
 
+    protected EventItemAdapter attendingAdapter;
     protected EventItemAdapter hostAdapter;
     protected EventItemAdapter savedAdapter;
 
@@ -49,15 +52,14 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.my_events_layout, container, false);
+        attendingEvent = new ArrayList<>();
         hostedEvents = new ArrayList<>();
         savedEvents = new ArrayList<>();
 
         /*TODO: use Homepage.userName in place of get user in other places as well... maybe*/
-        //userName = getArguments().getString("userName");
         userName = HomePage.userName;
 
         final String thisUserName = userName.replaceAll("\\.", "@");
-        System.out.println("SEARCHING: " + thisUserName);
         FirebaseDatabase.getInstance().getReference("users")
                 .child(thisUserName)
                 .child("savedEvents")
@@ -76,7 +78,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
 
                         TextView savedHeader = new TextView(getActivity());
-                        savedHeader.setText("Saved Events");
+                        savedHeader.setText("My Saved Events");
                         savedHeader.setTextSize(20);
                         savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                         savedHeader.setPadding(0, 0, 0, 50);
@@ -114,9 +116,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
                             }
                         });
-
-
-
                     }
 
                     @Override
@@ -143,7 +142,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
 
                         TextView hostHeader = new TextView(getActivity());
-                        hostHeader.setText("Events I'm Hosting");
+                        hostHeader.setText("Hosting Events");
                         hostHeader.setTextSize(20);
                         hostHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                         hostHeader.setPadding(0, 0, 0, 50);
@@ -199,10 +198,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         return v;
     }
 
-    protected void updateSavedAdapter() {
-
-    }
-
 
     public void handleDialogClose(int option, int pos, boolean hosting, boolean remove, String eventNm) {
         if(remove) {
@@ -213,13 +208,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                     .child("savedEvents").child(eventObject.getKey()).removeValue();
             UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
             savedAdapter.notifyDataSetChanged();
-        } else if(option == 0) {
-//            Snackbar snack = Snackbar.make(getParentFragment().getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
-//            View view = snack.getView();
-//            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-//            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//            snack.show();
-        } else if(option == 1) {
 
         } else if(option == 2) {
             if(hosting) {

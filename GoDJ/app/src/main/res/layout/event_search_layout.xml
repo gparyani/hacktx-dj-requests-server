@@ -2,13 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingLeft="16dp"
-    android:paddingBottom="16dp"
-
-    >
+    android:paddingBottom="16dp">
 
 
 
@@ -20,6 +17,8 @@
         android:textColorHint="@color/gray"
         android:layout_marginTop="150dp"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/black"
+        android:textCursorDrawable="@drawable/black_cursor"
         />
     <Button
         android:id="@+id/event_search_but"
@@ -34,7 +33,6 @@
         android:id="@+id/event_search_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         >
     </FrameLayout>
 

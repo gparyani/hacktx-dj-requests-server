@@ -3,18 +3,18 @@ package cs371m.godj;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jasmine on 12/4/2016.
@@ -31,7 +31,7 @@ public class MyEventsItemFragment extends DialogFragment {
     public String[] options2 = {"Attend Event", "View Requested Songs", "Remove from Saved"};
     public final int ATTEND = 0;
     public final int REQUESTED_SONGS = 1;
-    protected final int DELETE_CANCEL = 2;
+    private List<EventObject> attendingEvent;
 
     public interface MyDialogCloseListener
     {
@@ -89,11 +89,20 @@ public class MyEventsItemFragment extends DialogFragment {
                                                 boolean found = false;
                                                 if(dataSnapshot.hasChild(eventKey)) {
                                                     FirebaseDatabase.getInstance().getReference("users").child(thisuserName).child("eventAttending").setValue(eventObject.getKey());
-                                                    Snackbar snack = Snackbar.make(HomePage.mef.getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
-                                                    View view = snack.getView();
-                                                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                                                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                                                    snack.show();
+
+//                                                    Snackbar snack = Snackbar.make(HomePage.mef.getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
+//                                                    View view = snack.getView();
+//                                                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+//                                                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+//                                                    snack.show();
+
+                                                    attendingEvent.add(eventObject);
+                                                    Bundle b = new Bundle();
+                                                    b.putParcelable("attendingEvent", eventObject);
+
+
+
+
                                                 } else {
                                                     System.out.println("event does not exist");
                                                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {

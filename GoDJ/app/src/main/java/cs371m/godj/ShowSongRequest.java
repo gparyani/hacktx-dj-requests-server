@@ -3,7 +3,6 @@ package cs371m.godj;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,35 +49,10 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
         /*TODO: set limit for dj view vs. user view*/
         limit = (hosting) ? 20 : 50;
 
-        //final String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replaceAll("\\.", "@");
-        System.out.println("SEARCHING: " + key);
-//        FirebaseDatabase.getInstance().getReference("eventPlaylists")
-//                .child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for(DataSnapshot trackSnapshot: dataSnapshot.getChildren()) {
-//                    //String key = eventSnapshot.getKey();
-//                    TrackDatabaseObject trackDatabaseObject = trackSnapshot.getValue(TrackDatabaseObject.class);
-//                    //eventObject.setKey(key);
-//                    Log.d("eventByName ", trackDatabaseObject.getTrackName());
-//                    tracks.add(trackDatabaseObject);
-//                }
-//
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
         TextView songHeader = new TextView(getActivity());
         songHeader.setText("Song Requests");
         songHeader.setTextSize(20);
-        songHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        songHeader.setTextColor(0xffffffff);
         songHeader.setPadding(0, 0, 0, 50);
         songHeader.setGravity(0x01);
         songHeader.setTypeface(songHeader.getTypeface(), 1);
