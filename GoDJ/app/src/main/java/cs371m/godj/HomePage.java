@@ -30,7 +30,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     protected ActionBarDrawerToggle toggle;
     protected static String userName;
     protected boolean screenIsBlank;
-    protected static MyEventsFragment mef = new MyEventsFragment();
+    protected static MyEventsFragment mef;
 
 
     @Override
@@ -40,10 +40,14 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        System.out.println("on create home page");
+
 
         toolbar.setTitle(R.string.app_name);
         toolbar.setTitleTextColor(0xffffffff);
         setSupportActionBar(toolbar);
+
+        mef = new MyEventsFragment();
 
         if(getIntent().hasExtra("userName") && getIntent().getStringExtra("userName") != null) {
             userName = getIntent().getStringExtra("userName");
@@ -80,13 +84,15 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     toggleHamburgerToBack();
                     //getSupportFragmentManager().popBackStack();
                     CreateEventFragment cef = CreateEventFragment.newInstance();
+                    Bundle b = new Bundle();
+                    b.putBoolean("returnToSearch", true);
+                    cef.setArguments(b);
                     getSupportFragmentManager().beginTransaction()
                             // Replace any other Fragment with our new Details Fragment with the right data
                             .replace(R.id.main_frame, cef)
                             // Let us come back
                             .addToBackStack(null)
                             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commit();
                     break;
 
@@ -94,6 +100,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     //getSupportFragmentManager().popBackStack();
                     toggleHamburgerToBack();
                     EventSearchFragment esf = EventSearchFragment.newInstance();
+                    Bundle b2 = new Bundle();
+
+                    b2.putBoolean("returnToSearch", true);
+
+                    esf.setArguments(b2);
+
                     getSupportFragmentManager().beginTransaction()
 
                             // Replace any other Fragment with our new Details Fragment with the right data
@@ -101,7 +113,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                             // Let us come back
                             .addToBackStack("searchFrag")
                             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commit();
                     break;
 
@@ -223,12 +234,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             if (user != null) {
                 FirebaseAuth.getInstance().signOut(); // Will call updateUserDisplay via callback
                 Intent startLoginScreen = new Intent(this, MainActivity.class);
-                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(startLoginScreen);
                 return true;
             } else {
                 Intent startLoginScreen = new Intent(this, MainActivity.class);
-                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(startLoginScreen);
                 return true;
             }
@@ -241,7 +252,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             // Let us come back
             ft.addToBackStack(null);
             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.commit();
         } else if (id == R.id.song_search) {
             getSupportFragmentManager().popBackStack();
@@ -257,7 +267,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             // Let us come back
             ft.addToBackStack("searchFrag");
             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.commit();
 
         }
@@ -277,7 +286,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         // Let us come back
 //        ft.addToBackStack(null);
         // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
     }
 }

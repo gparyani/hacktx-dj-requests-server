@@ -354,18 +354,20 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             if (user != null) {
                 FirebaseAuth.getInstance().signOut(); // Will call updateUserDisplay via callback
                 Intent startLoginScreen = new Intent(this, MainActivity.class);
-                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                finish();
                 startActivity(startLoginScreen);
                 return true;
             } else {
                 Intent startLoginScreen = new Intent(this, MainActivity.class);
-                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                finish();
                 startActivity(startLoginScreen);
                 return true;
             }
         } else if(id != R.id.song_search){
             Intent goHome = new Intent(this, HomePage.class);
-            goHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             goHome.putExtra("menuItemID", id);
             startActivity(goHome);
             // goHome.putExtra("itemWasSelected", true);

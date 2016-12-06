@@ -25,7 +25,9 @@
         android:hint="Enter Event Name"
         android:textColorHint="@color/gray"
         android:inputType="text"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:maxLength="50"
+        />
 
     <TextView
         android:id="@+id/host_name_tv_oncreateevent"

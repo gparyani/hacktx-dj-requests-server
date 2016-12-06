@@ -151,13 +151,37 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                     Date d = new Date(requestObject.getNextAvailableRequest());
                                                                                     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
                                                                                     String nextTime = sdf.format(d);
-                                                                                    Snackbar snack = Snackbar.make(viewGroup, "Request Limit Reached. Next request available at: " + nextTime + ".", Snackbar.LENGTH_LONG);
+                                                                                    Snackbar snack = Snackbar.make(viewGroup, "Your request limit has been reached. Requests available again at " + nextTime + ".", Snackbar.LENGTH_LONG);
                                                                                     View view = snack.getView();
                                                                                     TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                                                                                     tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                                                                                     snack.show();
                                                                                 }
                                                                             } else if (requestObject.getNumRequests() < REQ_LIMIT) {
+                                                                                Query q = db.child("eventPlaylists")
+                                                                                        .child(currEvent)
+                                                                                        .orderByChild("trackName")
+                                                                                        .equalTo(trackName);
+                                                                                q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                    @Override
+                                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                        if (dataSnapshot.getValue() == null) {
+                                                                                            TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
+                                                                                                    artistName, albumName, trackURI, 1);
+
+                                                                                            db.child("eventPlaylists")
+                                                                                                    .child(currEvent).child(trackURI)
+                                                                                                    .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
+
+                                                        /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
+                                                                                        }
+                                                                                    }
+
+                                                                                    @Override
+                                                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                                                    }
+                                                                                });
                                                                                 int reqs = requestObject.getNumRequests() + 1;
                                                                                 requestObject.setNumRequests(reqs);
                                                                                 reqRef.setValue(requestObject);
@@ -181,30 +205,7 @@ public class TrackPageActivity extends AppCompatActivity {
 
                                                                 }
                                                             });
-                                                            Query q = db.child("eventPlaylists")
-                                                                    .child(currEvent)
-                                                                    .orderByChild("trackName")
-                                                                    .equalTo(trackName);
-                                                            q.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                    if (dataSnapshot.getValue() == null) {
-                                                                        TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
-                                                                                artistName, albumName, trackURI, 1);
 
-                                                                        db.child("eventPlaylists")
-                                                                                .child(currEvent).child(trackURI)
-                                                                                .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
-
-                                                        /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
-                                                                    }
-                                                                }
-
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                                }
-                                                            });
                                                         } else {
                                                             String message = (currTime > eventStart) ? "Request Failed. " + eventName + " has already ended." : "Request Failed. " + eventName + " has not yet started.";
                                                             Snackbar snack = Snackbar.make(viewGroup, message, Snackbar.LENGTH_LONG);

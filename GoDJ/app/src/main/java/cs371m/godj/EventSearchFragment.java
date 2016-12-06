@@ -1,11 +1,11 @@
 package cs371m.godj;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +26,9 @@ public class EventSearchFragment extends Fragment {
     protected List<EventObject> events;
     protected Handler handler;
 
+    private boolean returnToSearch;
+    private boolean startingEventFind;
+
     static EventSearchFragment newInstance() {
         EventSearchFragment eventSearchFragment = new EventSearchFragment();
         return eventSearchFragment;
@@ -45,6 +48,14 @@ public class EventSearchFragment extends Fragment {
         events = new ArrayList<>();
         handler = new Handler();
 
+        if(getArguments() != null) {
+            returnToSearch = getArguments().getBoolean("returnToSearch", false);
+        } else {
+            returnToSearch = false;
+        }
+        startingEventFind = false;
+
+
         return v;
     }
 
@@ -55,6 +66,7 @@ public class EventSearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                startingEventFind = true;
                 Bundle b = new Bundle();
                 b.putString("searchTerm", searchET.getText().toString());
                 EventSearchResultsFragment esrf = new EventSearchResultsFragment();
@@ -62,7 +74,6 @@ public class EventSearchFragment extends Fragment {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, esrf, "eventSearch")
                         .addToBackStack("eventSearch")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
             }
         });
@@ -72,5 +83,15 @@ public class EventSearchFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(!startingEventFind && returnToSearch) {
+            getActivity().getSupportFragmentManager().popBackStack();
+            Intent startUserMain = new Intent(getContext(), UserMainActivity.class);
+            startActivity(startUserMain);
+        }
     }
 }

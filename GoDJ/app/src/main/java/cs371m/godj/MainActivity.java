@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
                     FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.add(R.id.main_frame, flf);
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     ft.commit();
                 }
                 Log.d(TAG, "userName="+userName);
@@ -97,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_frame, fcaf);
         ft.addToBackStack(null);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
     }
 
