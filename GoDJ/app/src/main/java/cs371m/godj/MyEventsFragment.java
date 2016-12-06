@@ -90,7 +90,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         savedEventsLV.setAdapter(savedAdapter);
 
                         savedAdapter.changeList(savedEvents);
-                        UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+                        UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
                         savedAdapter.notifyDataSetChanged();
 
                         savedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -156,7 +156,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         hostedEventsLV.setAdapter(hostAdapter);
 
                         hostAdapter.changeList(hostedEvents);
-                        UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
+                        UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
                         hostAdapter.notifyDataSetChanged();
 
                         hostedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -206,7 +206,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
             savedEvents.remove(pos);
             FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                     .child("savedEvents").child(eventObject.getKey()).removeValue();
-            UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+            UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
             savedAdapter.notifyDataSetChanged();
 
         } else if(option == 2) {
@@ -223,7 +223,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 FirebaseDatabase.getInstance().getReference("eventPlaylists")
                         .child(eventObject.getKey()).removeValue();
                 hostedEvents.remove(pos);
-                UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
+                UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
                 hostAdapter.notifyDataSetChanged();
 
             } else {
@@ -232,7 +232,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 savedEvents.remove(pos);
                 FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                         .child("savedEvents").child(eventObject.getKey()).removeValue();
-                UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+                UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
                 savedAdapter.notifyDataSetChanged();
             }
         }
