@@ -43,6 +43,9 @@ public class ShowAllAlbumResults extends AppCompatActivity {
 
         setContentView(R.layout.all_results_layout);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         Intent intent = getIntent();
         String searchTerm = intent.getStringExtra("searchTerm");
         String formatTitle;
@@ -134,28 +137,24 @@ public class ShowAllAlbumResults extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.search_ID:
                 Intent goSearch = new Intent(this, UserMainActivity.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 UserMainActivity.clearSearch = true;
-                finish();
                 startActivity(goSearch);
                 break;
-            case R.id.favorites_ID:
-                launchFavorites();
+            case R.id.return_home_ID:
+                Intent goHome = new Intent(this, HomePage.class);
+//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(goHome);
+                break;
+            case android.R.id.home:
+                finish();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void launchFavorites() {
-        Intent startFavorites = new Intent(this, FavoriteTracks.class);
-        startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        startActivity(startFavorites);
     }
 
 }

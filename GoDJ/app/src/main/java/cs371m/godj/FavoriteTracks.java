@@ -79,7 +79,7 @@ public class FavoriteTracks extends AppCompatActivity {
                 UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
-            case R.id.favorites_ID:
+            case R.id.return_home_ID:
                 break;
         }
 

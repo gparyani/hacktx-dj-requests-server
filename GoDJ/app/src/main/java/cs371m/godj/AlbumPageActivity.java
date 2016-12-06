@@ -41,6 +41,9 @@ public class AlbumPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_page_layout);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         Intent intent = getIntent();
 
 
@@ -112,10 +115,13 @@ public class AlbumPageActivity extends AppCompatActivity {
                 UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
-            case R.id.favorites_ID:
-                Intent goFave = new Intent(this, FavoriteTracks.class);
-                goFave.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(goFave);
+            case R.id.return_home_ID:
+                Intent goHome = new Intent(this, HomePage.class);
+//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(goHome);
+                break;
+            case android.R.id.home:
+                finish();
                 break;
         }
 
