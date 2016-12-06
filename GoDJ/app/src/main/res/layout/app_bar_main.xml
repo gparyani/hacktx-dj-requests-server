@@ -17,6 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+<<<<<<< HEAD
             android:background="?attr/colorPrimary" >
 
 
@@ -37,6 +38,10 @@
                 android:textCursorDrawable="@drawable/white_cursor"
                 />
         </android.support.v7.widget.Toolbar>
+=======
+            android:background="?attr/colorPrimary"
+            />
+>>>>>>> 09736b8850164a9b7d164043cfb0a5ae10a6e174
 
 
 

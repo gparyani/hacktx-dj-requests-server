@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -41,6 +42,11 @@ public class AlbumPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_page_layout);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         Intent intent = getIntent();
 
 
@@ -55,7 +61,11 @@ public class AlbumPageActivity extends AppCompatActivity {
         albumNameTV = (TextView) findViewById(R.id.album_page_album_name);
 
         final String imgURL = images.get(0).url;
-        Picasso.with(getApplicationContext()).load(imgURL).into(albumImage);
+        if(!imgURL.equals("")) {
+            Picasso.with(getApplicationContext()).load(imgURL).into(albumImage);
+        } else {
+            albumImage.setImageResource(R.drawable.music_record);
+        }
         albumNameTV.setText(albumName);
 
         listView = (ListView) findViewById(R.id.album_page_list_view);
@@ -107,15 +117,18 @@ public class AlbumPageActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainFragment.class);
+                Intent goSearch = new Intent(this, UserMainActivity.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainFragment.clearSearch = true;
+                UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
-            case R.id.favorites_ID:
-                Intent goFave = new Intent(this, FavoriteTracks.class);
-                goFave.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(goFave);
+            case R.id.return_home_ID:
+                Intent goHome = new Intent(this, HomePage.class);
+//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(goHome);
+                break;
+            case android.R.id.home:
+                finish();
                 break;
         }
 

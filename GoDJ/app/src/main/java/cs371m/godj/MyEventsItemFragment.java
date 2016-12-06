@@ -31,6 +31,7 @@ public class MyEventsItemFragment extends DialogFragment {
     public String[] options3 = {"View Requested Songs", "Leave this Event"};
     public final int ATTEND = 0;
     public final int REQUESTED_SONGS = 1;
+    protected static final int DELETE_CANCEL = 2;
 
     public interface MyDialogCloseListener
     {
@@ -144,7 +145,6 @@ public class MyEventsItemFragment extends DialogFragment {
                                 // Let us come back
                                 ft.addToBackStack("showSongRequests");
                                 // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                                 ft.commit();
                             }
                         }

@@ -1,9 +1,12 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -72,6 +75,11 @@ public class ArtistPageActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_page_layout);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         artistImage = (ImageView) findViewById(R.id.artist_image);
         artistName = (TextView) findViewById(R.id.artist_nm);
@@ -158,7 +166,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             popTrackFooter.setVisibility(View.VISIBLE);
             popTracksAdapter.notifyDataSetChanged();
             popTracksAdapter.changeList(popularTracks);
-            UserMainFragment.ListUtils.setDynamicHeight(popularTrackListView);
+            UserMainActivity.ListUtils.setDynamicHeight(popularTrackListView);
             popTracksAdapter.notifyDataSetChanged();
         }
     }
@@ -172,7 +180,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             albumFooter.setVisibility(View.VISIBLE);
             albumsItemAdapter.notifyDataSetChanged();
             albumsItemAdapter.changeList(albums);
-            UserMainFragment.ListUtils.setDynamicHeight(albumsListView);
+            UserMainActivity.ListUtils.setDynamicHeight(albumsListView);
             albumsItemAdapter.notifyDataSetChanged();
 
         }
@@ -187,7 +195,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             relatedArtistFooter.setVisibility(View.VISIBLE);
             relatedArtistsAdapter.notifyDataSetChanged();
             relatedArtistsAdapter.changeList(relatedArtists);
-            UserMainFragment.ListUtils.setDynamicHeight(relatedArtistListView);
+            UserMainActivity.ListUtils.setDynamicHeight(relatedArtistListView);
             relatedArtistsAdapter.notifyDataSetChanged();
 
         }
@@ -318,7 +326,13 @@ public class ArtistPageActivity extends AppCompatActivity {
     protected void callServices() {
         Intent intent = getIntent();
         String artistID = intent.getStringExtra("artistID");
-        Picasso.with(getApplicationContext()).load(intent.getStringExtra("artistURL")).into(artistImage);
+        String artistURL = intent.getStringExtra("artistURL");
+        if(!artistURL.equals("")) {
+            System.out.println("path: " + artistURL);
+            Picasso.with(getApplicationContext()).load(artistURL).into(artistImage);
+        } else {
+            artistImage.setImageResource(R.drawable.microphone);
+        }
         artistName.setText(intent.getStringExtra("artistName"));
 
         SpotifyApi api = new SpotifyApi();
@@ -384,6 +398,40 @@ public class ArtistPageActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.search_ID:
+                Intent goSearch = new Intent(this, UserMainActivity.class);
+                goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                UserMainActivity.clearSearch = true;
+                startActivity(goSearch);
+                break;
+            case R.id.return_home_ID:
+                Intent goHome = new Intent(this, HomePage.class);
+//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(goHome);
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

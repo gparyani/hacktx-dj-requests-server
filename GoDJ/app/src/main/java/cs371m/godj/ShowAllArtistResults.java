@@ -1,11 +1,15 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -27,6 +31,11 @@ public class ShowAllArtistResults extends AppCompatActivity {
 
         setContentView(R.layout.all_results_layout);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         Intent intent = getIntent();
         String searchTerm = intent.getStringExtra("searchTerm");
         String formatTitle;
@@ -43,6 +52,22 @@ public class ShowAllArtistResults extends AppCompatActivity {
         listView.setAdapter(artistItemAdapter);
         artistItemAdapter.changeList(artists);
         artistItemAdapter.notifyDataSetChanged();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView artistID = (TextView) view.findViewById(R.id.artist_id);
+                TextView artistName = (TextView) view.findViewById(R.id.artist);
+                TextView artistURL = (TextView) view.findViewById(R.id.artist_image_url);
+
+
+                Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
+                showArtistPage.putExtra("artistID", artistID.getText().toString());
+                showArtistPage.putExtra("artistName", artistName.getText().toString());
+                showArtistPage.putExtra("artistURL", artistURL.getText().toString());
+                startActivity(showArtistPage);
+            }
+        });
 
 
 
@@ -62,27 +87,23 @@ public class ShowAllArtistResults extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainFragment.class);
+                Intent goSearch = new Intent(this, UserMainActivity.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainFragment.clearSearch = true;
-                finish();
+                UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
-            case R.id.favorites_ID:
-                launchFavorites();
+            case R.id.return_home_ID:
+                Intent goHome = new Intent(this, HomePage.class);
+//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(goHome);
+                break;
+            case android.R.id.home:
+                finish();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void launchFavorites() {
-        Intent startFavorites = new Intent(this, FavoriteTracks.class);
-        startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        startActivity(startFavorites);
     }
 }

@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -48,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
                     FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.add(R.id.main_frame, flf);
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     ft.commit();
                 }
                 Log.d(TAG, "userName="+userName);
@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setContentView(R.layout.home_page_events_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -97,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_frame, fcaf);
         ft.addToBackStack(null);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
     }
 

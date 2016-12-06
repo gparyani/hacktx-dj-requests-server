@@ -1,9 +1,11 @@
 package cs371m.godj;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,7 +96,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             savedEvents.add(eventObject);
                         }
 
-
                         TextView savedHeader = new TextView(getActivity());
                         savedHeader.setText("Saved Events");
                         savedHeader.setTextSize(20);
@@ -107,7 +108,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         savedEventsLV.setAdapter(savedAdapter);
 
                         savedAdapter.changeList(savedEvents);
-                        UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
+                        UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
                         savedAdapter.notifyDataSetChanged();
 
                         savedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -170,7 +171,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         hostedEventsLV.setAdapter(hostAdapter);
 
                         hostAdapter.changeList(hostedEvents);
-                        UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
+                        UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
                         hostAdapter.notifyDataSetChanged();
 
                         hostedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -216,7 +217,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
                         final String eventKey = (String) dataSnapshot.getValue();
                         attendingEvent.clear();
-                        UserMainFragment.ListUtils.setDynamicHeight(attendingEventLV);
+                        UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
                         attendingAdapter.notifyDataSetChanged();
 
 
@@ -233,7 +234,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                                     eventObject = eventSnapshot.getValue(EventObject.class);
                                                     attendingEvent.add(eventObject);
                                                     attendingAdapter.changeList(attendingEvent);
-                                                    UserMainFragment.ListUtils.setDynamicHeight(attendingEventLV);
+                                                    UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
                                                     attendingAdapter.notifyDataSetChanged();
                                                     break;
                                                 }
@@ -292,34 +293,76 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
             savedEvents.remove(pos);
             FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                     .child("savedEvents").child(eventObject.getKey()).removeValue();
-            UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
+            UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
             savedAdapter.notifyDataSetChanged();
 
-        } else if(option == 2) {
+        } else if(option == MyEventsItemFragment.DELETE_CANCEL) {
             if(hosting) {
-                EventObject eventObject = hostedEvents.get(pos);
-                System.out.println("canceling: " + eventObject.getKey());
-                FirebaseDatabase.getInstance().getReference("events")
-                        .child(eventObject.getKey()).removeValue();
-                FirebaseDatabase.getInstance().getReference("eventPlaylists")
-                        .child(eventObject.getKey()).removeValue();
-                String thisUserName = userName.replaceAll("\\.", "@");
-                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
-                        .child("hostedEvents").child(eventObject.getKey()).removeValue();
-                FirebaseDatabase.getInstance().getReference("eventPlaylists")
-                        .child(eventObject.getKey()).removeValue();
-                hostedEvents.remove(pos);
-                UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
-                hostAdapter.notifyDataSetChanged();
+                final EventObject eventObject = hostedEvents.get(pos);
+                final int position = pos;
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_NEGATIVE:
+
+                                break;
+
+                            case DialogInterface.BUTTON_POSITIVE:
+                                System.out.println("canceling: " + eventObject.getKey());
+                                FirebaseDatabase.getInstance().getReference("events")
+                                        .child(eventObject.getKey()).removeValue();
+                                FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                                        .child(eventObject.getKey()).removeValue();
+                                String thisUserName = userName.replaceAll("\\.", "@");
+                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
+                                        .child("hostedEvents").child(eventObject.getKey()).removeValue();
+                                FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                                        .child(eventObject.getKey()).removeValue();
+                                hostedEvents.remove(position);
+                                UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
+                                hostAdapter.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                };
+                alert.setTitle("Confirm");
+                alert.setMessage("Are you sure you want to cancel \"" + eventObject.getEventName() + "\"?")
+                        .setNegativeButton("No", dialogClickListener)
+                        .setPositiveButton("Yes", dialogClickListener).show();
+
+
 
             } else {
-                String thisUserName = userName.replaceAll("\\.", "@");
-                EventObject eventObject = savedEvents.get(pos);
-                savedEvents.remove(pos);
-                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
-                        .child("savedEvents").child(eventObject.getKey()).removeValue();
-                UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
-                savedAdapter.notifyDataSetChanged();
+                final EventObject eventObject = savedEvents.get(pos);
+                final int position = pos;
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_NEGATIVE:
+
+                                break;
+
+                            case DialogInterface.BUTTON_POSITIVE:
+                                String thisUserName = userName.replaceAll("\\.", "@");
+                                savedEvents.remove(position);
+                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
+                                        .child("savedEvents").child(eventObject.getKey()).removeValue();
+                                UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+                                savedAdapter.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                };
+                alert.setTitle("Confirm");
+                alert.setMessage("Are you sure you want to remove \"" + eventObject.getEventName() + "\" from your list?")
+                        .setNegativeButton("No", dialogClickListener)
+                        .setPositiveButton("Yes", dialogClickListener).show();
+
+
             }
         }
     }

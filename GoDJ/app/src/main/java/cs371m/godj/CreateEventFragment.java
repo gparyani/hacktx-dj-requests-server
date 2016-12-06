@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,8 @@ public class CreateEventFragment extends Fragment {
 
     protected Button createEventBut;
 
+    private boolean returnToSearch;
+
     static CreateEventFragment newInstance() {
         CreateEventFragment createEventFragment = new CreateEventFragment();
         return createEventFragment;
@@ -44,6 +47,14 @@ public class CreateEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.create_event, container, false);
         createEventBut = (Button) v.findViewById(R.id.create_event_but);
+
+        if(getArguments() != null) {
+            returnToSearch = getArguments().getBoolean("returnToSearch", false);
+        } else {
+            returnToSearch = false;
+        }
+
+
         return v;
     }
 
@@ -155,11 +166,19 @@ public class CreateEventFragment extends Fragment {
                                 .child("hostedEvents").child(key).setValue(eventObject);
 
                         Snackbar snack = Snackbar.make(getView(), "Event Added to Hosting Events", Snackbar.LENGTH_SHORT);
+                        snack.setCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                super.onDismissed(snackbar, event);
+                                getFragmentManager().popBackStack();
+                            }
+                        });
+
                         View view = snack.getView();
                         TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                         snack.show();
-                        getFragmentManager().popBackStack();
+
 
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -169,5 +188,21 @@ public class CreateEventFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(returnToSearch) {
+            getActivity().getSupportFragmentManager().popBackStack();
+            Intent startUserMain = new Intent(getContext(), UserMainActivity.class);
+            startActivity(startUserMain);
+        }
     }
 }

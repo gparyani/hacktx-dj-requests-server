@@ -24,7 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,8 +39,10 @@ public class EventSearchResultsFragment extends Fragment {
     protected ListView listView;
     protected EventItemAdapter adapter;
     protected String searchTerm;
+    protected String dateTerm;
     protected List<EventObject> events;
     protected Handler handler;
+    public static final long TWENTY_FOUR_HOURS = 86400000;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,7 +52,9 @@ public class EventSearchResultsFragment extends Fragment {
         events = new ArrayList<>();
         adapter = new EventItemAdapter(getActivity());
         listView.setAdapter(adapter);
-        searchTerm = getArguments().getString("searchTerm");
+        searchTerm = getArguments().getString("searchTerm", null);
+        dateTerm = getArguments().getString("dateTerm", null);
+
         TextView header = new TextView(getActivity());
         header.setText("Events");
         header.setTextColor(0xffffffff);
@@ -86,28 +93,65 @@ public class EventSearchResultsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Query query = FirebaseDatabase.getInstance().getReference()
-                .child("events")
-                .orderByChild("eventQueryName")
-                .equalTo(searchTerm.toLowerCase());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
-                    String key = eventSnapshot.getKey();
-                    EventObject eventObject = eventSnapshot.getValue(EventObject.class);
-                    eventObject.setKey(key);
-                    Log.d("eventByName ", eventObject.getEventName());
-                    events.add(eventObject);
-                    handler.post(new showResults());
+        if(searchTerm != null) {
+
+            Query query = FirebaseDatabase.getInstance().getReference()
+                    .child("events")
+                    .orderByChild("eventQueryName")
+                    .equalTo(searchTerm.toLowerCase());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                        String key = eventSnapshot.getKey();
+                        EventObject eventObject = eventSnapshot.getValue(EventObject.class);
+                        eventObject.setKey(key);
+                        Log.d("eventByName ", eventObject.getEventName());
+                        events.add(eventObject);
+                        handler.post(new showResults());
+                    }
                 }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        } else if(dateTerm != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+            try {
+                Date d = sdf.parse(dateTerm);
+                long dateChosen = d.getTime();
+                System.out.println("query: " + dateChosen);
+                System.out.println("query: " + (dateChosen + TWENTY_FOUR_HOURS));
+                Query query = FirebaseDatabase.getInstance().getReference()
+                        .child("events")
+                        .orderByChild("startTime")
+                        .startAt(dateChosen)
+                        .endAt(dateChosen + TWENTY_FOUR_HOURS);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                            String key = eventSnapshot.getKey();
+                            EventObject eventObject = eventSnapshot.getValue(EventObject.class);
+                            eventObject.setKey(key);
+                            Log.d("eventByName ", eventObject.getEventName());
+                            events.add(eventObject);
+                            handler.post(new showResults());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        }
 
     }
 

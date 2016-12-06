@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -52,6 +52,11 @@ public class TrackPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.track_layout);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         viewGroup = (ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
 
         Intent loadTrackPage = getIntent();
@@ -83,16 +88,18 @@ public class TrackPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String[] trackInfo = {trackName, albumName, artistName, imageURL, trackURI};
-                if (!UserMainFragment.faveTrackMap.containsKey(trackURI)) {
-                    UserMainFragment.faveTrackMap.put(trackURI, trackName);
-                    UserMainFragment.favoriteTracks.add(trackInfo);
-                    String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                    String _userName = user.replaceAll("\\.", "@"); // . illegal in Firebase key
-                    FirebaseDatabase.getInstance().getReference("users").child(_userName).child("track").push().setValue(trackURI);
-                    Toast.makeText(getApplicationContext(), "Added Song to Favorites!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Song Already in Favorites", Toast.LENGTH_SHORT).show();
-                }
+                TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName, artistName,
+                        albumName, trackURI, 1);
+                String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                String _userName = user.replaceAll("\\.", "@"); // . illegal in Firebase key
+                FirebaseDatabase.getInstance().getReference()
+                        .child("users").child(_userName)
+                        .child("savedSongs").child(trackURI).setValue(trackDatabaseObject);
+                Snackbar snack = Snackbar.make(viewGroup, "Song Saved!", Snackbar.LENGTH_LONG);
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                snack.show();
             }
         });
 
@@ -119,7 +126,7 @@ public class TrackPageActivity extends AppCompatActivity {
                                                 eventsRef.child(currEvent).addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                                        EventObject eventObject = dataSnapshot.getValue(EventObject.class);
+                                                        final EventObject eventObject = dataSnapshot.getValue(EventObject.class);
                                                         long eventStart = eventObject.getStartTime();
                                                         long eventEnd = eventObject.getEndTime();
                                                         long currTime = System.currentTimeMillis();
@@ -151,13 +158,49 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                     Date d = new Date(requestObject.getNextAvailableRequest());
                                                                                     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
                                                                                     String nextTime = sdf.format(d);
-                                                                                    Snackbar snack = Snackbar.make(viewGroup, "Request Limit Reached. Next request available at: " + nextTime + ".", Snackbar.LENGTH_LONG);
+                                                                                    Snackbar snack = Snackbar.make(viewGroup, "Your request limit has been reached. Requests available again at " + nextTime + ".", Snackbar.LENGTH_LONG);
                                                                                     View view = snack.getView();
                                                                                     TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                                                                                     tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                                                                                     snack.show();
                                                                                 }
                                                                             } else if (requestObject.getNumRequests() < REQ_LIMIT) {
+                                                                                Query q = db.child("eventPlaylists")
+                                                                                        .child(currEvent)
+                                                                                        .orderByChild("trackName")
+                                                                                        .equalTo(trackName);
+                                                                                q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                    @Override
+                                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                        if (dataSnapshot.getValue() == null) {
+                                                                                            TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
+                                                                                                    artistName, albumName, trackURI, 1);
+
+                                                                                            db.child("eventPlaylists")
+                                                                                                    .child(currEvent).child(trackURI)
+                                                                                                    .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
+
+                                                        /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
+                                                                                        } else {
+
+                                                                                            TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
+                                                                                                    .iterator().next().getValue(TrackDatabaseObject.class);
+                                                                                            int priority = trackDatabaseObject.getPriority() + 1;
+                                                                                            trackDatabaseObject.setPriority(priority);
+                                                                                            System.out.println("eventObject " + eventObject.getKey());
+                                                                                            System.out.println("trackData " + trackDatabaseObject.getTrackURI());
+
+                                                                                            FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                                                                                                    .child(eventObject.getKey()).child(trackDatabaseObject
+                                                                                                    .getTrackURI()).setValue(trackDatabaseObject, 0 - priority);
+                                                                                        }
+                                                                                    }
+
+                                                                                    @Override
+                                                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                                                    }
+                                                                                });
                                                                                 int reqs = requestObject.getNumRequests() + 1;
                                                                                 requestObject.setNumRequests(reqs);
                                                                                 reqRef.setValue(requestObject);
@@ -169,10 +212,53 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                             }
                                                                         }
                                                                     } else {
+
+                                                                        Query q = db.child("eventPlaylists")
+                                                                                .child(currEvent)
+                                                                                .orderByChild("trackName")
+                                                                                .equalTo(trackName);
+                                                                        q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                            @Override
+                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                if (dataSnapshot.getValue() == null) {
+                                                                                    TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
+                                                                                            artistName, albumName, trackURI, 1);
+
+                                                                                    db.child("eventPlaylists")
+                                                                                            .child(currEvent).child(trackURI)
+                                                                                            .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
+
+                                                        /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
+                                                                                } else {
+
+                                                                                    TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
+                                                                                            .iterator().next().getValue(TrackDatabaseObject.class);
+                                                                                    int priority = trackDatabaseObject.getPriority() + 1;
+                                                                                    trackDatabaseObject.setPriority(priority);
+                                                                                    System.out.println("eventObject " + eventObject.getKey());
+                                                                                    System.out.println("trackData " + trackDatabaseObject.getTrackURI());
+
+                                                                                    FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                                                                                            .child(eventObject.getKey()).child(trackDatabaseObject
+                                                                                            .getTrackURI()).setValue(trackDatabaseObject, 0 - priority);
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onCancelled(DatabaseError databaseError) {
+
+                                                                            }
+                                                                        });
+
                                                                         long startTime = System.currentTimeMillis();
                                                                         RequestObject requestObject1 = new RequestObject(1,
                                                                                 startTime, startTime + ONE_HOUR);
                                                                         reqRef.setValue(requestObject1);
+                                                                        Snackbar snack = Snackbar.make(viewGroup, "Song Requested!", Snackbar.LENGTH_LONG);
+                                                                        View view = snack.getView();
+                                                                        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                                                        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                                                        snack.show();
                                                                     }
                                                                 }
 
@@ -181,30 +267,7 @@ public class TrackPageActivity extends AppCompatActivity {
 
                                                                 }
                                                             });
-                                                            Query q = db.child("eventPlaylists")
-                                                                    .child(currEvent)
-                                                                    .orderByChild("trackName")
-                                                                    .equalTo(trackName);
-                                                            q.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                    if (dataSnapshot.getValue() == null) {
-                                                                        TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
-                                                                                artistName, albumName, trackURI, 1);
 
-                                                                        db.child("eventPlaylists")
-                                                                                .child(currEvent).child(trackURI)
-                                                                                .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
-
-                                                        /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
-                                                                    }
-                                                                }
-
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                                }
-                                                            });
                                                         } else {
                                                             String message = (currTime > eventStart) ? "Request Failed. " + eventName + " has already ended." : "Request Failed. " + eventName + " has not yet started.";
                                                             Snackbar snack = Snackbar.make(viewGroup, message, Snackbar.LENGTH_LONG);
@@ -265,15 +328,18 @@ public class TrackPageActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainFragment.class);
-                goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainFragment.clearSearch = true;
+                Intent goSearch = new Intent(this, UserMainActivity.class);
+               // goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
-            case R.id.favorites_ID:
-                Intent goFave = new Intent(this, FavoriteTracks.class);
-                goFave.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(goFave);
+            case R.id.return_home_ID:
+                Intent goHome = new Intent(this, HomePage.class);
+//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(goHome);
+                break;
+            case android.R.id.home:
+                finish();
                 break;
         }
 

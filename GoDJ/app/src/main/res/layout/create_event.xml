@@ -27,7 +27,9 @@
         android:backgroundTint="@color/black"
         android:textCursorDrawable="@drawable/black_cursor"
         android:inputType="text"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:maxLength="50"
+        />
 
     <TextView
         android:id="@+id/host_name_tv_oncreateevent"
