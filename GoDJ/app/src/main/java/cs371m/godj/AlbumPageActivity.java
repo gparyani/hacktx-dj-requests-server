@@ -107,9 +107,9 @@ public class AlbumPageActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainActivity.class);
+                Intent goSearch = new Intent(this, UserMainFragment.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainActivity.clearSearch = true;
+                UserMainFragment.clearSearch = true;
                 startActivity(goSearch);
                 break;
             case R.id.favorites_ID:

@@ -91,9 +91,9 @@ public class ShowAllSongResults extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainActivity.class);
+                Intent goSearch = new Intent(this, UserMainFragment.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainActivity.clearSearch = true;
+                UserMainFragment.clearSearch = true;
                 finish();
                 startActivity(goSearch);
                 break;

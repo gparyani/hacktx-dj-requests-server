@@ -158,7 +158,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             popTrackFooter.setVisibility(View.VISIBLE);
             popTracksAdapter.notifyDataSetChanged();
             popTracksAdapter.changeList(popularTracks);
-            UserMainActivity.ListUtils.setDynamicHeight(popularTrackListView);
+            UserMainFragment.ListUtils.setDynamicHeight(popularTrackListView);
             popTracksAdapter.notifyDataSetChanged();
         }
     }
@@ -172,7 +172,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             albumFooter.setVisibility(View.VISIBLE);
             albumsItemAdapter.notifyDataSetChanged();
             albumsItemAdapter.changeList(albums);
-            UserMainActivity.ListUtils.setDynamicHeight(albumsListView);
+            UserMainFragment.ListUtils.setDynamicHeight(albumsListView);
             albumsItemAdapter.notifyDataSetChanged();
 
         }
@@ -187,7 +187,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             relatedArtistFooter.setVisibility(View.VISIBLE);
             relatedArtistsAdapter.notifyDataSetChanged();
             relatedArtistsAdapter.changeList(relatedArtists);
-            UserMainActivity.ListUtils.setDynamicHeight(relatedArtistListView);
+            UserMainFragment.ListUtils.setDynamicHeight(relatedArtistListView);
             relatedArtistsAdapter.notifyDataSetChanged();
 
         }
