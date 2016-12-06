@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -41,6 +42,8 @@ public class AlbumPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_page_layout);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -58,7 +61,11 @@ public class AlbumPageActivity extends AppCompatActivity {
         albumNameTV = (TextView) findViewById(R.id.album_page_album_name);
 
         final String imgURL = images.get(0).url;
-        Picasso.with(getApplicationContext()).load(imgURL).into(albumImage);
+        if(!imgURL.equals("")) {
+            Picasso.with(getApplicationContext()).load(imgURL).into(albumImage);
+        } else {
+            albumImage.setImageResource(R.drawable.music_record);
+        }
         albumNameTV.setText(albumName);
 
         listView = (ListView) findViewById(R.id.album_page_list_view);

@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -37,6 +38,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page_events_layout);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -114,6 +117,17 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                             .addToBackStack("searchFrag")
                             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
                             .commit();
+                    break;
+
+                case R.id.saved_songs:
+                    SavedSongsFragment savedSongsFragment = new SavedSongsFragment();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    // Replace any other Fragment with our new Details Fragment with the right data
+                    ft.replace(R.id.main_frame, savedSongsFragment);
+                    // Let us come back
+                    ft.addToBackStack(null);
+                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+                    ft.commit();
                     break;
 
                 default :
@@ -266,6 +280,16 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             ft.replace(R.id.main_frame, esf, "searchFrag");
             // Let us come back
             ft.addToBackStack("searchFrag");
+            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
+            ft.commit();
+
+        } else if(id == R.id.saved_songs) {
+            SavedSongsFragment savedSongsFragment = new SavedSongsFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            // Replace any other Fragment with our new Details Fragment with the right data
+            ft.replace(R.id.main_frame, savedSongsFragment);
+            // Let us come back
+            ft.addToBackStack(null);
             // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
             ft.commit();
 

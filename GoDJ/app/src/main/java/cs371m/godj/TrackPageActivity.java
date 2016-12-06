@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -52,6 +52,8 @@ public class TrackPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.track_layout);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -86,16 +88,18 @@ public class TrackPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String[] trackInfo = {trackName, albumName, artistName, imageURL, trackURI};
-                if (!UserMainActivity.faveTrackMap.containsKey(trackURI)) {
-                    UserMainActivity.faveTrackMap.put(trackURI, trackName);
-                    UserMainActivity.favoriteTracks.add(trackInfo);
-                    String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                    String _userName = user.replaceAll("\\.", "@"); // . illegal in Firebase key
-                    FirebaseDatabase.getInstance().getReference("users").child(_userName).child("track").push().setValue(trackURI);
-                    Toast.makeText(getApplicationContext(), "Added Song to Favorites!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Song Already in Favorites", Toast.LENGTH_SHORT).show();
-                }
+                TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName, artistName,
+                        albumName, trackURI, 1);
+                String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                String _userName = user.replaceAll("\\.", "@"); // . illegal in Firebase key
+                FirebaseDatabase.getInstance().getReference()
+                        .child("users").child(_userName)
+                        .child("savedSongs").child(trackURI).setValue(trackDatabaseObject);
+                Snackbar snack = Snackbar.make(viewGroup, "Song Saved!", Snackbar.LENGTH_LONG);
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                snack.show();
             }
         });
 

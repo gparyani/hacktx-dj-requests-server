@@ -37,11 +37,6 @@
             >
 
         </activity>
-        <activity android:name=".FavoriteTracks"
-            android:theme="@style/SecondAppTheme"
-            >
-
-        </activity>
 
         <activity android:name=".ShowAllSongResults"
             android:theme="@style/SecondAppTheme"

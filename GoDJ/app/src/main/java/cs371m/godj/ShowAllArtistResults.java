@@ -1,11 +1,15 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -27,6 +31,8 @@ public class ShowAllArtistResults extends AppCompatActivity {
 
         setContentView(R.layout.all_results_layout);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -46,6 +52,22 @@ public class ShowAllArtistResults extends AppCompatActivity {
         listView.setAdapter(artistItemAdapter);
         artistItemAdapter.changeList(artists);
         artistItemAdapter.notifyDataSetChanged();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView artistID = (TextView) view.findViewById(R.id.artist_id);
+                TextView artistName = (TextView) view.findViewById(R.id.artist);
+                TextView artistURL = (TextView) view.findViewById(R.id.artist_image_url);
+
+
+                Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
+                showArtistPage.putExtra("artistID", artistID.getText().toString());
+                showArtistPage.putExtra("artistName", artistName.getText().toString());
+                showArtistPage.putExtra("artistURL", artistURL.getText().toString());
+                startActivity(showArtistPage);
+            }
+        });
 
 
 

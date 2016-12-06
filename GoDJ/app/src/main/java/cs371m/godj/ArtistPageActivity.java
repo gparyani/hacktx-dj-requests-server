@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -74,6 +75,8 @@ public class ArtistPageActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_page_layout);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -323,7 +326,13 @@ public class ArtistPageActivity extends AppCompatActivity {
     protected void callServices() {
         Intent intent = getIntent();
         String artistID = intent.getStringExtra("artistID");
-        Picasso.with(getApplicationContext()).load(intent.getStringExtra("artistURL")).into(artistImage);
+        String artistURL = intent.getStringExtra("artistURL");
+        if(!artistURL.equals("")) {
+            System.out.println("path: " + artistURL);
+            Picasso.with(getApplicationContext()).load(artistURL).into(artistImage);
+        } else {
+            artistImage.setImageResource(R.drawable.microphone);
+        }
         artistName.setText(intent.getStringExtra("artistName"));
 
         SpotifyApi api = new SpotifyApi();
