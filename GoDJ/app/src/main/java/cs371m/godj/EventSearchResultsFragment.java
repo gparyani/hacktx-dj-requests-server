@@ -150,6 +150,7 @@ public class EventSearchResultsFragment extends Fragment {
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 userName = userName.replaceAll("\\.", "@");
                                 FirebaseDatabase.getInstance().getReference("users").child(userName).child("eventAttending").setValue(eventObject.getKey());
+
                                 Snackbar snack = Snackbar.make(getActivity().getSupportFragmentManager()
                                         .findFragmentByTag("eventSearch").getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
                                 View view = snack.getView();

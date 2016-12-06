@@ -176,38 +176,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 ;
     }
 
-    protected void toggleHelper() {
-        int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-        System.out.println(backStackCount);
-        System.out.println(screenIsBlank);
-        if(backStackCount == 1) {
-            toggle.setDrawerIndicatorEnabled(true);
-            if(screenIsBlank) {
-                showMyEventFrag();
-            }
-        }
-    }
-
-//    protected void toggleHamburgerToBack() {
-//
-//        toggle.setDrawerIndicatorEnabled(false);
-//        toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
-//        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-//                System.out.println(backStackCount);
-//                System.out.println(screenIsBlank);
-//                if(backStackCount > 0) {
-//                    getSupportFragmentManager().popBackStack();
-//
-//                }
-//               // toggleHelper();
-//            }
-//        });
-//
-//    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.

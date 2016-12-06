@@ -3,6 +3,7 @@ package cs371m.godj;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
         TextView songHeader = new TextView(getActivity());
         songHeader.setText("Song Requests");
         songHeader.setTextSize(20);
-        songHeader.setTextColor(0xffffffff);
+        songHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         songHeader.setPadding(0, 0, 0, 50);
         songHeader.setGravity(0x01);
         songHeader.setTypeface(songHeader.getTypeface(), 1);

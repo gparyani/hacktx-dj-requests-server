@@ -1,5 +1,7 @@
 package cs371m.godj;
 
+import android.os.Parcel;
+
 /**
  * Created by Jasmine on 11/29/2016.
  */
@@ -27,6 +29,17 @@ public class EventObject {
         startTime = start;
         endTime = end;
         key = uniqueKey;
+    }
+
+    protected EventObject(Parcel in) {
+        eventName = in.readString();
+        eventQueryName = in.readString();
+        eventLocation = in.readString();
+        hostName = in.readString();
+        hostUserName = in.readString();
+        key = in.readString();
+        startTime = in.readLong();
+        endTime = in.readLong();
     }
 
     public String getEventName() { return eventName; }
@@ -66,4 +79,5 @@ public class EventObject {
     public void setEndTime(long end){
         endTime = end;
     }
+
 }

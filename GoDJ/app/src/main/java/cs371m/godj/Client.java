@@ -39,7 +39,6 @@ import java.net.UnknownHostException;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 writer.println("request " + uri);
                 String response = reader.readLine();
-                //Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
 
             } catch (UnknownHostException e) {
 

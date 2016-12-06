@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 public class FavoriteTracks extends AppCompatActivity {
 
-    //public ArrayList<String[]> favoriteTracks;
     private ListView listView;
     private FavoritesItemAdapter favoritesItemAdapter;
 

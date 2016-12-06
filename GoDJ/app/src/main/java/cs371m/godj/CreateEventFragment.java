@@ -153,7 +153,8 @@ public class CreateEventFragment extends Fragment {
                         userName = userName.replaceAll("\\.", "@");
                         FirebaseDatabase.getInstance().getReference("users").child(userName)
                                 .child("hostedEvents").child(key).setValue(eventObject);
-                        Snackbar snack = Snackbar.make(getView(), "Event Created!", Snackbar.LENGTH_SHORT);
+
+                        Snackbar snack = Snackbar.make(getView(), "Event Added to Hosting Events", Snackbar.LENGTH_SHORT);
                         View view = snack.getView();
                         TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 
@@ -12,9 +13,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Jasmine on 12/4/2016.
@@ -27,11 +25,12 @@ public class MyEventsItemFragment extends DialogFragment {
     private String eventNm;
     private boolean hosting;
     private boolean remove;
+    private boolean currentEvent;
     public String[] options1 = {"Attend Event", "View Requested Songs", "Cancel Event"};
     public String[] options2 = {"Attend Event", "View Requested Songs", "Remove from Saved"};
+    public String[] options3 = {"View Requested Songs", "Leave this Event"};
     public final int ATTEND = 0;
     public final int REQUESTED_SONGS = 1;
-    private List<EventObject> attendingEvent;
 
     public interface MyDialogCloseListener
     {
@@ -54,6 +53,7 @@ public class MyEventsItemFragment extends DialogFragment {
         eventNm = getArguments().getString("eventNm");
         hosting = getArguments().getBoolean("hosting");
         remove = false;
+        currentEvent = getArguments().getBoolean("currentEvent");
         String eventHost = getArguments().getString("eventHost");
         long startTime = getArguments().getLong("startTime");
         long endTime = getArguments().getLong("endTime");
@@ -62,8 +62,15 @@ public class MyEventsItemFragment extends DialogFragment {
         final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key);
 
 
+        final String[] choices;
+        if (hosting) {
+            choices = options1;
+        } else if (currentEvent) {
+            choices = options3;
+        } else {
+            choices = options2;
+        }
 
-        final String[] choices = hosting ? options1 : options2;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
@@ -74,11 +81,12 @@ public class MyEventsItemFragment extends DialogFragment {
                             // The 'which' argument contains the index position
                             // of the selected item
                             option = which;
-                            if(option == ATTEND) {
+                            if(option == ATTEND && !currentEvent) {
                                 String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 thisUserName = thisUserName.replaceAll("\\.", "@");
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 final String thisuserName = userName.replaceAll("\\.", "@");
+                                final FragmentManager manager = getActivity().getSupportFragmentManager();
 
                                 FirebaseDatabase.getInstance().getReference()
                                         .child("events")
@@ -88,22 +96,12 @@ public class MyEventsItemFragment extends DialogFragment {
                                                 String eventKey = eventObject.getKey();
                                                 boolean found = false;
                                                 if(dataSnapshot.hasChild(eventKey)) {
+                                                    // event exists in database
+
                                                     FirebaseDatabase.getInstance().getReference("users").child(thisuserName).child("eventAttending").setValue(eventObject.getKey());
-
-//                                                    Snackbar snack = Snackbar.make(HomePage.mef.getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
-//                                                    View view = snack.getView();
-//                                                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-//                                                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//                                                    snack.show();
-
-                                                    attendingEvent.add(eventObject);
-                                                    Bundle b = new Bundle();
-                                                    b.putParcelable("attendingEvent", eventObject);
-
-
-
-
                                                 } else {
+                                                    // event has been removed from the database
+
                                                     System.out.println("event does not exist");
                                                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                                                         @Override
@@ -132,7 +130,7 @@ public class MyEventsItemFragment extends DialogFragment {
 
                                             }
                                         });
-                            } else if(option == REQUESTED_SONGS){
+                            } else if((option == REQUESTED_SONGS && !currentEvent) || (currentEvent && option == ATTEND)) {
                                 ShowSongRequest showSongRequests = new ShowSongRequest();
                                 Bundle b = new Bundle();
                                 b.putBoolean("hosting", hosting);

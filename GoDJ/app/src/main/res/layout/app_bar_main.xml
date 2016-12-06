@@ -33,6 +33,8 @@
                 android:imeOptions="actionSearch"
                 android:textColor="@android:color/white"
                 android:imeActionLabel="Fetch"
+                android:backgroundTint="@color/white"
+                android:textCursorDrawable="@drawable/white_cursor"
                 />
         </android.support.v7.widget.Toolbar>
 

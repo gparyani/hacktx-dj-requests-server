@@ -56,6 +56,26 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         hostedEvents = new ArrayList<>();
         savedEvents = new ArrayList<>();
 
+        hostAdapter = new EventItemAdapter(getActivity());
+        savedAdapter = new EventItemAdapter(getActivity());
+        attendingAdapter = new EventItemAdapter(getActivity());
+
+        attendingEventLV = (ListView) v.findViewById(R.id.attending_event);
+        savedEventsLV = (ListView) v.findViewById(R.id.saved_events_lv);
+        hostedEventsLV = (ListView) v.findViewById(R.id.hosted_events_lv);
+
+        TextView attendingEventHeader = new TextView(getActivity());
+        attendingEventHeader.setText("Current Event");
+        attendingEventHeader.setTextSize(20);
+        attendingEventHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        attendingEventHeader.setPadding(0, 0, 0, 50);
+        attendingEventHeader.setGravity(0x01);
+        attendingEventHeader.setTypeface(attendingEventHeader.getTypeface(), 1);
+        attendingEventLV.addHeaderView(attendingEventHeader, null, false);
+        attendingEventLV.setAdapter(attendingAdapter);
+
+
+
         /*TODO: use Homepage.userName in place of get user in other places as well... maybe*/
         userName = HomePage.userName;
 
@@ -74,11 +94,9 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             savedEvents.add(eventObject);
                         }
 
-                        savedEventsLV = (ListView) getView().findViewById(R.id.saved_events_lv);
-
 
                         TextView savedHeader = new TextView(getActivity());
-                        savedHeader.setText("My Saved Events");
+                        savedHeader.setText("Saved Events");
                         savedHeader.setTextSize(20);
                         savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                         savedHeader.setPadding(0, 0, 0, 50);
@@ -86,7 +104,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         savedHeader.setTypeface(savedHeader.getTypeface(), 1);
 
                         savedEventsLV.addHeaderView(savedHeader, null, false);
-                        savedAdapter = new EventItemAdapter(getActivity());
                         savedEventsLV.setAdapter(savedAdapter);
 
                         savedAdapter.changeList(savedEvents);
@@ -111,6 +128,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
                                 b.putBoolean("hosting", false);
+                                b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
                                 eiof.show(getFragmentManager(), "options");
 
@@ -137,9 +155,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             Log.d("eventByName ", eventObject.getEventName());
                             hostedEvents.add(eventObject);
                         }
-                        hostedEventsLV = (ListView) getActivity().findViewById(R.id.hosted_events_lv);
-
-
 
                         TextView hostHeader = new TextView(getActivity());
                         hostHeader.setText("Hosting Events");
@@ -151,7 +166,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
                         hostedEventsLV.addHeaderView(hostHeader, null, false);
 
-                        hostAdapter = new EventItemAdapter(getActivity());
 
                         hostedEventsLV.setAdapter(hostAdapter);
 
@@ -177,6 +191,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
                                 b.putBoolean("hosting", true);
+                                b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
 
                                 eiof.show(getActivity().getSupportFragmentManager(), "options");
@@ -192,7 +207,78 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                     }
                 });
 
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(thisUserName)
+                .child("eventAttending")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        final String eventKey = (String) dataSnapshot.getValue();
+                        attendingEvent.clear();
+                        UserMainFragment.ListUtils.setDynamicHeight(attendingEventLV);
+                        attendingAdapter.notifyDataSetChanged();
+
+
+                        FirebaseDatabase.getInstance().getReference("events")
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            String eventSnapshotKey;
+                                            EventObject eventObject;
+                                            for(DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
+                                                eventSnapshotKey = eventSnapshot.getKey();
+                                                if (eventSnapshotKey.equals(eventKey)) {
+                                                    eventObject = eventSnapshot.getValue(EventObject.class);
+                                                    attendingEvent.add(eventObject);
+                                                    attendingAdapter.changeList(attendingEvent);
+                                                    UserMainFragment.ListUtils.setDynamicHeight(attendingEventLV);
+                                                    attendingAdapter.notifyDataSetChanged();
+                                                    break;
+                                                }
+                                            }
+
+                                            attendingEventLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                @Override
+                                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                    int pos = position - 1;
+                                                    String eventNm = attendingEvent.get(pos).getEventName();
+                                                    String eventHost = attendingEvent.get(pos).getHostName();
+                                                    long startTime = attendingEvent.get(pos).getStartTime();
+                                                    long endTime = attendingEvent.get(pos).getEndTime();
+                                                    String key = attendingEvent.get(pos).getKey();
+                                                    MyEventsItemFragment eiof = new MyEventsItemFragment();
+                                                    Bundle b = new Bundle();
+                                                    b.putString("eventNm", eventNm);
+                                                    b.putString("eventHost", eventHost);
+                                                    b.putLong("startTime", startTime);
+                                                    b.putLong("endTime", endTime);
+                                                    b.putString("key", key);
+                                                    b.putInt("pos", pos);
+                                                    b.putBoolean("hosting", false);
+                                                    b.putBoolean("currentEvent", true);
+                                                    eiof.setArguments(b);
+                                                    eiof.show(getFragmentManager(), "options");
+
+                                                }
+                                            });
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                });
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
 
         return v;
