@@ -16,18 +16,40 @@
         android:id="@+id/event_search_term"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Event Name"
+        android:hint="Enter exact event name"
         android:textColorHint="@color/gray"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="50dp"
         android:layout_marginBottom="10dp"
         />
     <Button
         android:id="@+id/event_search_but"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find Event"
+        android:text="search by name"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/event_search_term"
+        />
+
+    <EditText
+        android:id="@+id/date_event_search_term"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="MM/DD/YYYY"
+        android:textColorHint="@color/gray"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:inputType="date"
+        android:ems="10"
+        android:focusable="false"
+        android:layout_below="@+id/event_search_but"
+        />
+    <Button
+        android:id="@+id/date_event_search_but"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="search by date"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/date_event_search_term"
         />
 
     <FrameLayout
