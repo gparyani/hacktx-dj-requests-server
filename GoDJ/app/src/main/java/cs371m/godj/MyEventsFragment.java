@@ -65,7 +65,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         hostedEventsLV = (ListView) v.findViewById(R.id.hosted_events_lv);
 
         TextView attendingEventHeader = new TextView(getActivity());
-        attendingEventHeader.setText("Current Event");
+        attendingEventHeader.setText("Attending Event");
         attendingEventHeader.setTextSize(20);
         attendingEventHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         attendingEventHeader.setPadding(0, 0, 0, 50);
