@@ -71,6 +71,17 @@ public class SavedSongsFragment extends Fragment {
             }
         });
 
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
+//
+//                Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
+//                intent.setData(Uri.parse(trackURI.getText().toString()));
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+//            }
+//        });
 
         return v;
     }

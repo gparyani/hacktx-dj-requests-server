@@ -66,7 +66,18 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         savedEventsLV = (ListView) v.findViewById(R.id.saved_events_lv);
         hostedEventsLV = (ListView) v.findViewById(R.id.hosted_events_lv);
 
-        TextView attendingEventHeader = new TextView(getActivity());
+        final TextView savedHeader = new TextView(getActivity());
+        savedHeader.setText("Saved Events");
+        savedHeader.setTextSize(20);
+        savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        savedHeader.setPadding(0, 0, 0, 50);
+        savedHeader.setGravity(0x01);
+        savedHeader.setTypeface(savedHeader.getTypeface(), 1);
+        savedEventsLV.addHeaderView(savedHeader, null, false);
+        savedHeader.setVisibility(View.INVISIBLE);
+        savedEventsLV.setAdapter(savedAdapter);
+
+        final TextView attendingEventHeader = new TextView(getActivity());
         attendingEventHeader.setText("Attending Event");
         attendingEventHeader.setTextSize(20);
         attendingEventHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
@@ -74,7 +85,19 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         attendingEventHeader.setGravity(0x01);
         attendingEventHeader.setTypeface(attendingEventHeader.getTypeface(), 1);
         attendingEventLV.addHeaderView(attendingEventHeader, null, false);
+        attendingEventHeader.setVisibility(View.INVISIBLE);
         attendingEventLV.setAdapter(attendingAdapter);
+
+        final TextView hostHeader = new TextView(getActivity());
+        hostHeader.setText("Hosting Events");
+        hostHeader.setTextSize(20);
+        hostHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        hostHeader.setPadding(0, 0, 0, 50);
+        hostHeader.setGravity(0x01);
+        hostHeader.setTypeface(hostHeader.getTypeface(), 1);
+        hostedEventsLV.addHeaderView(hostHeader, null, false);
+        hostHeader.setVisibility(View.INVISIBLE);
+        hostedEventsLV.setAdapter(hostAdapter);
 
 
 
@@ -96,17 +119,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             savedEvents.add(eventObject);
                         }
 
-                        TextView savedHeader = new TextView(getActivity());
-                        savedHeader.setText("Saved Events");
-                        savedHeader.setTextSize(20);
-                        savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                        savedHeader.setPadding(0, 0, 0, 50);
-                        savedHeader.setGravity(0x01);
-                        savedHeader.setTypeface(savedHeader.getTypeface(), 1);
-
-                        savedEventsLV.addHeaderView(savedHeader, null, false);
-                        savedEventsLV.setAdapter(savedAdapter);
-
+                        savedHeader.setVisibility(View.VISIBLE);
                         savedAdapter.changeList(savedEvents);
                         UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
                         savedAdapter.notifyDataSetChanged();
@@ -157,19 +170,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             hostedEvents.add(eventObject);
                         }
 
-                        TextView hostHeader = new TextView(getActivity());
-                        hostHeader.setText("Hosting Events");
-                        hostHeader.setTextSize(20);
-                        hostHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                        hostHeader.setPadding(0, 0, 0, 50);
-                        hostHeader.setGravity(0x01);
-                        hostHeader.setTypeface(hostHeader.getTypeface(), 1);
-
-                        hostedEventsLV.addHeaderView(hostHeader, null, false);
-
-
-                        hostedEventsLV.setAdapter(hostAdapter);
-
+                        hostHeader.setVisibility(View.VISIBLE);
                         hostAdapter.changeList(hostedEvents);
                         UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
                         hostAdapter.notifyDataSetChanged();
@@ -214,10 +215,9 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
+                        attendingEventHeader.setVisibility(View.VISIBLE);
                         final String eventKey = (String) dataSnapshot.getValue();
                         attendingEvent.clear();
-                        UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
                         attendingAdapter.notifyDataSetChanged();
 
 
@@ -232,12 +232,19 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                                 eventSnapshotKey = eventSnapshot.getKey();
                                                 if (eventSnapshotKey.equals(eventKey)) {
                                                     eventObject = eventSnapshot.getValue(EventObject.class);
-                                                    attendingEvent.add(eventObject);
+
+                                                    if (attendingEvent.size() == 0) {
+                                                        attendingEvent.add(eventObject);
+                                                    }
                                                     attendingAdapter.changeList(attendingEvent);
                                                     UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
                                                     attendingAdapter.notifyDataSetChanged();
                                                     break;
                                                 }
+                                            }
+
+                                            if (attendingEvent.size() == 0) {
+                                                UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
                                             }
 
                                             attendingEventLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -286,7 +293,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
     }
 
 
-    public void handleDialogClose(int option, int pos, boolean hosting, boolean remove, String eventNm) {
+    public void handleDialogClose(int option, int pos, boolean hosting, boolean currentEvent, boolean remove, String eventNm) {
         if(remove) {
             String thisUserName = userName.replaceAll("\\.", "@");
             EventObject eventObject = savedEvents.get(pos);
@@ -296,7 +303,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
             UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
             savedAdapter.notifyDataSetChanged();
 
-        } else if(option == MyEventsItemFragment.DELETE_CANCEL) {
+        } else if(option == MyEventsItemFragment.DELETE_CANCEL || (currentEvent && option == 1)) {
             if(hosting) {
                 final EventObject eventObject = hostedEvents.get(pos);
                 final int position = pos;
@@ -304,7 +311,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case DialogInterface.BUTTON_NEGATIVE:
 
                                 break;
@@ -329,6 +336,36 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 };
                 alert.setTitle("Confirm");
                 alert.setMessage("Are you sure you want to cancel \"" + eventObject.getEventName() + "\"?")
+                        .setNegativeButton("No", dialogClickListener)
+                        .setPositiveButton("Yes", dialogClickListener).show();
+            } else if (currentEvent) {
+
+
+
+                final EventObject eventObject = attendingEvent.get(pos);
+                final int position = pos;
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                break;
+
+                            case DialogInterface.BUTTON_POSITIVE:
+                                String thisUserName = userName.replaceAll("\\.", "@");
+                                attendingEvent.remove(position);
+                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
+                                        .child("eventAttending").removeValue();
+
+                                UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
+                                attendingAdapter.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                };
+                alert.setTitle("Confirm");
+                alert.setMessage("Are you sure you want to leave \"" + eventObject.getEventName() + "\"?")
                         .setNegativeButton("No", dialogClickListener)
                         .setPositiveButton("Yes", dialogClickListener).show();
 
@@ -358,10 +395,9 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                     }
                 };
                 alert.setTitle("Confirm");
-                alert.setMessage("Are you sure you want to remove \"" + eventObject.getEventName() + "\" from your list?")
+                alert.setMessage("Are you sure you want to remove \"" + eventObject.getEventName() + "\"?")
                         .setNegativeButton("No", dialogClickListener)
                         .setPositiveButton("Yes", dialogClickListener).show();
-
 
             }
         }
@@ -371,7 +407,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
 
     }
 }

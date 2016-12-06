@@ -62,10 +62,8 @@ public class SongRequestAdapter extends BaseAdapter {
         albumName.setTextColor(ContextCompat.getColor(c, R.color.black));
         TextView middleDot = (TextView) view.findViewById(R.id.middle_dot);
         middleDot.setTextColor(ContextCompat.getColor(c, R.color.black));
-        TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
         TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
-        //String artists = data.getArtistName();
 
         trackName.setText(data.getTrackName());
         artistName.setText(data.getArtistName());
@@ -73,8 +71,6 @@ public class SongRequestAdapter extends BaseAdapter {
         albumName.setText(data.getAlbumName());
         char c = '\u00b7';
         middleDot.setText("" + c);
-        //String artURL = data.album.images.get(0).url;
-        //imageURL.setText(artURL);
 
     }
 

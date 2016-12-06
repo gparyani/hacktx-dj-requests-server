@@ -53,6 +53,10 @@ public class SpotifyItemAdapter extends BaseAdapter {
 
     public void bindView(Track data, View view, ViewGroup parent) {
         TextView trackName = (TextView) view.findViewById(R.id.track_name);
+//        System.out.println("This is the track name: " + trackName.getText());
+
+
+
         TextView artistName = (TextView) view.findViewById(R.id.artist_name);
         TextView albumName = (TextView) view.findViewById(R.id.album_name);
         TextView middleDot = (TextView) view.findViewById(R.id.middle_dot);

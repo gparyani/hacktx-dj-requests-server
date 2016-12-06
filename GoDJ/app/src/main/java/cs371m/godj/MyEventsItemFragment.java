@@ -35,7 +35,7 @@ public class MyEventsItemFragment extends DialogFragment {
 
     public interface MyDialogCloseListener
     {
-        public void handleDialogClose(int option, int pos, boolean hosting, boolean remove, String eventNm);//or whatever args you want
+        public void handleDialogClose(int option, int pos, boolean hosting, boolean currentEvent, boolean remove, String eventNm);//or whatever args you want
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MyEventsItemFragment extends DialogFragment {
 
         System.out.println("activity: " + getActivity());
         System.out.println("getChildFragmentManager: " + getChildFragmentManager());
-        HomePage.mef.handleDialogClose(option, itemPos, hosting, remove, eventNm);
+        HomePage.mef.handleDialogClose(option, itemPos, hosting, currentEvent, remove, eventNm);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class MyEventsItemFragment extends DialogFragment {
 
                                                                 case DialogInterface.BUTTON_POSITIVE:
                                                                     //Yes button clicked
-                                                                    HomePage.mef.handleDialogClose(option, itemPos, hosting, true, eventNm);
+                                                                    HomePage.mef.handleDialogClose(option, itemPos, hosting, currentEvent, true, eventNm);
                                                                     break;
                                                             }
                                                         }

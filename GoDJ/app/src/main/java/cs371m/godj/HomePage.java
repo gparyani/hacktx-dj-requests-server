@@ -203,7 +203,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         } else {
             super.onBackPressed();
         }
-        ;
     }
 
     protected void toggleHamburgerToBack() {

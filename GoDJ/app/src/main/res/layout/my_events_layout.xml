@@ -13,28 +13,28 @@
         >
 
         <ListView
+            android:id="@+id/saved_events_lv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:id="@+id/attending_event">
+            android:layout_marginBottom="15dp"
+            >
+        </ListView>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_below="@+id/saved_events_lv"
+            android:id="@+id/attending_event" >
         </ListView>
 
         <ListView
             android:id="@+id/hosted_events_lv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:layout_below="@+id/attending_event"
-            >
-        </ListView>
-
-        <ListView
-            android:id="@+id/saved_events_lv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:layout_below="@+id/hosted_events_lv"
+            android:layout_below="@id/attending_event"
             >
         </ListView>
 

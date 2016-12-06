@@ -83,16 +83,5 @@ public class TrackItemOptionsFragment extends DialogFragment {
         }
         return builder.create();
     }
-//
-//        private void playPlayMusic() {
-//            Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
-//            i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
-//            i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY));
-//            //sendOrderedBroadcast(i, null);
-//
-//            i = new Intent(Intent.ACTION_MEDIA_BUTTON);
-//            i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
-//            i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY));
-//            //sendOrderedBroadcast(i, null);
-//        }
+
 }
