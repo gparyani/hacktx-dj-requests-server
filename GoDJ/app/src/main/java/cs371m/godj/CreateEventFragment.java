@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,12 @@ public class CreateEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.create_event, container, false);
         createEventBut = (Button) v.findViewById(R.id.create_event_but);
+
+        EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+        et.setText("");
+        et.setVisibility(View.GONE);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+
         return v;
     }
 
@@ -168,5 +175,16 @@ public class CreateEventFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        }
     }
 }

@@ -137,7 +137,6 @@ public class MyEventsItemFragment extends DialogFragment {
                                 // Let us come back
                                 ft.addToBackStack("showSongRequests");
                                 // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                                 ft.commit();
                             }
                         }

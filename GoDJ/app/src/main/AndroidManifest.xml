@@ -26,13 +26,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserMainActivity"
+        <activity android:name=".UserMainFragment"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan"
             >
 
         </activity>
-        <activity android:name=".TrackPageActivity"
+        <activity android:name=".TrackPageFragment"
             android:theme="@style/SecondAppTheme"
             >
 

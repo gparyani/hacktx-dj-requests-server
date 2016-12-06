@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -49,11 +51,17 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.my_events_layout, container, false);
+
+        /*TODO: might not be necessary*/
+        EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+        et.setText("");
+        et.setVisibility(View.GONE);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+
         hostedEvents = new ArrayList<>();
         savedEvents = new ArrayList<>();
 
         /*TODO: use Homepage.userName in place of get user in other places as well... maybe*/
-        //userName = getArguments().getString("userName");
         userName = HomePage.userName;
 
         final String thisUserName = userName.replaceAll("\\.", "@");
@@ -88,7 +96,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         savedEventsLV.setAdapter(savedAdapter);
 
                         savedAdapter.changeList(savedEvents);
-                        UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+                        UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
                         savedAdapter.notifyDataSetChanged();
 
                         savedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -157,7 +165,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         hostedEventsLV.setAdapter(hostAdapter);
 
                         hostAdapter.changeList(hostedEvents);
-                        UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
+                        UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
                         hostAdapter.notifyDataSetChanged();
 
                         hostedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -211,7 +219,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
             savedEvents.remove(pos);
             FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                     .child("savedEvents").child(eventObject.getKey()).removeValue();
-            UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+            UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
             savedAdapter.notifyDataSetChanged();
         } else if(option == 0) {
 //            Snackbar snack = Snackbar.make(getParentFragment().getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
@@ -235,7 +243,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 FirebaseDatabase.getInstance().getReference("eventPlaylists")
                         .child(eventObject.getKey()).removeValue();
                 hostedEvents.remove(pos);
-                UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
+                UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
                 hostAdapter.notifyDataSetChanged();
 
             } else {
@@ -244,7 +252,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 savedEvents.remove(pos);
                 FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                         .child("savedEvents").child(eventObject.getKey()).removeValue();
-                UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
+                UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
                 savedAdapter.notifyDataSetChanged();
             }
         }
@@ -252,9 +260,13 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        }
     }
 }

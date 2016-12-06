@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +45,11 @@ public class EventSearchFragment extends Fragment {
         events = new ArrayList<>();
         handler = new Handler();
 
+        EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+        et.setText("");
+        et.setVisibility(View.GONE);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+
         return v;
     }
 
@@ -58,11 +63,14 @@ public class EventSearchFragment extends Fragment {
                 Bundle b = new Bundle();
                 b.putString("searchTerm", searchET.getText().toString());
                 EventSearchResultsFragment esrf = new EventSearchResultsFragment();
+                ((HomePage) getActivity()).activeFrags.add(esrf);
+                System.out.println("active frags: " + ((HomePage) getActivity()).activeFrags.size());
+
+
                 esrf.setArguments(b);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, esrf, "eventSearch")
                         .addToBackStack("eventSearch")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
             }
         });
@@ -70,7 +78,13 @@ public class EventSearchFragment extends Fragment {
 
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        }
     }
 }

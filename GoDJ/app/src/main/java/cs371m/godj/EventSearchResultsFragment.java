@@ -9,11 +9,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -160,6 +162,17 @@ public class EventSearchResultsFragment extends Fragment {
                         }
                     });
             return builder.create();
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
         }
     }
 }

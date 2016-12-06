@@ -1,13 +1,15 @@
 package cs371m.godj;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,35 +31,36 @@ import retrofit.client.Response;
  * Created by Jasmine on 11/10/2016.
  */
 
-public class ShowAllAlbumResults extends AppCompatActivity {
+public class ShowAllAlbumResults extends Fragment {
 
 
     private  AlbumItemAdapter albumItemAdapter;
     private ListView listView;
     private List<AlbumSimple> albums;
     private Handler myHandler;
+    private String formatTitle;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        setContentView(R.layout.all_results_layout);
+        View v = inflater.inflate(R.layout.all_results_layout, container, false);
 
-        Intent intent = getIntent();
-        String searchTerm = intent.getStringExtra("searchTerm");
-        String formatTitle;
+        String searchTerm = getArguments().getString("searchTerm");
         if (searchTerm == null) {
             formatTitle = "All Albums";
         } else {
             formatTitle = "\"" + searchTerm + "\"" + " in Songs";
         }
-        getSupportActionBar().setTitle(formatTitle);
+        EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+        et.setText("");
+        et.setVisibility(View.GONE);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(formatTitle);
 
         myHandler = new Handler();
 
-        listView = (ListView) findViewById(R.id.show_all_list_view);
-        albums = intent.getParcelableArrayListExtra("list");
-        albumItemAdapter = new AlbumItemAdapter(this);
+        listView = (ListView) v.findViewById(R.id.show_all_list_view);
+        albums = getArguments().getParcelableArrayList("list");
+        albumItemAdapter = new AlbumItemAdapter(getContext());
         listView.setAdapter(albumItemAdapter);
         albumItemAdapter.changeList(albums);
         albumItemAdapter.notifyDataSetChanged();
@@ -84,6 +87,8 @@ public class ShowAllAlbumResults extends AppCompatActivity {
                 });
             }
         });
+
+        return v;
     }
 
 
@@ -97,7 +102,11 @@ public class ShowAllAlbumResults extends AppCompatActivity {
 
         @Override
         public void run() {
-            Intent showAlbumPage = new Intent(getApplicationContext(), AlbumPageActivity.class);
+            AlbumPageActivity albumPageActivity = new AlbumPageActivity();
+            ((HomePage) getActivity()).activeFrags.add(albumPageActivity);
+            System.out.println("active frags: " + ((HomePage) getActivity()).activeFrags.size());
+
+
 
 
             List<Image> albumImages = album.images;
@@ -106,56 +115,32 @@ public class ShowAllAlbumResults extends AppCompatActivity {
             List<TrackSimple> albumTracks = album.tracks.items;
             List<ArtistSimple> albumArtists = album.artists;
 
-            showAlbumPage.putParcelableArrayListExtra("albumImages", (ArrayList) albumImages);
-            showAlbumPage.putExtra("albumName", albumName);
-            showAlbumPage.putExtra("albumID", albumID);
-            showAlbumPage.putParcelableArrayListExtra("albumTracks", (ArrayList) albumTracks);
-            showAlbumPage.putParcelableArrayListExtra("albumArtists", (ArrayList) albumArtists);
+            Bundle b = new Bundle();
 
-            // TextView tv = (TextView) findViewById(R.id.album_id);
-            //String albumID = tv.getText().toString();
-            //showAlbumPage.putExtra("albumID", albumID);
-            startActivity(showAlbumPage);
+            b.putParcelableArrayList("albumImages", (ArrayList) albumImages);
+            b.putString("albumName", albumName);
+            b.putString("albumID", albumID);
+            b.putParcelableArrayList("albumTracks", (ArrayList) albumTracks);
+            b.putParcelableArrayList("albumArtists", (ArrayList) albumArtists);
+
+            albumPageActivity.setArguments(b);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_frame, albumPageActivity)
+                    .hide(ShowAllAlbumResults.this)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainActivity.class);
-                goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainActivity.clearSearch = true;
-                finish();
-                startActivity(goSearch);
-                break;
-            case R.id.favorites_ID:
-                launchFavorites();
-                break;
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(formatTitle);
         }
-
-        return super.onOptionsItemSelected(item);
     }
-
-    private void launchFavorites() {
-        Intent startFavorites = new Intent(this, FavoriteTracks.class);
-        startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        startActivity(startFavorites);
-    }
-
 }

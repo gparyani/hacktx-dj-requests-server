@@ -1,12 +1,14 @@
 package cs371m.godj;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,33 +20,34 @@ import kaaes.spotify.webapi.android.models.Track;
  * Created by Jasmine on 11/8/2016.
  */
 
-public class ShowAllSongResults extends AppCompatActivity {
+public class ShowAllSongResults extends Fragment {
 
     private SpotifyItemAdapter spotifyItemAdapter;
     private ListView listView;
     private List<Track> tracks;
+    private String formatTitle;
 
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.all_results_layout, container, false);
 
-        setContentView(R.layout.all_results_layout);
+        String searchTerm = getArguments().getString("searchTerm");
 
-
-        Intent intent = getIntent();
-
-        String searchTerm = intent.getStringExtra("searchTerm");
-        String formatTitle;
         if (searchTerm == null) {
             formatTitle = "All Popular Songs";
         } else {
             formatTitle = "\"" + searchTerm + "\"" + " in Songs";
         }
-        getSupportActionBar().setTitle(formatTitle);
 
-        listView = (ListView) findViewById(R.id.show_all_list_view);
-        tracks = intent.getParcelableArrayListExtra("list");
-        spotifyItemAdapter = new SpotifyItemAdapter(this);
+        EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+        et.setText("");
+        et.setVisibility(View.GONE);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(formatTitle);
+
+        listView = (ListView) v.findViewById(R.id.show_all_list_view);
+        tracks = getArguments().getParcelableArrayList("list");
+        spotifyItemAdapter = new SpotifyItemAdapter(getContext());
         listView.setAdapter(spotifyItemAdapter);
         spotifyItemAdapter.changeList(tracks);
         spotifyItemAdapter.notifyDataSetChanged();
@@ -53,62 +56,46 @@ public class ShowAllSongResults extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    Intent showTrackPage = new Intent(getApplicationContext(), TrackPageActivity.class);
+                TrackPageFragment trackPageFragment = new TrackPageFragment();
 
-                    TextView trackName = (TextView) view.findViewById(R.id.track_name);
-                    TextView artistName = (TextView) view.findViewById(R.id.artist_name);
-                    TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
-                    TextView albumName = (TextView) view.findViewById(R.id.album_name);
-                    TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
+                ((HomePage) getActivity()).activeFrags.add(trackPageFragment);
+                System.out.println("active frags: " + ((HomePage) getActivity()).activeFrags.size());
 
-                    showTrackPage.putExtra("trackName", trackName.getText().toString());
-                    showTrackPage.putExtra("artistName", artistName.getText().toString());
-                    showTrackPage.putExtra("imageURL", imageURL.getText().toString());
-                    showTrackPage.putExtra("albumName", albumName.getText().toString());
-                    showTrackPage.putExtra("trackURI", trackURI.getText().toString());
+                TextView trackName = (TextView) view.findViewById(R.id.track_name);
+                TextView artistName = (TextView) view.findViewById(R.id.artist_name);
+                TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
+                TextView albumName = (TextView) view.findViewById(R.id.album_name);
+                TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
-                    startActivity(showTrackPage);
+                Bundle b = new Bundle();
+
+                b.putString("trackName", trackName.getText().toString());
+                b.putString("artistName", artistName.getText().toString());
+                b.putString("imageURL", imageURL.getText().toString());
+                b.putString("albumName", albumName.getText().toString());
+                b.putString("trackURI", trackURI.getText().toString());
+
+                trackPageFragment.setArguments(b);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.main_frame, trackPageFragment)
+                        .hide(ShowAllSongResults.this)
+                        .addToBackStack(null)
+                        .commit();
             }
 
         });
 
+        return v;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainActivity.class);
-                goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainActivity.clearSearch = true;
-                finish();
-                startActivity(goSearch);
-                break;
-            case R.id.favorites_ID:
-                launchFavorites();
-                break;
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(formatTitle);
         }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void launchFavorites() {
-        Intent startFavorites = new Intent(this, FavoriteTracks.class);
-        startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        startActivity(startFavorites);
     }
 }

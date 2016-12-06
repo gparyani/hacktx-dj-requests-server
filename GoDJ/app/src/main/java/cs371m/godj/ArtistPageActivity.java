@@ -1,11 +1,16 @@
 package cs371m.godj;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,7 +41,7 @@ import retrofit.client.Response;
  * Created by rebeccal on 11/17/16.
  */
 
-public class ArtistPageActivity extends AppCompatActivity {
+public class ArtistPageActivity extends Fragment {
 
     private ImageView artistImage;
     private TextView artistName;
@@ -69,18 +74,22 @@ public class ArtistPageActivity extends AppCompatActivity {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.artist_page_layout);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.artist_page_layout, container, false);
 
-        artistImage = (ImageView) findViewById(R.id.artist_image);
-        artistName = (TextView) findViewById(R.id.artist_nm);
-        popularTrackListView = (ListView) findViewById(R.id.popular_tracks);
-        albumsListView = (ListView) findViewById(R.id.albums);
-        relatedArtistListView = (ListView) findViewById(R.id.related_artists);
+        EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+        et.setText("");
+        et.setVisibility(View.GONE);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+
+        artistImage = (ImageView) v.findViewById(R.id.artist_image);
+        artistName = (TextView) v.findViewById(R.id.artist_nm);
+        popularTrackListView = (ListView) v.findViewById(R.id.popular_tracks);
+        albumsListView = (ListView) v.findViewById(R.id.albums);
+        relatedArtistListView = (ListView) v.findViewById(R.id.related_artists);
         myHandler = new Handler();
 
-        popularTitle = new TextView(this);
+        popularTitle = new TextView(getContext());
         popularTitle.setText("Popular");
         popularTitle.setTextColor(0xffffffff);
         popularTitle.setTextSize(20);
@@ -89,14 +98,14 @@ public class ArtistPageActivity extends AppCompatActivity {
         popularTrackListView.addHeaderView(popularTitle, null, false);
         popularTitle.setVisibility(View.INVISIBLE);
 
-        popTrackFooter = new TextView(this);
+        popTrackFooter = new TextView(getContext());
         popTrackFooter.setText("See more popular songs");
         popTrackFooter.setTextColor(0xffffffff);
         popTrackFooter.setPadding(0, 15, 0, 0);
         popularTrackListView.addFooterView(popTrackFooter);
         popTrackFooter.setVisibility(View.INVISIBLE);
 
-        albumTitle = new TextView(this);
+        albumTitle = new TextView(getContext());
         albumTitle.setText("Albums");
         albumTitle.setTextColor(0xffffffff);
         albumTitle.setTextSize(20);
@@ -105,14 +114,14 @@ public class ArtistPageActivity extends AppCompatActivity {
         albumsListView.addHeaderView(albumTitle, null, false);
         albumTitle.setVisibility(View.INVISIBLE);
 
-        albumFooter = new TextView(this);
+        albumFooter = new TextView(getContext());
         albumFooter.setText("See more albums");
         albumFooter.setTextColor(0xffffffff);
         albumFooter.setPadding(0, 15, 0, 0);
         albumsListView.addFooterView(albumFooter);
         albumFooter.setVisibility(View.INVISIBLE);
 
-        relatedTitle = new TextView(this);
+        relatedTitle = new TextView(getContext());
         relatedTitle.setText("Related Artists");
         relatedTitle.setTextColor(0xffffffff);
         relatedTitle.setTextSize(20);
@@ -121,7 +130,7 @@ public class ArtistPageActivity extends AppCompatActivity {
         relatedArtistListView.addHeaderView(relatedTitle, null, false);
         relatedTitle.setVisibility(View.INVISIBLE);
 
-        relatedArtistFooter = new TextView(this);
+        relatedArtistFooter = new TextView(getContext());
         relatedArtistFooter.setText("See more related artists");
         relatedArtistFooter.setTextColor(0xffffffff);
         relatedArtistFooter.setPadding(0, 15, 0, 0);
@@ -136,9 +145,9 @@ public class ArtistPageActivity extends AppCompatActivity {
         fullAlbumList = new ArrayList<>();
         fullRelatedArtistList = new ArrayList<>();
 
-        popTracksAdapter = new SpotifyItemAdapter(this);
-        albumsItemAdapter = new AlbumItemAdapter(this);
-        relatedArtistsAdapter = new ArtistItemAdapter(this);
+        popTracksAdapter = new SpotifyItemAdapter(getContext());
+        albumsItemAdapter = new AlbumItemAdapter(getContext());
+        relatedArtistsAdapter = new ArtistItemAdapter(getContext());
 
         popularTrackListView.setAdapter(popTracksAdapter);
         albumsListView.setAdapter(albumsItemAdapter);
@@ -146,6 +155,7 @@ public class ArtistPageActivity extends AppCompatActivity {
 
         callServices();
         onClickListeners();
+        return v;
     }
 
 
@@ -158,7 +168,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             popTrackFooter.setVisibility(View.VISIBLE);
             popTracksAdapter.notifyDataSetChanged();
             popTracksAdapter.changeList(popularTracks);
-            UserMainActivity.ListUtils.setDynamicHeight(popularTrackListView);
+            UserMainFragment.ListUtils.setDynamicHeight(popularTrackListView);
             popTracksAdapter.notifyDataSetChanged();
         }
     }
@@ -172,7 +182,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             albumFooter.setVisibility(View.VISIBLE);
             albumsItemAdapter.notifyDataSetChanged();
             albumsItemAdapter.changeList(albums);
-            UserMainActivity.ListUtils.setDynamicHeight(albumsListView);
+            UserMainFragment.ListUtils.setDynamicHeight(albumsListView);
             albumsItemAdapter.notifyDataSetChanged();
 
         }
@@ -187,7 +197,7 @@ public class ArtistPageActivity extends AppCompatActivity {
             relatedArtistFooter.setVisibility(View.VISIBLE);
             relatedArtistsAdapter.notifyDataSetChanged();
             relatedArtistsAdapter.changeList(relatedArtists);
-            UserMainActivity.ListUtils.setDynamicHeight(relatedArtistListView);
+            UserMainFragment.ListUtils.setDynamicHeight(relatedArtistListView);
             relatedArtistsAdapter.notifyDataSetChanged();
 
         }
@@ -203,7 +213,8 @@ public class ArtistPageActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            Intent showAlbumPage = new Intent(getApplicationContext(), AlbumPageActivity.class);
+            AlbumPageActivity albumPageActivity = new AlbumPageActivity();
+            ((HomePage) getActivity()).activeFrags.add(albumPageActivity);
 
 
             List<Image> albumImages = album.images;
@@ -212,13 +223,20 @@ public class ArtistPageActivity extends AppCompatActivity {
             List<TrackSimple> albumTracks = album.tracks.items;
             List<ArtistSimple> albumArtists = album.artists;
 
-            showAlbumPage.putParcelableArrayListExtra("albumImages", (ArrayList) albumImages);
-            showAlbumPage.putExtra("albumName", albumName);
-            showAlbumPage.putExtra("albumID", albumID);
-            showAlbumPage.putParcelableArrayListExtra("albumTracks", (ArrayList) albumTracks);
-            showAlbumPage.putParcelableArrayListExtra("albumArtists", (ArrayList) albumArtists);
+            Bundle b = new Bundle();
 
-            startActivity(showAlbumPage);
+            b.putParcelableArrayList("albumImages", (ArrayList) albumImages);
+            b.putString("albumName", albumName);
+            b.putString("albumID", albumID);
+            b.putParcelableArrayList("albumTracks", (ArrayList) albumTracks);
+            b.putParcelableArrayList("albumArtists", (ArrayList) albumArtists);
+
+            albumPageActivity.setArguments(b);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_frame, albumPageActivity)
+                    .hide(ArtistPageActivity.this)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
@@ -231,26 +249,44 @@ public class ArtistPageActivity extends AppCompatActivity {
                 int footerPos = parent.getCount() - 1;
 
                 if (footerPos == position) {
-                    Intent showAllSongResults = new Intent(getApplicationContext(), ShowAllSongResults.class);
-                    showAllSongResults.putParcelableArrayListExtra("list", (ArrayList) fullPopTrackList);
-                    startActivity(showAllSongResults);
+                    ShowAllSongResults showAllSongResults = new ShowAllSongResults();
+                    ((HomePage) getActivity()).activeFrags.add(showAllSongResults);
+                    System.out.println("active frags: " + ((HomePage) getActivity()).activeFrags.size());
+                    Bundle b = new Bundle();
+                    b.putParcelableArrayList("list", (ArrayList) fullPopTrackList);
+                    showAllSongResults.setArguments(b);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.main_frame, showAllSongResults)
+                            .addToBackStack(null)
+                            .commit();
                 } else {
 
-                    Intent showTrackPage = new Intent(getApplicationContext(), TrackPageActivity.class);
+
+                    TrackPageFragment trackPageFragment = new TrackPageFragment();
+
+                    ((HomePage) getActivity()).activeFrags.add(trackPageFragment);
+                    System.out.println("active frags: " + ((HomePage) getActivity()).activeFrags.size());
 
                     TextView trackName = (TextView) view.findViewById(R.id.track_name);
                     TextView artistName = (TextView) view.findViewById(R.id.artist_name);
-                    TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
+                    TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
                     TextView albumName = (TextView) view.findViewById(R.id.album_name);
-                    TextView albumArtURL = (TextView) view.findViewById(R.id.album_art_url);
+                    TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
 
-                    showTrackPage.putExtra("trackName", trackName.getText().toString());
-                    showTrackPage.putExtra("artistName", artistName.getText().toString());
-                    showTrackPage.putExtra("imageURL", albumArtURL.getText().toString());
-                    showTrackPage.putExtra("albumName", albumName.getText().toString());
-                    showTrackPage.putExtra("trackURI", trackURI.getText().toString());
+                    Bundle b = new Bundle();
 
-                    startActivity(showTrackPage);
+                    b.putString("trackName", trackName.getText().toString());
+                    b.putString("artistName", artistName.getText().toString());
+                    b.putString("imageURL", imageURL.getText().toString());
+                    b.putString("albumName", albumName.getText().toString());
+                    b.putString("trackURI", trackURI.getText().toString());
+
+                    trackPageFragment.setArguments(b);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .add(R.id.main_frame, trackPageFragment)
+                            .hide(ArtistPageActivity.this)
+                            .addToBackStack(null)
+                            .commit();
                 }
             }
         });
@@ -261,9 +297,18 @@ public class ArtistPageActivity extends AppCompatActivity {
                 int footerPos = parent.getCount() - 1;
 
                 if (footerPos == position) {
-                    Intent showAllArtistResults = new Intent(getApplicationContext(), ShowAllAlbumResults.class);
-                    showAllArtistResults.putParcelableArrayListExtra("list", (ArrayList) fullAlbumList);
-                    startActivity(showAllArtistResults);
+                    ShowAllAlbumResults showAllAlbumResults = new ShowAllAlbumResults();
+                    ((HomePage) getActivity()).activeFrags.add(showAllAlbumResults);
+
+                    Bundle b = new Bundle();
+                    b.putParcelableArrayList("list", (ArrayList) fullAlbumList);
+                    showAllAlbumResults.setArguments(b);
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .add(R.id.main_frame, showAllAlbumResults)
+                            .hide(ArtistPageActivity.this)
+                            .addToBackStack(null)
+                            .commit();
                 } else {
 
                     TextView tv = (TextView) view.findViewById(R.id.album_id);
@@ -294,9 +339,21 @@ public class ArtistPageActivity extends AppCompatActivity {
                 int footerPos = parent.getCount() - 1;
 
                 if (footerPos == position) {
-                    Intent showAllArtistResults = new Intent(getApplicationContext(), ShowAllArtistResults.class);
-                    showAllArtistResults.putParcelableArrayListExtra("list", (ArrayList) fullRelatedArtistList);
-                    startActivity(showAllArtistResults);
+
+                    ShowAllArtistResults showAllArtistResults = new ShowAllArtistResults();
+
+                    ((HomePage) getActivity()).activeFrags.add(showAllArtistResults);
+                    System.out.println("active frags: " + ((HomePage) getActivity()).activeFrags.size());
+
+                    Bundle b = new Bundle();
+                    b.putParcelableArrayList("list", (ArrayList) fullRelatedArtistList);
+                    showAllArtistResults.setArguments(b);
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .add(R.id.main_frame, showAllArtistResults)
+                            .hide(ArtistPageActivity.this)
+                            .addToBackStack(null)
+                            .commit();
                 } else {
 
                     TextView artistID = (TextView) view.findViewById(R.id.artist_id);
@@ -304,11 +361,21 @@ public class ArtistPageActivity extends AppCompatActivity {
                     TextView artistURL = (TextView) view.findViewById(R.id.artist_image_url);
 
 
-                    Intent showArtistPage = new Intent(getApplicationContext(), ArtistPageActivity.class);
-                    showArtistPage.putExtra("artistID", artistID.getText().toString());
-                    showArtistPage.putExtra("artistName", artistName.getText().toString());
-                    showArtistPage.putExtra("artistURL", artistURL.getText().toString());
-                    startActivity(showArtistPage);
+                    ArtistPageActivity artistPageActivity = new ArtistPageActivity();
+                    ((HomePage) getActivity()).activeFrags.add(artistPageActivity);
+
+                    Bundle b = new Bundle();
+                    b.putString("artistID", artistID.getText().toString());
+                    b.putString("artistName", artistName.getText().toString());
+                    b.putString("artistURL", artistURL.getText().toString());
+                    artistPageActivity.setArguments(b);
+
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .add(R.id.main_frame, artistPageActivity)
+                            .hide(ArtistPageActivity.this)
+                            .addToBackStack(null)
+                            .commit();
                 }
             }
         });
@@ -316,10 +383,9 @@ public class ArtistPageActivity extends AppCompatActivity {
     }
 
     protected void callServices() {
-        Intent intent = getIntent();
-        String artistID = intent.getStringExtra("artistID");
-        Picasso.with(getApplicationContext()).load(intent.getStringExtra("artistURL")).into(artistImage);
-        artistName.setText(intent.getStringExtra("artistName"));
+        String artistID = getArguments().getString("artistID");
+        Picasso.with(getContext()).load(getArguments().getString("artistURL")).into(artistImage);
+        artistName.setText(getArguments().getString("artistName"));
 
         SpotifyApi api = new SpotifyApi();
         SpotifyService spotify = api.getService();
@@ -384,6 +450,17 @@ public class ArtistPageActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        }
     }
 
 }

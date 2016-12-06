@@ -25,10 +25,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
     private DatabaseHelper dbHelper;
 
 
-
-
-
-
     protected void firebaseInit() {
         System.out.println("firebase init called");
         mAuth = FirebaseAuth.getInstance();
@@ -38,27 +34,20 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     userName = user.getDisplayName();
                     Intent startHomeActivity = new Intent(getApplicationContext(), HomePage.class);
                     startHomeActivity.putExtra("userName", userName);
                     startHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
                     startActivity(startHomeActivity);
 
-                    //signInHandler.post(new showOpeningScreen(userName));
                 } else {
-                    // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     userName = null;
                     FirebaseLoginFragment flf = FirebaseLoginFragment.newInstance();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    // Replace any other Fragment with our new Details Fragment with the right data
                     ft.add(R.id.main_frame, flf);
-                    // Let us come back
-                    //ft.addToBackStack("login");
-                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     ft.commit();
                 }
                 Log.d(TAG, "userName="+userName);
@@ -84,19 +73,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
 
         dbHelper = new DatabaseHelper();
 
-
         firebaseInit();
 
-
     }
-
-
-
-
-
-
-
-
 
     @Override
     public void firebaseLoginFinish() {
@@ -105,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
         System.out.println("user in loginfinish:: " + userName);
         startHomeActivity.putExtra("userName", userName);
         startHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
         startActivity(startHomeActivity);
 
 
@@ -112,20 +92,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
 
     @Override
     public void firebaseFromLoginToCreateAccount() {
-        // Dismiss the Login fragment
-        //getSupportFragmentManager().popBackStack();
-        // Toggle back button to hamburger
-        //toggle.setDrawerIndicatorEnabled(false);
-        //toggleHamburgerToBack();
-
-        // Replace main screen with the create account fragment
         FirebaseCreateAccountFragment fcaf = FirebaseCreateAccountFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_frame, fcaf);
-        // Let us pop without explicit fragment remove
         ft.addToBackStack(null);
-        // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
     }
 

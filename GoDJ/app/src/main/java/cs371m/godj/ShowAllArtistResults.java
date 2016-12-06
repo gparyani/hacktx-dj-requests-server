@@ -1,10 +1,13 @@
 package cs371m.godj;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.List;
@@ -15,74 +18,50 @@ import kaaes.spotify.webapi.android.models.Artist;
  * Created by Jasmine on 11/8/2016.
  */
 
-public class ShowAllArtistResults extends AppCompatActivity {
+public class ShowAllArtistResults extends Fragment {
 
     private ArtistItemAdapter artistItemAdapter;
     private ListView listView;
     private List<Artist> artists;
+    private String formatTitle;
 
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.all_results_layout, container, false);
 
-        setContentView(R.layout.all_results_layout);
+        String searchTerm = getArguments().getString("searchTerm");
 
-        Intent intent = getIntent();
-        String searchTerm = intent.getStringExtra("searchTerm");
-        String formatTitle;
         if (searchTerm == null) {
             formatTitle = "All Related Artists";
         } else {
             formatTitle = "\"" + searchTerm + "\"" + " in Artists";
         }
-        getSupportActionBar().setTitle(formatTitle);
 
-        listView = (ListView) findViewById(R.id.show_all_list_view);
-        artists = intent.getParcelableArrayListExtra("list");
-        artistItemAdapter = new ArtistItemAdapter(this);
+        EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+        et.setText("");
+        et.setVisibility(View.GONE);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(formatTitle);
+
+        listView = (ListView) v.findViewById(R.id.show_all_list_view);
+        artists = getArguments().getParcelableArrayList("list");
+        artistItemAdapter = new ArtistItemAdapter(getContext());
         listView.setAdapter(artistItemAdapter);
         artistItemAdapter.changeList(artists);
         artistItemAdapter.notifyDataSetChanged();
 
-
-
+        return v;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainActivity.class);
-                goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainActivity.clearSearch = true;
-                finish();
-                startActivity(goSearch);
-                break;
-            case R.id.favorites_ID:
-                launchFavorites();
-                break;
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!isHidden()) {
+            EditText et = (EditText) getActivity().findViewById(R.id.searchTerm);
+            et.setText("");
+            et.setVisibility(View.GONE);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(formatTitle);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
-    private void launchFavorites() {
-        Intent startFavorites = new Intent(this, FavoriteTracks.class);
-        startFavorites.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        startActivity(startFavorites);
-    }
 }
