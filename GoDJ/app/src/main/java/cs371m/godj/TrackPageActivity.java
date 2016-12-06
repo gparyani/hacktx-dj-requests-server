@@ -44,12 +44,15 @@ public class TrackPageActivity extends AppCompatActivity {
 //    public static final long ONE_HOUR = 60000;
     public static final long ONE_HOUR = 3600000;
 
+    public ViewGroup viewGroup;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.track_layout);
 
+        viewGroup = (ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
 
         Intent loadTrackPage = getIntent();
         trackName = loadTrackPage.getExtras().getString("trackName");
@@ -121,6 +124,8 @@ public class TrackPageActivity extends AppCompatActivity {
                                                         long eventEnd = eventObject.getEndTime();
                                                         long currTime = System.currentTimeMillis();
 
+                                                        final String eventName = eventObject.getEventName();
+
 
                                                         if(currTime > eventStart && currTime < eventEnd) {
                                                             final DatabaseReference reqRef = FirebaseDatabase.getInstance()
@@ -146,8 +151,7 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                     Date d = new Date(requestObject.getNextAvailableRequest());
                                                                                     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
                                                                                     String nextTime = sdf.format(d);
-                                                                                    ViewGroup viewGroup = (ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
-                                                                                    Snackbar snack = Snackbar.make(viewGroup, "Request Limit Reached. Next request available at: " + nextTime, Snackbar.LENGTH_LONG);
+                                                                                    Snackbar snack = Snackbar.make(viewGroup, "Request Limit Reached. Next request available at: " + nextTime + ".", Snackbar.LENGTH_LONG);
                                                                                     View view = snack.getView();
                                                                                     TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                                                                                     tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -157,6 +161,11 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                 int reqs = requestObject.getNumRequests() + 1;
                                                                                 requestObject.setNumRequests(reqs);
                                                                                 reqRef.setValue(requestObject);
+                                                                                Snackbar snack = Snackbar.make(viewGroup, "Song Requested!", Snackbar.LENGTH_LONG);
+                                                                                View view = snack.getView();
+                                                                                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                                                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                                                                snack.show();
                                                                             }
                                                                         }
                                                                     } else {
@@ -197,8 +206,7 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                 }
                                                             });
                                                         } else {
-                                                            String message = (currTime > eventStart) ? "This event has already ended" : "This event has not yet started";
-                                                            ViewGroup viewGroup = (ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
+                                                            String message = (currTime > eventStart) ? "Request Failed. " + eventName + " has already ended." : "Request Failed. " + eventName + " has not yet started.";
                                                             Snackbar snack = Snackbar.make(viewGroup, message, Snackbar.LENGTH_LONG);
                                                             View view = snack.getView();
                                                             TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
@@ -214,7 +222,6 @@ public class TrackPageActivity extends AppCompatActivity {
                                                 });
 
                                             } else {
-                                                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
                                                 Snackbar snack = make(viewGroup, "Cannot request. The event you are attending no longer exists.", Snackbar.LENGTH_LONG);
                                                 View view = snack.getView();
                                                 TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
