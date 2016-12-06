@@ -83,9 +83,9 @@ public class TrackPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String[] trackInfo = {trackName, albumName, artistName, imageURL, trackURI};
-                if (!UserMainFragment.faveTrackMap.containsKey(trackURI)) {
-                    UserMainFragment.faveTrackMap.put(trackURI, trackName);
-                    UserMainFragment.favoriteTracks.add(trackInfo);
+                if (!UserMainActivity.faveTrackMap.containsKey(trackURI)) {
+                    UserMainActivity.faveTrackMap.put(trackURI, trackName);
+                    UserMainActivity.favoriteTracks.add(trackInfo);
                     String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                     String _userName = user.replaceAll("\\.", "@"); // . illegal in Firebase key
                     FirebaseDatabase.getInstance().getReference("users").child(_userName).child("track").push().setValue(trackURI);
@@ -265,9 +265,9 @@ public class TrackPageActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainFragment.class);
+                Intent goSearch = new Intent(this, UserMainActivity.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainFragment.clearSearch = true;
+                UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
             case R.id.favorites_ID:

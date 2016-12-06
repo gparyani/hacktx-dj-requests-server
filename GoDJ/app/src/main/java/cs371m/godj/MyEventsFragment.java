@@ -48,7 +48,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.my_events_layout, container, false);
+        final View v = inflater.inflate(R.layout.my_events_layout, container, false);
         hostedEvents = new ArrayList<>();
         savedEvents = new ArrayList<>();
 
@@ -72,7 +72,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             savedEvents.add(eventObject);
                         }
 
-                        savedEventsLV = (ListView) getView().findViewById(R.id.saved_events_lv);
+                        savedEventsLV = (ListView) v.findViewById(R.id.saved_events_lv);
 
 
                         TextView savedHeader = new TextView(getActivity());
@@ -88,7 +88,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         savedEventsLV.setAdapter(savedAdapter);
 
                         savedAdapter.changeList(savedEvents);
-                        UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
+                        UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
                         savedAdapter.notifyDataSetChanged();
 
                         savedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -157,7 +157,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                         hostedEventsLV.setAdapter(hostAdapter);
 
                         hostAdapter.changeList(hostedEvents);
-                        UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
+                        UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
                         hostAdapter.notifyDataSetChanged();
 
                         hostedEventsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -211,7 +211,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
             savedEvents.remove(pos);
             FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                     .child("savedEvents").child(eventObject.getKey()).removeValue();
-            UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
+            UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
             savedAdapter.notifyDataSetChanged();
         } else if(option == 0) {
 //            Snackbar snack = Snackbar.make(getParentFragment().getView(), "You are now attending " + eventNm, Snackbar.LENGTH_SHORT);
@@ -235,7 +235,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 FirebaseDatabase.getInstance().getReference("eventPlaylists")
                         .child(eventObject.getKey()).removeValue();
                 hostedEvents.remove(pos);
-                UserMainFragment.ListUtils.setDynamicHeight(hostedEventsLV);
+                UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
                 hostAdapter.notifyDataSetChanged();
 
             } else {
@@ -244,7 +244,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 savedEvents.remove(pos);
                 FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
                         .child("savedEvents").child(eventObject.getKey()).removeValue();
-                UserMainFragment.ListUtils.setDynamicHeight(savedEventsLV);
+                UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
                 savedAdapter.notifyDataSetChanged();
             }
         }

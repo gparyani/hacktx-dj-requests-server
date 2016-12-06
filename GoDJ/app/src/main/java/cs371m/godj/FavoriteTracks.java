@@ -30,7 +30,7 @@ public class FavoriteTracks extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.fav_list_view);
         favoritesItemAdapter = new FavoritesItemAdapter(this);
         listView.setAdapter(favoritesItemAdapter);
-        favoritesItemAdapter.changeList(UserMainFragment.favoriteTracks);
+        favoritesItemAdapter.changeList(UserMainActivity.favoriteTracks);
         favoritesItemAdapter.notifyDataSetChanged();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,9 +74,9 @@ public class FavoriteTracks extends AppCompatActivity {
 
         switch (id) {
             case R.id.search_ID:
-                Intent goSearch = new Intent(this, UserMainFragment.class);
+                Intent goSearch = new Intent(this, UserMainActivity.class);
                 goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                UserMainFragment.clearSearch = true;
+                UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
             case R.id.favorites_ID:
