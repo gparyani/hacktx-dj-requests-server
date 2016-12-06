@@ -17,34 +17,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-<<<<<<< HEAD
             android:background="?attr/colorPrimary" >
-
-
-
-            <EditText
-                android:id="@+id/searchTerm"
-                android:hint="Search song, artist...,"
-                android:textColorHint="@color/gray"
-                android:textSize="20sp"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:inputType="text"
-                android:imeOptions="actionSearch"
-                android:textColor="@android:color/white"
-                android:imeActionLabel="Fetch"
-                android:backgroundTint="@color/white"
-                android:textCursorDrawable="@drawable/white_cursor"
-                />
         </android.support.v7.widget.Toolbar>
-=======
-            android:background="?attr/colorPrimary"
-            />
->>>>>>> 09736b8850164a9b7d164043cfb0a5ae10a6e174
-
-
-
 
     </android.support.design.widget.AppBarLayout>
 
