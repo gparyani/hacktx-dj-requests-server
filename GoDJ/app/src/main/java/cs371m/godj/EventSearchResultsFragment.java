@@ -42,6 +42,7 @@ public class EventSearchResultsFragment extends Fragment {
     protected String dateTerm;
     protected List<EventObject> events;
     protected Handler handler;
+    protected  TextView header;
     public static final long TWENTY_FOUR_HOURS = 86400000;
 
     @Override
@@ -51,17 +52,17 @@ public class EventSearchResultsFragment extends Fragment {
         listView = (ListView) v.findViewById(R.id.fav_list_view);
         events = new ArrayList<>();
         adapter = new EventItemAdapter(getActivity());
-        listView.setAdapter(adapter);
-        searchTerm = getArguments().getString("searchTerm", null);
-        dateTerm = getArguments().getString("dateTerm", null);
-
-        TextView header = new TextView(getActivity());
-        header.setText("Events");
-        header.setTextColor(0xffffffff);
+        header = new TextView(getActivity());
+        header.setText("No Events Found");
         header.setTypeface(header.getTypeface(), 1);
         header.setTextSize(20);
         header.setGravity(0x01);
         listView.addHeaderView(header, null, false);
+        listView.setAdapter(adapter);
+        searchTerm = getArguments().getString("searchTerm", null);
+        dateTerm = getArguments().getString("dateTerm", null);
+
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -158,6 +159,9 @@ public class EventSearchResultsFragment extends Fragment {
     class showResults implements Runnable {
         @Override
         public void run() {
+            if(events.size() > 0) {
+                header.setText("Events");
+            }
             adapter.changeList(events);
             adapter.notifyDataSetChanged();
         }

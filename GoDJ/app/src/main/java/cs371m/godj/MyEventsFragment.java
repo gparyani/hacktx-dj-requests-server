@@ -82,7 +82,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         savedHeader.setGravity(0x01);
         savedHeader.setTypeface(savedHeader.getTypeface(), 1);
         savedEventsLV.addHeaderView(savedHeader, null, false);
-        savedHeader.setVisibility(View.INVISIBLE);
         savedEventsLV.setAdapter(savedAdapter);
 
         attendingEventHeader.setText("You are not attending an event");
@@ -92,7 +91,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         attendingEventHeader.setGravity(0x01);
         attendingEventHeader.setTypeface(attendingEventHeader.getTypeface(), 1);
         attendingEventLV.addHeaderView(attendingEventHeader, null, false);
-        attendingEventHeader.setVisibility(View.INVISIBLE);
         attendingEventLV.setAdapter(attendingAdapter);
 
         hostHeader.setText("Not hosting any events");
@@ -102,7 +100,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         hostHeader.setGravity(0x01);
         hostHeader.setTypeface(hostHeader.getTypeface(), 1);
         hostedEventsLV.addHeaderView(hostHeader, null, false);
-        hostHeader.setVisibility(View.INVISIBLE);
         hostedEventsLV.setAdapter(hostAdapter);
 
 
