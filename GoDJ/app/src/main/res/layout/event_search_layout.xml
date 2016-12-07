@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:hint="Enter exact event name"
         android:textColorHint="@color/gray"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="75dp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/black"
         android:textSize="20sp"
@@ -34,6 +34,20 @@
         android:layout_below="@+id/event_search_term"
         />
 
+    <TextView
+        android:id="@+id/or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/event_search_but"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="50dp"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textStyle="bold"
+        android:paddingBottom="30dp"
+        android:text="OR"
+        />
+
+
     <EditText
         android:id="@+id/date_event_search_term"
         android:layout_width="match_parent"
@@ -46,7 +60,7 @@
         android:ems="10"
         android:focusable="false"
         android:backgroundTint="@color/black"
-        android:layout_below="@+id/event_search_but"
+        android:layout_below="@+id/or"
         />
     <Button
         android:id="@+id/date_event_search_but"
