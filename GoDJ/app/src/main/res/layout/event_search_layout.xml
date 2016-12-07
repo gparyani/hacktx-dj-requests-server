@@ -18,8 +18,13 @@
         android:layout_marginTop="50dp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/black"
-        android:textCursorDrawable="@drawable/black_cursor"
+        android:textSize="20sp"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        android:textColor="@android:color/black"
+        android:imeActionLabel="Fetch"
         />
+
     <Button
         android:id="@+id/event_search_but"
         android:layout_width="wrap_content"
@@ -40,6 +45,7 @@
         android:inputType="date"
         android:ems="10"
         android:focusable="false"
+        android:backgroundTint="@color/black"
         android:layout_below="@+id/event_search_but"
         />
     <Button

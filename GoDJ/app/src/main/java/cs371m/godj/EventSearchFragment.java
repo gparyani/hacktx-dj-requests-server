@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,33 +75,50 @@ public class EventSearchFragment extends Fragment {
         return v;
     }
 
+    public void goSearchName() {
+        startingEventFind = true;
+        Bundle b = new Bundle();
+        if(!(searchET.getText().toString().equals(""))) {
+            b.putString("searchTerm", searchET.getText().toString());
+            EventSearchResultsFragment esrf = new EventSearchResultsFragment();
+            esrf.setArguments(b);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.main_frame, esrf, "eventSearch")
+                    .addToBackStack("eventSearch")
+                    .commit();
+        } else {
+            ViewGroup viewGroup = (ViewGroup) ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
+            Snackbar snack = make(viewGroup, "Please enter a search term first", Snackbar.LENGTH_LONG);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            snack.show();
+        }
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        searchET.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            goSearchName();
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
         searchBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                startingEventFind = true;
-                Bundle b = new Bundle();
-                if(!(searchET.getText().toString().equals(""))) {
-                    b.putString("searchTerm", searchET.getText().toString());
-                    EventSearchResultsFragment esrf = new EventSearchResultsFragment();
-                    esrf.setArguments(b);
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.main_frame, esrf, "eventSearch")
-                            .addToBackStack("eventSearch")
-                            .commit();
-                } else {
-                    ViewGroup viewGroup = (ViewGroup) ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
-                    Snackbar snack = make(viewGroup, "Please enter a search term first", Snackbar.LENGTH_LONG);
-                    View view = snack.getView();
-                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    snack.show();
-                }
-
+                goSearchName();
             }
         });
 

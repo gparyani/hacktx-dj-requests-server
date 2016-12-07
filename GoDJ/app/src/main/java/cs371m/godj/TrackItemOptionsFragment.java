@@ -10,6 +10,8 @@ import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Created by Jasmine on 12/5/2016.
  */
@@ -40,6 +42,7 @@ public class TrackItemOptionsFragment extends DialogFragment {
         pos = getArguments().getInt("pos");
         selectedOption = false;
         final String uri = getArguments().getString("uri");
+        final String eventKey = getArguments().getString("eventKey");
         hosting = getArguments().getBoolean("hosting");
         AlertDialog.Builder builder;
         if(hosting) {
@@ -58,6 +61,8 @@ public class TrackItemOptionsFragment extends DialogFragment {
                                     intent.setData(Uri.parse(uri));
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
+                                    FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                                            .child(eventKey).child(uri).removeValue();
                                 } catch(ActivityNotFoundException activityNotFound) {
                                     String appID = "com.spotify.music";
                                     try {

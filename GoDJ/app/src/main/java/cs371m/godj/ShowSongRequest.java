@@ -42,6 +42,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
     protected SongRequestAdapter songRequestAdapter;
     protected int limit;
     protected String key;
+    protected TextView songHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,8 +58,8 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
         /*TODO: set limit for dj view vs. user view*/
         limit = (hosting) ? 20 : 50;
 
-        TextView songHeader = new TextView(getActivity());
-        songHeader.setText("Song Requests");
+        songHeader = new TextView(getActivity());
+        songHeader.setText("No Songs Requested");
         songHeader.setTextSize(20);
         songHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         songHeader.setPadding(0, 0, 0, 50);
@@ -78,6 +79,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                 TrackItemOptionsFragment trackItemOptionsFragment = new TrackItemOptionsFragment();
                 Bundle b = new Bundle();
                 b.putString("uri", uri);
+                b.putString("eventKey", key);
                 b.putBoolean("hosting", hosting);
                 b.putString("artistName", track.getArtistName());
                 b.putString("trackName", track.getTrackName());
@@ -108,6 +110,9 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                 TrackDatabaseObject trackDatabaseObject = dataSnapshot.getValue(TrackDatabaseObject.class);
                 tracks.add(trackDatabaseObject);
                 songRequestAdapter.notifyDataSetChanged();
+                if(tracks.size() == 1) {
+                    songHeader.setText("Song Requests");
+                }
             }
 
             @Override
@@ -131,7 +136,21 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                TrackDatabaseObject trackDatabaseObject = dataSnapshot.getValue(TrackDatabaseObject.class);
+                /*TODO: Inefficient while loop*/
+                boolean found = false;
+                int index = 0;
+                while(!found && index < tracks.size()) {
+                    if(tracks.get(index).getTrackURI().equals(trackDatabaseObject.getTrackURI())) {
+                        found = true;
+                        tracks.remove(index);
+                        songRequestAdapter.notifyDataSetChanged();
+                    }
+                    index++;
+                }
+                if(tracks.size() == 0) {
+                    songHeader.setText("No Songs Requested");
+                }
             }
 
             @Override
@@ -293,21 +312,26 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                         }
                     });
 
-
-
-
-
-
-
-
-
-
-
         } else if(selectedOption && option == TrackItemOptionsFragment.REMOVE_SAVE && hosting) {
             FirebaseDatabase.getInstance().getReference("eventPlaylists")
                     .child(key).child(tracks.get(pos).getTrackURI()).removeValue();
             tracks.remove(pos);
             songRequestAdapter.notifyDataSetChanged();
+            if(tracks.size() == 0) {
+                songHeader.setText("No Songs Requested");
+            }
+        } else if(selectedOption && option == TrackItemOptionsFragment.REMOVE_SAVE && !hosting) {
+            String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+            String _userName = user.replaceAll("\\.", "@"); // . illegal in Firebase key
+            FirebaseDatabase.getInstance().getReference()
+                    .child("users").child(_userName)
+                    .child("savedSongs").child(tracks.get(pos).getTrackURI())
+                    .setValue(tracks.get(pos));
+            Snackbar snack = Snackbar.make(viewGroup, "Song Saved!", Snackbar.LENGTH_LONG);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            snack.show();
         }
     }
 
