@@ -1,5 +1,6 @@
 package cs371m.godj;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -79,11 +80,25 @@ public class SavedSongsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
+                String uri = trackURI.getText().toString();
 
-                Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
-                intent.setData(Uri.parse(trackURI.getText().toString()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                try {
+                    Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
+                    intent.setData(Uri.parse(uri));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } catch(ActivityNotFoundException activityNotFound) {
+                    String appID = "com.spotify.music";
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("market://details?id=" + appID));
+                        startActivity(intent);
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=" + appID));
+                        startActivity(intent);
+                    }
+                }
             }
         });
 

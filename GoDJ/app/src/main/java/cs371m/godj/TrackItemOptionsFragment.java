@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -52,11 +53,23 @@ public class TrackItemOptionsFragment extends DialogFragment {
                             // The 'which' argument contains the index position
                             // of the selected item
                             if (which == PLAY_UPVOTE) {
-                                Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
-                                intent.setData(Uri.parse(uri));
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                /*TODO: ADD TOAST OR SNACKBAR*/
+                                try {
+                                    Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
+                                    intent.setData(Uri.parse(uri));
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                } catch(ActivityNotFoundException activityNotFound) {
+                                    String appID = "com.spotify.music";
+                                    try {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        intent.setData(Uri.parse("market://details?id=" + appID));
+                                        startActivity(intent);
+                                    } catch (android.content.ActivityNotFoundException anfe) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=" + appID));
+                                        startActivity(intent);
+                                    }
+                                }
                             } else if(which == REMOVE_SAVE) {
 
                             }
