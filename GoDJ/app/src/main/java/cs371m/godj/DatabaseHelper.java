@@ -25,10 +25,6 @@ public class DatabaseHelper {
             _userName = _userName.replaceAll("\\.", "@"); // . illegal in Firebase key
             if (userDB == null) {
                 userDB = FirebaseDatabase.getInstance().getReference().child("users").child(_userName).push();
-//                userDB = FirebaseDatabase.getInstance().getReference(_userName);
-
-                System.out.println("userdb: " + userDB);
-
             }
         } else {
             userDB = null;

@@ -80,7 +80,6 @@ public class EventItemAdapter extends BaseAdapter {
 
         eventNm.setText(data.getEventName());
         eventHost.setText("Hosted by: " + data.getHostName());
-        //System.out.println(eventNm.);
 
         String dateString = "";
         long start = data.getStartTime();
@@ -102,8 +101,6 @@ public class EventItemAdapter extends BaseAdapter {
         eventDate.setText(formattedDate);
         eventTime.setText(dateString);
         key.setText(data.getKey());
-
-
 
     }
 

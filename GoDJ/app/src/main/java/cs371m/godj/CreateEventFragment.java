@@ -79,7 +79,6 @@ public class CreateEventFragment extends Fragment {
                 Bundle b = new Bundle();
                 b.putInt("textField", R.id.event_start_et);
                 timePickerFragment.setArguments(b);
-//                FragmentManager fragmentManager = getFragmentManager();
                 timePickerFragment.show(getFragmentManager(), "startTimePicker");
             }
         });
@@ -93,7 +92,6 @@ public class CreateEventFragment extends Fragment {
                 Bundle b = new Bundle();
                 b.putInt("textField", R.id.event_end_et);
                 timePickerFragment.setArguments(b);
-//                FragmentManager fragmentManager = getFragmentManager();
                 timePickerFragment.show(getFragmentManager(), "endTimePicker");
             }
         });
@@ -103,8 +101,6 @@ public class CreateEventFragment extends Fragment {
             public void onClick(View v) {
                 /*TODO: ERROR CHECK INPUT (I.E. MAKE SURE ALL FIELDS ARE FILLED IN)*/
                 EventObject eventObject = new EventObject();
-
-
 
                 EditText eventName = (EditText) getActivity().findViewById(R.id.create_event_nm_et);
                 EditText hostName = (EditText) getActivity().findViewById(R.id.create_host_nm_et);
@@ -124,7 +120,6 @@ public class CreateEventFragment extends Fragment {
 
                 if(hostNameStr.equals("") || eventNameStr.equals("") || formattedDate.equals("")
                         || start.equals("") || end.equals("")) {
-//                    System.out.println("start: " + start);
                     Snackbar snack = Snackbar.make(getView(), "Please make sure all fields are filled in", Snackbar.LENGTH_LONG);
                     View view = snack.getView();
                     TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
@@ -152,9 +147,6 @@ public class CreateEventFragment extends Fragment {
 
                         Date b = new Date(startMill);
                         Date c = new Date(System.currentTimeMillis());
-
-                        System.out.println("SET TIME: " + sdf.format(b) + "\nCURR TIME: " +
-                                sdf.format(c));
 
                     /*TODO: NEED TO FIGURE OUT HOW TO PUT GENERATED KEY IN EVENT OBJECT*/
                         String key = FirebaseDatabase.getInstance().getReference("events").push().getKey();

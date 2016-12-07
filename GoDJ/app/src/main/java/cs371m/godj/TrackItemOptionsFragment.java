@@ -39,8 +39,6 @@ public class TrackItemOptionsFragment extends DialogFragment {
         pos = getArguments().getInt("pos");
         selectedOption = false;
         final String uri = getArguments().getString("uri");
-        final String artistName = getArguments().getString("artistName");
-        final String trackName = getArguments().getString("trackName");
         hosting = getArguments().getBoolean("hosting");
         AlertDialog.Builder builder;
         if(hosting) {

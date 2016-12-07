@@ -85,7 +85,6 @@ public class EventSearchResultsFragment extends Fragment {
         });
 
         Log.d("CustomAdapter", "MusicFragment onCreateView successful");
-
         return v;
     }
 
@@ -122,8 +121,7 @@ public class EventSearchResultsFragment extends Fragment {
             try {
                 Date d = sdf.parse(dateTerm);
                 long dateChosen = d.getTime();
-                System.out.println("query: " + dateChosen);
-                System.out.println("query: " + (dateChosen + TWENTY_FOUR_HOURS));
+
                 Query query = FirebaseDatabase.getInstance().getReference()
                         .child("events")
                         .orderByChild("startTime")

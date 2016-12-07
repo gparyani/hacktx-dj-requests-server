@@ -61,7 +61,6 @@ public class FirebaseCreateAccountFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.create_new_account, container, false);
         // Why doesn't getView return the root view?
         // Alternative is the less savory: getActivity().findViewById(R.id.yourId)
@@ -111,7 +110,6 @@ public class FirebaseCreateAccountFragment extends Fragment {
         // Set up the submit button click handler
         createAcctButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                System.out.println("create acct button pressed");
 
                 final String username = usernameView.getText().toString().trim();
                 String password = passwordView.getText().toString().trim();
@@ -150,15 +148,11 @@ public class FirebaseCreateAccountFragment extends Fragment {
                                 } else {
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(username).build();
-                                    System.out.println("create acct mauth: " + mAuth);
 
                                     mAuth.getCurrentUser().updateProfile(profileUpdates);
                                     MainActivity.userName = username;
                                     String userNameToAdd = username.replaceAll("\\.", "@");
                                     FirebaseDatabase.getInstance().getReference("users").child(userNameToAdd).child("eventAttending").setValue("none");
-                                    System.out.println("CREATE ACCT prof update: " + profileUpdates.getDisplayName());
-                                    System.out.println("CREATE ACCT: " + mAuth.getCurrentUser().getDisplayName());
-                                    System.out.println("profile updated in create acct");
                                     firebaseCreateAccountInterface.firebaseLoginFinish();
 
                                 }

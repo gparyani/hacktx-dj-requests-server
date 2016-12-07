@@ -58,15 +58,7 @@ public class EventAdapter extends BaseAdapter {
 
     public void bindView(EventObject data, View view, ViewGroup parent) {
         TextView nameTV = (TextView) view.findViewById(R.id.event_item_name);
-        TextView dateTV = (TextView) view.findViewById(R.id.event_item_date);
-        TextView timeTV = (TextView) view.findViewById(R.id.event_item_time);
-        TextView hostTV = (TextView) view.findViewById(R.id.event_item_hosted_by);
-        TextView keyTV = (TextView) view.findViewById(R.id.event_item_key);
-
         nameTV.setText(data.getEventName());
-//        dateTV.setText(data.get);
-
-
     }
 
     @Override

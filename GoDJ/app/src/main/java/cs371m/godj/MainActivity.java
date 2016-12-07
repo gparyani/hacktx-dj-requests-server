@@ -27,9 +27,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
 
 
     protected void firebaseInit() {
-        System.out.println("firebase init called");
         mAuth = FirebaseAuth.getInstance();
-        System.out.println("firebaseinit mauth: " + mAuth);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -83,14 +81,11 @@ public class MainActivity extends AppCompatActivity implements FirebaseCreateAcc
 
     @Override
     public void firebaseLoginFinish() {
-
         Intent startHomeActivity = new Intent(this, HomePage.class);
-        System.out.println("user in loginfinish:: " + userName);
         startHomeActivity.putExtra("userName", userName);
         startHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();
         startActivity(startHomeActivity);
-
 
     }
 

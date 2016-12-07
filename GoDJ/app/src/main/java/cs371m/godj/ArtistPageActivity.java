@@ -328,7 +328,6 @@ public class ArtistPageActivity extends AppCompatActivity {
         String artistID = intent.getStringExtra("artistID");
         String artistURL = intent.getStringExtra("artistURL");
         if(!artistURL.equals("")) {
-            System.out.println("path: " + artistURL);
             Picasso.with(getApplicationContext()).load(artistURL).into(artistImage);
         } else {
             artistImage.setImageResource(R.drawable.microphone);
@@ -423,7 +422,6 @@ public class ArtistPageActivity extends AppCompatActivity {
                 break;
             case R.id.return_home_ID:
                 Intent goHome = new Intent(this, HomePage.class);
-//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(goHome);
                 break;
             case android.R.id.home:

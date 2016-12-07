@@ -43,9 +43,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        System.out.println("on create home page");
-
-
         toolbar.setTitle(R.string.app_name);
         toolbar.setTitleTextColor(0xffffffff);
         setSupportActionBar(toolbar);
@@ -85,7 +82,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             switch(id) {
                 case R.id.host_event :
                     toggleHamburgerToBack();
-                    //getSupportFragmentManager().popBackStack();
                     CreateEventFragment cef = CreateEventFragment.newInstance();
                     Bundle b = new Bundle();
                     b.putBoolean("returnToSearch", true);
@@ -100,7 +96,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     break;
 
                 case R.id.find_event :
-                    //getSupportFragmentManager().popBackStack();
                     toggleHamburgerToBack();
                     EventSearchFragment esf = EventSearchFragment.newInstance();
                     Bundle b2 = new Bundle();
@@ -148,10 +143,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
                 if(backStackCount == 0) {
                     toggle.setDrawerIndicatorEnabled(true);
-                    System.out.println("screen is blank: " + screenIsBlank);
 
                     if(screenIsBlank) {
-                        showMyEventFrag(); ///////////////////////////////////
+                        showMyEventFrag();
                         screenIsBlank = false;
                     }
                 } else if(toggle.isDrawerIndicatorEnabled()) {
@@ -173,7 +167,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
-            System.out.println("update username: " + userName);
             loginString = String.format("Log out as %s", userName);
         } else {
             userString = "Please log in";
@@ -184,7 +177,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             dit.setText(userString);
         }
         // findViewById does not work for menu items.
-        MenuItem logMenu = (MenuItem) drawerMenu.findItem(R.id.nav_login);
+        MenuItem logMenu = drawerMenu.findItem(R.id.nav_login);
         if (logMenu != null) {
             logMenu.setTitle(loginString);
             logMenu.setTitleCondensed(loginString);
@@ -196,7 +189,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     // make sure drawer is closed
     @Override
     public void onBackPressed() {
-        //toggleHelper();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -206,18 +198,14 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     protected void toggleHamburgerToBack() {
-
         toggle.setDrawerIndicatorEnabled(false);
         toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-                System.out.println(backStackCount);
-                System.out.println(screenIsBlank);
                 if(backStackCount > 0) {
                     getSupportFragmentManager().popBackStack();
-
                 }
             }
         });
@@ -294,7 +282,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         // Replace any other Fragment with our new Details Fragment with the right data
         ft.add(R.id.main_frame, mef);
         // Let us come back
-//        ft.addToBackStack(null);
         // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
         ft.commit();
     }

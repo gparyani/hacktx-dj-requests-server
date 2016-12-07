@@ -41,9 +41,6 @@ public class MyEventsItemFragment extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-
-        System.out.println("activity: " + getActivity());
-        System.out.println("getChildFragmentManager: " + getChildFragmentManager());
         HomePage.mef.handleDialogClose(option, itemPos, hosting, currentEvent, remove, eventNm);
     }
 
@@ -83,8 +80,7 @@ public class MyEventsItemFragment extends DialogFragment {
                             // of the selected item
                             option = which;
                             if(option == ATTEND && !currentEvent) {
-                                String thisUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                                thisUserName = thisUserName.replaceAll("\\.", "@");
+
                                 String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                                 final String thisuserName = userName.replaceAll("\\.", "@");
                                 final FragmentManager manager = getActivity().getSupportFragmentManager();
@@ -95,7 +91,6 @@ public class MyEventsItemFragment extends DialogFragment {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 String eventKey = eventObject.getKey();
-                                                boolean found = false;
                                                 if(dataSnapshot.hasChild(eventKey)) {
                                                     // event exists in database
 
@@ -103,7 +98,6 @@ public class MyEventsItemFragment extends DialogFragment {
                                                 } else {
                                                     // event has been removed from the database
 
-                                                    System.out.println("event does not exist");
                                                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {

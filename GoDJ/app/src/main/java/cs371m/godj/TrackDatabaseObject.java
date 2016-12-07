@@ -28,10 +28,8 @@ public class TrackDatabaseObject {
     public String getArtistName() {
         return artistName;
     }
-
     public String getAlbumName() { return albumName; }
     public String getTrackURI(){ return trackURI; }
-
     public int getPriority() {
         return priority;
     }
@@ -41,21 +39,17 @@ public class TrackDatabaseObject {
     public void setTrackName(String name) {
         trackName = name;
     }
-
     public void setArtistName(String name) {
         artistName = name;
     }
-
     public void setAlbumName(String name) {
         albumName = name;
     }
     public void setTrackURI(String uri){
         trackURI = uri;
     }
-
     public void setPriority(int pri) {
         priority = pri;
     }
-
 
 }

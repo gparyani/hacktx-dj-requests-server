@@ -41,7 +41,6 @@ public class TrackPageActivity extends AppCompatActivity {
     private String trackURI;
 
     public static final int REQ_LIMIT = 5;
-//    public static final long ONE_HOUR = 60000;
     public static final long ONE_HOUR = 3600000;
 
     public ViewGroup viewGroup;
@@ -153,7 +152,6 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                     reqRef.setValue(requestObject);
                                                                                 } else {
                                                                         /*TODO: Not quite on the dot timewise*/
-                                                                                    System.out.println("REQ_LIMIT REACHED");
 
                                                                                     Date d = new Date(requestObject.getNextAvailableRequest());
                                                                                     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
@@ -187,8 +185,6 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                                     .iterator().next().getValue(TrackDatabaseObject.class);
                                                                                             int priority = trackDatabaseObject.getPriority() + 1;
                                                                                             trackDatabaseObject.setPriority(priority);
-                                                                                            System.out.println("eventObject " + eventObject.getKey());
-                                                                                            System.out.println("trackData " + trackDatabaseObject.getTrackURI());
 
                                                                                             FirebaseDatabase.getInstance().getReference("eventPlaylists")
                                                                                                     .child(eventObject.getKey()).child(trackDatabaseObject
@@ -235,8 +231,6 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                             .iterator().next().getValue(TrackDatabaseObject.class);
                                                                                     int priority = trackDatabaseObject.getPriority() + 1;
                                                                                     trackDatabaseObject.setPriority(priority);
-                                                                                    System.out.println("eventObject " + eventObject.getKey());
-                                                                                    System.out.println("trackData " + trackDatabaseObject.getTrackURI());
 
                                                                                     FirebaseDatabase.getInstance().getReference("eventPlaylists")
                                                                                             .child(eventObject.getKey()).child(trackDatabaseObject
@@ -329,13 +323,11 @@ public class TrackPageActivity extends AppCompatActivity {
         switch (id) {
             case R.id.search_ID:
                 Intent goSearch = new Intent(this, UserMainActivity.class);
-               // goSearch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 UserMainActivity.clearSearch = true;
                 startActivity(goSearch);
                 break;
             case R.id.return_home_ID:
                 Intent goHome = new Intent(this, HomePage.class);
-//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(goHome);
                 break;
             case android.R.id.home:

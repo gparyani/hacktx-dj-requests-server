@@ -118,9 +118,6 @@ public class ShowAllAlbumResults extends AppCompatActivity {
             showAlbumPage.putParcelableArrayListExtra("albumTracks", (ArrayList) albumTracks);
             showAlbumPage.putParcelableArrayListExtra("albumArtists", (ArrayList) albumArtists);
 
-            // TextView tv = (TextView) findViewById(R.id.album_id);
-            //String albumID = tv.getText().toString();
-            //showAlbumPage.putExtra("albumID", albumID);
             startActivity(showAlbumPage);
         }
     }
@@ -149,7 +146,6 @@ public class ShowAllAlbumResults extends AppCompatActivity {
                 break;
             case R.id.return_home_ID:
                 Intent goHome = new Intent(this, HomePage.class);
-//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(goHome);
                 break;
             case android.R.id.home:

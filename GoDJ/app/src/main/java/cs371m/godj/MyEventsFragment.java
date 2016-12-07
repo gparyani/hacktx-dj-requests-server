@@ -317,7 +317,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 break;
 
                             case DialogInterface.BUTTON_POSITIVE:
-                                System.out.println("canceling: " + eventObject.getKey());
                                 FirebaseDatabase.getInstance().getReference("events")
                                         .child(eventObject.getKey()).removeValue();
                                 FirebaseDatabase.getInstance().getReference("eventPlaylists")

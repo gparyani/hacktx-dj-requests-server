@@ -39,7 +39,5 @@ public class SearchDatePickerFragment extends DialogFragment
 
         String formatedDate = sdf.format(c.getTime());
         dateField.setText(formatedDate);
-
-        System.out.println(dateField.getText());
     }
 }

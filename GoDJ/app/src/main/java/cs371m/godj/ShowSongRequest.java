@@ -40,7 +40,6 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
     protected ListView listView;
     protected List<TrackDatabaseObject> tracks;
     protected SongRequestAdapter songRequestAdapter;
-    //protected boolean hosting;
     protected int limit;
     protected String key;
 
@@ -95,8 +94,6 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String key = (String)dataSnapshot.getValue();
-                System.out.println("event attend val: " + key);
-
             }
 
             @Override
@@ -110,13 +107,11 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 TrackDatabaseObject trackDatabaseObject = dataSnapshot.getValue(TrackDatabaseObject.class);
                 tracks.add(trackDatabaseObject);
-                //Collections.sort(tracks, new TrackCompare());
                 songRequestAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                System.out.println("onChildChanged");
                 TrackDatabaseObject trackDatabaseObject = dataSnapshot.getValue(TrackDatabaseObject.class);
                 /*TODO: Inefficient while loop*/
                 boolean found = false;
@@ -195,7 +190,6 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
 
                                                     final String eventName = eventObject.getEventName();
 
-
                                                     if(currTime > eventStart && currTime < eventEnd) {
                                                         final DatabaseReference reqRef = FirebaseDatabase.getInstance()
                                                                 .getReference("upvotes")
@@ -215,7 +209,6 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                                                                                 reqRef.setValue(requestObject);
                                                                             } else {
                                                                         /*TODO: Not quite on the dot timewise*/
-                                                                                System.out.println("REQ_LIMIT REACHED");
 
                                                                                 Date d = new Date(requestObject.getNextAvailableRequest());
                                                                                 SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");

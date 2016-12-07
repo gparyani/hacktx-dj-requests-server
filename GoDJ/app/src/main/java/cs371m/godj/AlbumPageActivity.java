@@ -124,7 +124,6 @@ public class AlbumPageActivity extends AppCompatActivity {
                 break;
             case R.id.return_home_ID:
                 Intent goHome = new Intent(this, HomePage.class);
-//                goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(goHome);
                 break;
             case android.R.id.home:

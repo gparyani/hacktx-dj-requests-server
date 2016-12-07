@@ -71,9 +71,6 @@ public class EventSearchFragment extends Fragment {
         }
         startingEventFind = false;
 
-
-
-
         return v;
     }
 

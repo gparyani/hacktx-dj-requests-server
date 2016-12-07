@@ -86,9 +86,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     protected ActionBarDrawerToggle toggle;
     protected String userName;
 
-    public static String TAG = "GoDJ";
-
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,7 +205,9 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
 
         faveTrackMap = new HashMap<>();
         favoriteTracks = new ArrayList<>();
-        clearSearch = false; // only clear search if user comes back to search page by selecting from menu, not from back button
+        clearSearch = false; // only clear search if user comes back to search page by selecting
+                            // from menu, not from back button
+
         myHandler = new Handler();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -373,7 +372,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             goHome.putExtra("menuItemID", id);
             startActivity(goHome);
-            // goHome.putExtra("itemWasSelected", true);
         } else {
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
             drawer.closeDrawer(GravityCompat.START);

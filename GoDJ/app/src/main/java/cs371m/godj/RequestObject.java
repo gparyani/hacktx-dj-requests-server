@@ -44,7 +44,4 @@ public class RequestObject {
         this.nextAvailableRequest = nextAvailableRequest;
     }
 
-
-
-
 }
