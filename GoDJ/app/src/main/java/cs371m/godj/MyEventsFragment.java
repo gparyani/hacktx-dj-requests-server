@@ -42,6 +42,11 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
     protected EventItemAdapter hostAdapter;
     protected EventItemAdapter savedAdapter;
 
+    protected TextView savedHeader;
+    protected TextView hostHeader;
+    protected TextView attendingEventHeader;
+
+
     private static Handler handler = new Handler();
 
     protected String userName;
@@ -66,8 +71,11 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         savedEventsLV = (ListView) v.findViewById(R.id.saved_events_lv);
         hostedEventsLV = (ListView) v.findViewById(R.id.hosted_events_lv);
 
-        final TextView savedHeader = new TextView(getActivity());
-        savedHeader.setText("Saved Events");
+        savedHeader = new TextView(getActivity());
+        hostHeader = new TextView(getActivity());
+        attendingEventHeader = new TextView(getActivity());
+
+        savedHeader.setText("No events saved");
         savedHeader.setTextSize(20);
         savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         savedHeader.setPadding(0, 0, 0, 50);
@@ -77,8 +85,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         savedHeader.setVisibility(View.INVISIBLE);
         savedEventsLV.setAdapter(savedAdapter);
 
-        final TextView attendingEventHeader = new TextView(getActivity());
-        attendingEventHeader.setText("Attending Event");
+        attendingEventHeader.setText("You are not attending an event");
         attendingEventHeader.setTextSize(20);
         attendingEventHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         attendingEventHeader.setPadding(0, 0, 0, 50);
@@ -88,8 +95,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
         attendingEventHeader.setVisibility(View.INVISIBLE);
         attendingEventLV.setAdapter(attendingAdapter);
 
-        final TextView hostHeader = new TextView(getActivity());
-        hostHeader.setText("Hosting Events");
+        hostHeader.setText("Not hosting any events");
         hostHeader.setTextSize(20);
         hostHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         hostHeader.setPadding(0, 0, 0, 50);
@@ -111,12 +117,17 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
                         for(DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
                             String key = eventSnapshot.getKey();
                             EventObject eventObject = eventSnapshot.getValue(EventObject.class);
                             eventObject.setKey(key);
                             Log.d("eventByName ", eventObject.getEventName());
                             savedEvents.add(eventObject);
+                        }
+
+                        if(savedEvents.size() > 0) {
+                            savedHeader.setText("Saved Events");
                         }
 
                         savedHeader.setVisibility(View.VISIBLE);
@@ -169,6 +180,11 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             eventObject.setKey(key);
                             Log.d("eventByName ", eventObject.getEventName());
                             hostedEvents.add(eventObject);
+                        }
+
+                        if(hostedEvents.size() > 0) {
+                            hostHeader.setText("Hosting Events");
+
                         }
 
                         hostHeader.setVisibility(View.VISIBLE);
@@ -247,6 +263,9 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
                                             if (attendingEvent.size() == 0) {
                                                 UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
+                                            } else {
+                                                attendingEventHeader.setText("Attending Event");
+
                                             }
 
 
@@ -333,6 +352,9 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 hostedEvents.remove(position);
                                 UserMainActivity.ListUtils.setDynamicHeight(hostedEventsLV);
                                 hostAdapter.notifyDataSetChanged();
+                                if(hostedEvents.size() == 0) {
+                                    hostHeader.setText("Not hosting any events");
+                                }
                                 break;
                         }
                     }
@@ -358,11 +380,12 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             case DialogInterface.BUTTON_POSITIVE:
                                 String thisUserName = userName.replaceAll("\\.", "@");
                                 attendingEvent.remove(position);
-                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
-                                        .child("eventAttending").removeValue();
-
                                 UserMainActivity.ListUtils.setDynamicHeight(attendingEventLV);
                                 attendingAdapter.notifyDataSetChanged();
+                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
+                                        .child("eventAttending").removeValue();
+                                attendingEventHeader.setText("Not attending an event");
+
                                 break;
                         }
                     }
@@ -389,10 +412,14 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                             case DialogInterface.BUTTON_POSITIVE:
                                 String thisUserName = userName.replaceAll("\\.", "@");
                                 savedEvents.remove(position);
-                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
-                                        .child("savedEvents").child(eventObject.getKey()).removeValue();
                                 UserMainActivity.ListUtils.setDynamicHeight(savedEventsLV);
                                 savedAdapter.notifyDataSetChanged();
+                                if(savedEvents.size() == 0) {
+                                    savedHeader.setText("No Events Saved");
+                                }
+                                FirebaseDatabase.getInstance().getReference("users").child(thisUserName)
+                                        .child("savedEvents").child(eventObject.getKey()).removeValue();
+
                                 break;
                         }
                     }
