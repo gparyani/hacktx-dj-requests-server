@@ -13,6 +13,12 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Created by Jasmine on 11/15/16.
+ * Adapted from witchel class code
+ */
+
+
 public class MainActivity extends AppCompatActivity implements FirebaseCreateAccountFragment.FirebaseCreateAccountInterface,
         FirebaseLoginFragment.FirebaseLoginInterface{
 

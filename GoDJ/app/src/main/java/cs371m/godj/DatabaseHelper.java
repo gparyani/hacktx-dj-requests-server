@@ -16,13 +16,10 @@ public class DatabaseHelper {
         return  databaseHelper;
     }
 
-    // NB: Must be called on every authentication change
-    // Input: Display name  Output: sanitized name for root of Firebase data
-    /*TODO: SEE IF THIS METHOD IS NECESSARY FOR MAINACT, WANT TO USE FOR DIALOG IN EVENT SEARCH*/
+
     public String updateCurrentUserName(String _userName) {
         if( _userName != null ) {
-            // . is illegal in Firebase key, and more than one @ is illegal in email address
-            _userName = _userName.replaceAll("\\.", "@"); // . illegal in Firebase key
+            _userName = _userName.replaceAll("\\.", "@");
             if (userDB == null) {
                 userDB = FirebaseDatabase.getInstance().getReference().child("users").child(_userName).push();
             }

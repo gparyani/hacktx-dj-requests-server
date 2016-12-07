@@ -49,19 +49,21 @@ public class MyEventsItemFragment extends DialogFragment {
         option = -1;
         itemPos = getArguments().getInt("pos");
         eventNm = getArguments().getString("eventNm");
-        hosting = getArguments().getBoolean("hosting");
         remove = false;
         currentEvent = getArguments().getBoolean("currentEvent");
         String eventHost = getArguments().getString("eventHost");
         long startTime = getArguments().getLong("startTime");
         long endTime = getArguments().getLong("endTime");
         final String key = getArguments().getString("key");
+        String hostUser = getArguments().getString("hostUser");
 
-        final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key);
+        final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key, hostUser);
+
+        hosting = (hostUser.equals(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
 
 
         final String[] choices;
-        if (hosting) {
+        if (hosting && !currentEvent) {
             choices = options1;
         } else if (currentEvent) {
             choices = options3;
@@ -133,12 +135,8 @@ public class MyEventsItemFragment extends DialogFragment {
                                 b.putInt("pos", itemPos);
                                 showSongRequests.setArguments(b);
                                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-
-                                // Replace any other Fragment with our new Details Fragment with the right data
                                 ft.replace(R.id.main_frame, showSongRequests, "showSongRequests");
-                                // Let us come back
                                 ft.addToBackStack("showSongRequests");
-                                // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
                                 ft.commit();
                             }
                         }

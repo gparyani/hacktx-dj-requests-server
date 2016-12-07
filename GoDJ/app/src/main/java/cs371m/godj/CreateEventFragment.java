@@ -143,7 +143,8 @@ public class CreateEventFragment extends Fragment {
                         eventObject.setStartTime(startMill);
 
                         eventObject.setEndTime(endMill);
-                        eventObject.setKey("null");
+                        String user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                        eventObject.setHostUserName(user);
 
                         Date b = new Date(startMill);
                         Date c = new Date(System.currentTimeMillis());

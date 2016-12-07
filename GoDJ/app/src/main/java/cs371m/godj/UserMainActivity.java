@@ -77,8 +77,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     private String userSearchInput;
 
 
-    public static ArrayList<String[]> favoriteTracks;
-    public static HashMap<String, String> faveTrackMap; // for checking if track already in list
     public static boolean clearSearch;
     private Handler myHandler;
 
@@ -108,7 +106,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                // Putting it here means you can see it change
                 updateUserDisplay();
             }
         };
@@ -203,8 +200,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         artistListView.setAdapter(artistItemAdapter);
         albumListView.setAdapter(albumItemAdapter);
 
-        faveTrackMap = new HashMap<>();
-        favoriteTracks = new ArrayList<>();
         clearSearch = false; // only clear search if user comes back to search page by selecting
                             // from menu, not from back button
 
@@ -322,6 +317,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     }
 
 
+    // from witchel class code
     // We have logged in or out, update all items that display user name
     protected void updateUserDisplay() {
         String loginString = "";
@@ -348,7 +344,6 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         Log.d("main", "menu option selected");
         if (id == R.id.nav_login) {

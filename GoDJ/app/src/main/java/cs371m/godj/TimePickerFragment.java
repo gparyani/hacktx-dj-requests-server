@@ -30,13 +30,11 @@ public class TimePickerFragment extends DialogFragment
 
         timeField = getArguments().getInt("textField");
 
-        // Create a new instance of TimePickerDialog and return it
         return new TimePickerDialog(getActivity(), TimePickerDialog.THEME_HOLO_DARK, this, hour, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        // Do something with the time chosen by the user
         EditText myField = (EditText) getActivity().findViewById(timeField);
 
         Calendar c = Calendar.getInstance();

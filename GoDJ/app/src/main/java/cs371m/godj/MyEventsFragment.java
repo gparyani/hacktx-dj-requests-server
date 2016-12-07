@@ -133,6 +133,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 long startTime = savedEvents.get(pos).getStartTime();
                                 long endTime = savedEvents.get(pos).getEndTime();
                                 String key = savedEvents.get(pos).getKey();
+                                String hostUser = savedEvents.get(pos).getHostUserName();
                                 MyEventsItemFragment eiof = new MyEventsItemFragment();
                                 Bundle b = new Bundle();
                                 b.putString("eventNm", eventNm);
@@ -141,7 +142,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putLong("endTime", endTime);
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
-                                b.putBoolean("hosting", false);
+                                b.putString("hostUser", hostUser);
                                 b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
                                 eiof.show(getFragmentManager(), "options");
@@ -184,6 +185,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 long startTime = hostedEvents.get(pos).getStartTime();
                                 long endTime = hostedEvents.get(pos).getEndTime();
                                 String key = hostedEvents.get(pos).getKey();
+                                String hostUser = hostedEvents.get(pos).getHostUserName();
                                 MyEventsItemFragment eiof = new MyEventsItemFragment();
                                 Bundle b = new Bundle();
                                 b.putString("eventNm", eventNm);
@@ -192,7 +194,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putLong("endTime", endTime);
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
-                                b.putBoolean("hosting", true);
+                                b.putString("hostUser", hostUser);
                                 b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
 
@@ -257,6 +259,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                                     long startTime = attendingEvent.get(pos).getStartTime();
                                                     long endTime = attendingEvent.get(pos).getEndTime();
                                                     String key = attendingEvent.get(pos).getKey();
+                                                    String hostUser = attendingEvent.get(pos).getHostUserName();
                                                     MyEventsItemFragment eiof = new MyEventsItemFragment();
                                                     Bundle b = new Bundle();
                                                     b.putString("eventNm", eventNm);
@@ -265,7 +268,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                                     b.putLong("endTime", endTime);
                                                     b.putString("key", key);
                                                     b.putInt("pos", pos);
-                                                    b.putBoolean("hosting", false);
+                                                    b.putString("hostUser", hostUser);
                                                     b.putBoolean("currentEvent", true);
                                                     eiof.setArguments(b);
                                                     eiof.show(getFragmentManager(), "options");

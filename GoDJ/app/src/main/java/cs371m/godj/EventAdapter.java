@@ -13,10 +13,6 @@ import java.util.List;
  * Created by Jasmine on 10/16/2016.
  */
 
-/*
-TODO: HOOK UP ADAPTER TO A RECYCLER VIEW IN MAIN ACTIVITY TO SHOW USER EVENTS
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- */
 
 public class EventAdapter extends BaseAdapter {
 

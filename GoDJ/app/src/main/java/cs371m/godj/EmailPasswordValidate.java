@@ -4,7 +4,7 @@ import android.content.res.Resources;
 
 /**
  * Created by Jasmine on 11/15/16.
- * Adapted from witchel
+ * Adapted from witchel class code
  */
 
 public class EmailPasswordValidate {

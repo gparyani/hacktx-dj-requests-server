@@ -55,14 +55,13 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         }
 
-
+        // from witchel class code
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                // Putting it here means you can see it change
                 updateUserDisplay();
             }
         };
@@ -87,11 +86,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     b.putBoolean("returnToSearch", true);
                     cef.setArguments(b);
                     getSupportFragmentManager().beginTransaction()
-                            // Replace any other Fragment with our new Details Fragment with the right data
                             .replace(R.id.main_frame, cef)
-                            // Let us come back
                             .addToBackStack(null)
-                            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
                             .commit();
                     break;
 
@@ -106,22 +102,16 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
                     getSupportFragmentManager().beginTransaction()
 
-                            // Replace any other Fragment with our new Details Fragment with the right data
                             .replace(R.id.main_frame, esf, "searchFrag")
-                            // Let us come back
                             .addToBackStack("searchFrag")
-                            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
                             .commit();
                     break;
 
                 case R.id.saved_songs:
                     SavedSongsFragment savedSongsFragment = new SavedSongsFragment();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    // Replace any other Fragment with our new Details Fragment with the right data
                     ft.replace(R.id.main_frame, savedSongsFragment);
-                    // Let us come back
                     ft.addToBackStack(null);
-                    // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
                     ft.commit();
                     break;
 
@@ -139,7 +129,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                /*TODO: See if togglehamburgertoback can just be called here*/
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
                 if(backStackCount == 0) {
                     toggle.setDrawerIndicatorEnabled(true);
@@ -160,6 +149,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
 
 
+    // from witchel class code
     // We have logged in or out, update all items that display user name
     protected void updateUserDisplay() {
         String loginString = "";
@@ -197,6 +187,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         }
     }
 
+    // adapted from witchel class code
     protected void toggleHamburgerToBack() {
         toggle.setDrawerIndicatorEnabled(false);
         toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
@@ -214,7 +205,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         Log.d("main", "menu option selected");
         if (id == R.id.nav_login) {
@@ -235,11 +225,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             toggleHamburgerToBack();
             CreateEventFragment cef = CreateEventFragment.newInstance();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            // Replace any other Fragment with our new Details Fragment with the right data
             ft.replace(R.id.main_frame, cef);
-            // Let us come back
             ft.addToBackStack(null);
-            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
             ft.commit();
         } else if (id == R.id.song_search) {
             getSupportFragmentManager().popBackStack();
@@ -249,22 +236,15 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             toggleHamburgerToBack();
             EventSearchFragment esf = EventSearchFragment.newInstance();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-            // Replace any other Fragment with our new Details Fragment with the right data
             ft.replace(R.id.main_frame, esf, "searchFrag");
-            // Let us come back
             ft.addToBackStack("searchFrag");
-            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
             ft.commit();
 
         } else if(id == R.id.saved_songs) {
             SavedSongsFragment savedSongsFragment = new SavedSongsFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            // Replace any other Fragment with our new Details Fragment with the right data
             ft.replace(R.id.main_frame, savedSongsFragment);
-            // Let us come back
             ft.addToBackStack(null);
-            // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
             ft.commit();
 
         }
@@ -279,10 +259,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Bundle b = new Bundle();
         b.putString("userName", userName);
-        // Replace any other Fragment with our new Details Fragment with the right data
         ft.add(R.id.main_frame, mef);
-        // Let us come back
-        // TRANSIT_FRAGMENT_FADE calls for the Fragment to fade away
         ft.commit();
     }
 }

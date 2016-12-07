@@ -20,10 +20,11 @@ public class EventObject {
     }
 
 
-    public EventObject(String name, String queryName, String host, long start, long end, String uniqueKey) {
+    public EventObject(String name, String queryName, String host, long start, long end, String uniqueKey, String hostUser) {
         eventName = name;
         eventQueryName = queryName;
         hostName = host;
+        hostUserName = hostUser;
         startTime = start;
         endTime = end;
         key = uniqueKey;
@@ -31,7 +32,6 @@ public class EventObject {
 
     public String getEventName() { return eventName; }
     public String getEventQueryName() {return eventQueryName; }
-    public String getLocation() { return eventLocation; }
     public String getHostName() {
         return hostName;
     }
@@ -48,9 +48,6 @@ public class EventObject {
         eventName = name;
     }
     public void setEventQueryName(String queryName) { eventQueryName = queryName; }
-    public void setLocation(String loc) {
-        eventLocation = loc;
-    }
     public void setHostName(String name) {
         hostName = name;
     }

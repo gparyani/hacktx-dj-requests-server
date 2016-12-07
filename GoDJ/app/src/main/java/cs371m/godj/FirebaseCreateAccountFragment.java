@@ -24,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by Jasmine on 11/15/16.
+ *
+ * Adapted from witchel's class code
  */
 
 public class FirebaseCreateAccountFragment extends Fragment {

@@ -72,6 +72,7 @@ public class EventSearchResultsFragment extends Fragment {
                 long startTime = events.get(pos).getStartTime();
                 long endTime = events.get(pos).getEndTime();
                 String key = events.get(pos).getKey();
+                String hostUser = events.get(pos).getHostUserName();
                 EventItemOptionsFragment eiof = new EventItemOptionsFragment();
                 Bundle b = new Bundle();
                 b.putString("eventNm", eventNm);
@@ -79,6 +80,7 @@ public class EventSearchResultsFragment extends Fragment {
                 b.putLong("startTime", startTime);
                 b.putLong("endTime", endTime);
                 b.putString("key", key);
+                b.putString("hostUser", hostUser);
                 eiof.setArguments(b);
                 eiof.show(getFragmentManager(), "options");
             }
@@ -170,7 +172,8 @@ public class EventSearchResultsFragment extends Fragment {
             long startTime = getArguments().getLong("startTime");
             long endTime = getArguments().getLong("endTime");
             String key = getArguments().getString("key");
-            final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key);
+            String hostUser = getArguments().getString("hostUser");
+            final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key, hostUser);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             String[] options = {"Save Event", "Attend Event"};
             builder.setTitle("Options")

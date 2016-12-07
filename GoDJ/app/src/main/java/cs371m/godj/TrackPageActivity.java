@@ -102,7 +102,6 @@ public class TrackPageActivity extends AppCompatActivity {
             }
         });
 
-        /*TODO: limit request checks, check if event is live*/
         ImageButton reqBut = (ImageButton) findViewById(R.id.req_song_button);
         reqBut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,8 +150,6 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                     requestObject.setNextAvailableRequest(currTime + ONE_HOUR);
                                                                                     reqRef.setValue(requestObject);
                                                                                 } else {
-                                                                        /*TODO: Not quite on the dot timewise*/
-
                                                                                     Date d = new Date(requestObject.getNextAvailableRequest());
                                                                                     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
                                                                                     String nextTime = sdf.format(d);
@@ -178,7 +175,6 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                                     .child(currEvent).child(trackURI)
                                                                                                     .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
 
-                                                        /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
                                                                                         } else {
 
                                                                                             TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
@@ -224,7 +220,6 @@ public class TrackPageActivity extends AppCompatActivity {
                                                                                             .child(currEvent).child(trackURI)
                                                                                             .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
 
-                                                        /*TODO: TOAST OR SNACKBAR ON SUCCESS/FAILURE*/
                                                                                 } else {
 
                                                                                     TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
@@ -308,16 +303,13 @@ public class TrackPageActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         switch (id) {
