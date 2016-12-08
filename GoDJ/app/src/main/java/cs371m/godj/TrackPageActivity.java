@@ -114,180 +114,196 @@ public class TrackPageActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final String currEvent = (String) dataSnapshot.getValue();
-                        if (!currEvent.equals("none")) {
-                            final DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference()
-                                    .child("events");
-                                    eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.hasChild(currEvent)) {
-                                                eventsRef.child(currEvent).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                                        final EventObject eventObject = dataSnapshot.getValue(EventObject.class);
-                                                        long eventStart = eventObject.getStartTime();
-                                                        long eventEnd = eventObject.getEndTime();
-                                                        long currTime = System.currentTimeMillis();
+                        if(currEvent != null) {
+                            if (!currEvent.equals("none")) {
+                                final DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference()
+                                        .child("events");
+                                eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.hasChild(currEvent)) {
+                                            eventsRef.child(currEvent).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    final EventObject eventObject = dataSnapshot.getValue(EventObject.class);
+                                                    long eventStart = eventObject.getStartTime();
+                                                    long eventEnd = eventObject.getEndTime();
+                                                    long currTime = System.currentTimeMillis();
 
-                                                        final String eventName = eventObject.getEventName();
+                                                    final String eventName = eventObject.getEventName();
 
 
-                                                        if(currTime > eventStart && currTime < eventEnd) {
-                                                            final DatabaseReference reqRef = FirebaseDatabase.getInstance()
-                                                                    .getReference("requests")
-                                                                    .child(thisUserName).child(currEvent);
-                                                            reqRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                    RequestObject requestObject = dataSnapshot.getValue(RequestObject.class);
-                                                                    if(requestObject != null) {
-                                                                        if (requestObject.getNumRequests() > 0) {
-                                                                            if (requestObject.getNumRequests() == REQ_LIMIT) {
-                                                                                long currTime = System.currentTimeMillis();
-                                                                                if (currTime > requestObject.getNextAvailableRequest()) {
-                                                                                    requestObject.setNumRequests(1);
-                                                                                    requestObject.setFirstRequestTime(currTime);
-                                                                                    requestObject.setNextAvailableRequest(currTime + ONE_HOUR);
-                                                                                    reqRef.setValue(requestObject);
-                                                                                } else {
-                                                                                    Date d = new Date(requestObject.getNextAvailableRequest());
-                                                                                    SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-                                                                                    String nextTime = sdf.format(d);
-                                                                                    Snackbar snack = Snackbar.make(viewGroup, "Your request limit has been reached. Requests available again at " + nextTime + ".", Snackbar.LENGTH_LONG);
-                                                                                    View view = snack.getView();
-                                                                                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                                                                                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                                                                                    snack.show();
-                                                                                }
-                                                                            } else if (requestObject.getNumRequests() < REQ_LIMIT) {
-                                                                                Query q = db.child("eventPlaylists")
-                                                                                        .child(currEvent)
-                                                                                        .orderByChild("trackName")
-                                                                                        .equalTo(trackName);
-                                                                                q.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                                    @Override
-                                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                        if (dataSnapshot.getValue() == null) {
-                                                                                            TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
-                                                                                                    artistName, albumName, trackURI, 1);
-
-                                                                                            db.child("eventPlaylists")
-                                                                                                    .child(currEvent).child(trackURI)
-                                                                                                    .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
-
-                                                                                        } else {
-
-                                                                                            TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
-                                                                                                    .iterator().next().getValue(TrackDatabaseObject.class);
-                                                                                            int priority = trackDatabaseObject.getPriority() + 1;
-                                                                                            trackDatabaseObject.setPriority(priority);
-
-                                                                                            FirebaseDatabase.getInstance().getReference("eventPlaylists")
-                                                                                                    .child(eventObject.getKey()).child(trackDatabaseObject
-                                                                                                    .getTrackURI()).setValue(trackDatabaseObject, 0 - priority);
-                                                                                        }
-                                                                                    }
-
-                                                                                    @Override
-                                                                                    public void onCancelled(DatabaseError databaseError) {
-
-                                                                                    }
-                                                                                });
-                                                                                int reqs = requestObject.getNumRequests() + 1;
-                                                                                requestObject.setNumRequests(reqs);
+                                                    if (currTime > eventStart && currTime < eventEnd) {
+                                                        final DatabaseReference reqRef = FirebaseDatabase.getInstance()
+                                                                .getReference("requests")
+                                                                .child(thisUserName).child(currEvent);
+                                                        reqRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                RequestObject requestObject = dataSnapshot.getValue(RequestObject.class);
+                                                                if (requestObject != null) {
+                                                                    if (requestObject.getNumRequests() > 0) {
+                                                                        if (requestObject.getNumRequests() == REQ_LIMIT) {
+                                                                            long currTime = System.currentTimeMillis();
+                                                                            if (currTime > requestObject.getNextAvailableRequest()) {
+                                                                                requestObject.setNumRequests(1);
+                                                                                requestObject.setFirstRequestTime(currTime);
+                                                                                requestObject.setNextAvailableRequest(currTime + ONE_HOUR);
                                                                                 reqRef.setValue(requestObject);
-                                                                                Snackbar snack = Snackbar.make(viewGroup, "Song Requested!", Snackbar.LENGTH_LONG);
+                                                                            } else {
+                                                                                Date d = new Date(requestObject.getNextAvailableRequest());
+                                                                                SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+                                                                                String nextTime = sdf.format(d);
+                                                                                Snackbar snack = Snackbar.make(viewGroup, "Your request limit has been reached. Requests available again at " + nextTime + ".", Snackbar.LENGTH_LONG);
                                                                                 View view = snack.getView();
                                                                                 TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                                                                                 tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                                                                                 snack.show();
                                                                             }
-                                                                        }
-                                                                    } else {
+                                                                        } else if (requestObject.getNumRequests() < REQ_LIMIT) {
+                                                                            Query q = db.child("eventPlaylists")
+                                                                                    .child(currEvent)
+                                                                                    .orderByChild("trackName")
+                                                                                    .equalTo(trackName);
+                                                                            q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                @Override
+                                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                    if (dataSnapshot.getValue() == null) {
+                                                                                        TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
+                                                                                                artistName, albumName, trackURI, 1);
 
-                                                                        Query q = db.child("eventPlaylists")
-                                                                                .child(currEvent)
-                                                                                .orderByChild("trackName")
-                                                                                .equalTo(trackName);
-                                                                        q.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                if (dataSnapshot.getValue() == null) {
-                                                                                    TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
-                                                                                            artistName, albumName, trackURI, 1);
+                                                                                        db.child("eventPlaylists")
+                                                                                                .child(currEvent).child(trackURI)
+                                                                                                .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
 
-                                                                                    db.child("eventPlaylists")
-                                                                                            .child(currEvent).child(trackURI)
-                                                                                            .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
+                                                                                    } else {
 
-                                                                                } else {
+                                                                                        TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
+                                                                                                .iterator().next().getValue(TrackDatabaseObject.class);
+                                                                                        int priority = trackDatabaseObject.getPriority() + 1;
+                                                                                        trackDatabaseObject.setPriority(priority);
 
-                                                                                    TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
-                                                                                            .iterator().next().getValue(TrackDatabaseObject.class);
-                                                                                    int priority = trackDatabaseObject.getPriority() + 1;
-                                                                                    trackDatabaseObject.setPriority(priority);
-
-                                                                                    FirebaseDatabase.getInstance().getReference("eventPlaylists")
-                                                                                            .child(eventObject.getKey()).child(trackDatabaseObject
-                                                                                            .getTrackURI()).setValue(trackDatabaseObject, 0 - priority);
+                                                                                        FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                                                                                                .child(eventObject.getKey()).child(trackDatabaseObject
+                                                                                                .getTrackURI()).setValue(trackDatabaseObject, 0 - priority);
+                                                                                    }
                                                                                 }
-                                                                            }
 
-                                                                            @Override
-                                                                            public void onCancelled(DatabaseError databaseError) {
+                                                                                @Override
+                                                                                public void onCancelled(DatabaseError databaseError) {
 
-                                                                            }
-                                                                        });
-
-                                                                        long startTime = System.currentTimeMillis();
-                                                                        RequestObject requestObject1 = new RequestObject(1,
-                                                                                startTime, startTime + ONE_HOUR);
-                                                                        reqRef.setValue(requestObject1);
-                                                                        Snackbar snack = Snackbar.make(viewGroup, "Song Requested!", Snackbar.LENGTH_LONG);
-                                                                        View view = snack.getView();
-                                                                        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                                                                        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                                                                        snack.show();
+                                                                                }
+                                                                            });
+                                                                            int reqs = requestObject.getNumRequests() + 1;
+                                                                            requestObject.setNumRequests(reqs);
+                                                                            reqRef.setValue(requestObject);
+                                                                            Snackbar snack = Snackbar.make(viewGroup, "Song Requested!", Snackbar.LENGTH_LONG);
+                                                                            View view = snack.getView();
+                                                                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                                                            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                                                            snack.show();
+                                                                        }
                                                                     }
+                                                                } else {
+
+                                                                    Query q = db.child("eventPlaylists")
+                                                                            .child(currEvent)
+                                                                            .orderByChild("trackName")
+                                                                            .equalTo(trackName);
+                                                                    q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                        @Override
+                                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                            if (dataSnapshot.getValue() == null) {
+                                                                                TrackDatabaseObject trackDatabaseObject = new TrackDatabaseObject(trackName,
+                                                                                        artistName, albumName, trackURI, 1);
+
+                                                                                db.child("eventPlaylists")
+                                                                                        .child(currEvent).child(trackURI)
+                                                                                        .setValue(trackDatabaseObject, trackDatabaseObject.getPriority());
+
+                                                                            } else {
+
+                                                                                TrackDatabaseObject trackDatabaseObject = dataSnapshot.getChildren()
+                                                                                        .iterator().next().getValue(TrackDatabaseObject.class);
+                                                                                int priority = trackDatabaseObject.getPriority() + 1;
+                                                                                trackDatabaseObject.setPriority(priority);
+
+                                                                                FirebaseDatabase.getInstance().getReference("eventPlaylists")
+                                                                                        .child(eventObject.getKey()).child(trackDatabaseObject
+                                                                                        .getTrackURI()).setValue(trackDatabaseObject, 0 - priority);
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                                        }
+                                                                    });
+
+                                                                    long startTime = System.currentTimeMillis();
+                                                                    RequestObject requestObject1 = new RequestObject(1,
+                                                                            startTime, startTime + ONE_HOUR);
+                                                                    reqRef.setValue(requestObject1);
+                                                                    Snackbar snack = Snackbar.make(viewGroup, "Song Requested!", Snackbar.LENGTH_LONG);
+                                                                    View view = snack.getView();
+                                                                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                                                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                                                    snack.show();
                                                                 }
+                                                            }
 
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
+                                                            @Override
+                                                            public void onCancelled(DatabaseError databaseError) {
 
-                                                                }
-                                                            });
+                                                            }
+                                                        });
 
-                                                        } else {
-                                                            String message = (currTime > eventStart) ? "Request Failed. " + eventName + " has already ended." : "Request Failed. " + eventName + " has not yet started.";
-                                                            Snackbar snack = Snackbar.make(viewGroup, message, Snackbar.LENGTH_LONG);
-                                                            View view = snack.getView();
-                                                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                                                            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                                                            snack.show();
-                                                        }
+                                                    } else {
+                                                        String message = (currTime > eventStart) ? "Request Failed. " + eventName + " has already ended." : "Request Failed. " + eventName + " has not yet started.";
+                                                        Snackbar snack = Snackbar.make(viewGroup, message, Snackbar.LENGTH_LONG);
+                                                        View view = snack.getView();
+                                                        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                                        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                                        snack.show();
                                                     }
+                                                }
 
-                                                    @Override
-                                                    public void onCancelled(DatabaseError databaseError) {
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
 
-                                                    }
-                                                });
+                                                }
+                                            });
 
-                                            } else {
-                                                Snackbar snack = make(viewGroup, "Cannot request. The event you are attending no longer exists.", Snackbar.LENGTH_LONG);
-                                                View view = snack.getView();
-                                                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                                                snack.show();
-                                            }
+                                        } else {
+                                            String message = "The event you are attending no longer exists.";
+                                            Snackbar snack = make(viewGroup, "Cannot request. " + message, Snackbar.LENGTH_LONG);
+                                            View view = snack.getView();
+                                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                            snack.show();
                                         }
+                                    }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
+                                    }
+                                });
+                            } else {
+                                String message = "You are not attending an event.";
+                                Snackbar snack = make(viewGroup, "Cannot request. " + message, Snackbar.LENGTH_LONG);
+                                View view = snack.getView();
+                                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                snack.show();
+                            }
 
+                        } else {
+                            Snackbar snack = make(viewGroup, "Cannot request. You are not attending an event.", Snackbar.LENGTH_LONG);
+                            View view = snack.getView();
+                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                            snack.show();
                         }
 
                     }
