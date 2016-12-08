@@ -327,7 +327,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
             savedAdapter.notifyDataSetChanged();
 
         } else if(option == MyEventsItemFragment.DELETE_CANCEL || (currentEvent && option == 1)) {
-            if(hosting) {
+            if(hosting && !currentEvent) {
                 final EventObject eventObject = hostedEvents.get(pos);
                 final int position = pos;
                 AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
