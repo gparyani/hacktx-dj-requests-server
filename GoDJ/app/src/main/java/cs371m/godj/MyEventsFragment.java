@@ -151,6 +151,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
                                 b.putString("hostUser", hostUser);
+                                b.putBoolean("hosting", false);
                                 b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
                                 eiof.show(getFragmentManager(), "options");
@@ -208,6 +209,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
                                 b.putString("hostUser", hostUser);
+                                b.putBoolean("hosting", true);
                                 b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
 
@@ -285,6 +287,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                                     b.putString("key", key);
                                                     b.putInt("pos", pos);
                                                     b.putString("hostUser", hostUser);
+                                                    b.putBoolean("hosting", hostUser.equals(userName));
                                                     b.putBoolean("currentEvent", true);
                                                     eiof.setArguments(b);
                                                     eiof.show(getFragmentManager(), "options");
