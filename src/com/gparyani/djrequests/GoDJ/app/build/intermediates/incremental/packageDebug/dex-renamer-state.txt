@@ -1,7 +1,0 @@
-#Tue Nov 15 12:50:27 CST 2016
-base.0=/Users/rebeccal/GoDJ/hacktx-dj-requests-server/src/com/gparyani/djrequests/GoDJ/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_0bb3553c65bbbeff4c1667f672a1ef800738c138
-renamed.1=classes.dex
-renamed.0=classes2.dex
-file.1=/Users/rebeccal/GoDJ/hacktx-dj-requests-server/src/com/gparyani/djrequests/GoDJ/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_37519642c1fd12f9724a77e98238dc821f41978c/classes.dex
-base.1=/Users/rebeccal/GoDJ/hacktx-dj-requests-server/src/com/gparyani/djrequests/GoDJ/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_37519642c1fd12f9724a77e98238dc821f41978c
-file.0=/Users/rebeccal/GoDJ/hacktx-dj-requests-server/src/com/gparyani/djrequests/GoDJ/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_0bb3553c65bbbeff4c1667f672a1ef800738c138/classes.dex
