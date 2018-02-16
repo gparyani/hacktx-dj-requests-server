@@ -55,14 +55,18 @@ public class SongRequestAdapter extends BaseAdapter {
 
     public void bindView(TrackDatabaseObject data, View view, ViewGroup parent) {
         TextView trackName = (TextView) view.findViewById(R.id.track_name);
-        trackName.setTextColor(ContextCompat.getColor(c, R.color.black));
+        trackName.setTextColor(ContextCompat.getColor(c, R.color.white));
         TextView artistName = (TextView) view.findViewById(R.id.artist_name);
-        artistName.setTextColor(ContextCompat.getColor(c, R.color.black));
+        artistName.setTextColor(ContextCompat.getColor(c, R.color.gray));
         TextView albumName = (TextView) view.findViewById(R.id.album_name);
-        albumName.setTextColor(ContextCompat.getColor(c, R.color.black));
+        albumName.setTextColor(ContextCompat.getColor(c, R.color.gray));
         TextView middleDot = (TextView) view.findViewById(R.id.middle_dot);
-        middleDot.setTextColor(ContextCompat.getColor(c, R.color.black));
+        middleDot.setTextColor(ContextCompat.getColor(c, R.color.gray));
         TextView trackURI = (TextView) view.findViewById(R.id.track_uri);
+
+        TextView imageURL = (TextView) view.findViewById(R.id.album_art_url);
+        imageURL.setText(data.getImageURL());
+
 
 
         trackName.setText(data.getTrackName());

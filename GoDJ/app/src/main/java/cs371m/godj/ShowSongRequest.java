@@ -61,7 +61,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
         songHeader = new TextView(getActivity());
         songHeader.setText("No Songs Requested");
         songHeader.setTextSize(20);
-        songHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        songHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         songHeader.setPadding(0, 0, 0, 50);
         songHeader.setGravity(0x01);
         songHeader.setTypeface(songHeader.getTypeface(), 1);
@@ -83,6 +83,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                 b.putBoolean("hosting", hosting);
                 b.putString("artistName", track.getArtistName());
                 b.putString("trackName", track.getTrackName());
+                b.putString("imageURL", track.getImageURL());
                 b.putInt("pos", position - 1);
                 trackItemOptionsFragment.setArguments(b);
                 trackItemOptionsFragment.show(getActivity().getSupportFragmentManager(), "options");
@@ -192,7 +193,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             final String currEvent = (String) dataSnapshot.getValue();
-                            if (!currEvent.equals("none")) {
+                            if (currEvent !=null && !currEvent.equals("none")) {
                                 final DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference()
                                         .child("events");
                                 eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -250,6 +251,7 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                                                                             int reqs = requestObject.getNumRequests() + 1;
                                                                             requestObject.setNumRequests(reqs);
                                                                             reqRef.setValue(requestObject);
+                                                                            /*TODO: Does not show for first upvote*/
                                                                             Snackbar snack = Snackbar.make(viewGroup, "Song Upvoted!", Snackbar.LENGTH_LONG);
                                                                             View view = snack.getView();
                                                                             TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
@@ -302,6 +304,13 @@ public class ShowSongRequest extends Fragment implements TrackItemOptionsFragmen
                                     }
                                 });
 
+                            } else {
+                                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
+                                Snackbar snack = make(viewGroup, "You are not attending this event", Snackbar.LENGTH_LONG);
+                                View view = snack.getView();
+                                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                snack.show();
                             }
 
                         }

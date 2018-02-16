@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,6 +35,7 @@
             android:background="@android:color/transparent"
             android:paddingLeft="15dp"
              />
+
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,6 +51,7 @@
             android:orientation="vertical"
             android:layout_toRightOf="@id/add_song_button"
             android:layout_toLeftOf="@id/req_song_button"
+            android:id="@+id/track_info_layout"
             >
             <TextView
                 android:layout_width="match_parent"
@@ -68,12 +80,105 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
+                android:paddingBottom="30dp"
                 />
+
+
+
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/seek_layout"
+            android:layout_below="@+id/track_info_layout">
 
+            <TextView
+                android:id="@+id/timeProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/seekBar"
+                android:textColor="@android:color/white"
+                android:text="00:00"
+                android:textSize="12sp" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="15dp" />
+
+            <TextView
+                android:id="@+id/timeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/seekBar"
+                android:layout_toStartOf="@+id/seekBar"
+                android:textColor="@android:color/white"
+                android:text="00:00"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/prev"
+            android:background="@android:color/transparent"
+            android:id="@+id/prev_button"
+            android:layout_marginEnd="24dp"
+            android:layout_alignTop="@+id/pause_button"
+            android:layout_toStartOf="@+id/pause_button"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/play"
+
+            android:id="@+id/pause_button"
+            android:layout_below="@+id/seek_layout"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/next"
+            android:layout_alignTop="@+id/pause_button"
+            android:layout_toEndOf="@+id/pause_button"
+            android:layout_marginStart="25dp"
+            android:id="@+id/next_button"
+            android:background="@android:color/transparent"
+            />
 
 
     </RelativeLayout>
 
 </LinearLayout>
+    <include layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view3"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_bar_header"
+        app:menu="@menu/activity_main_drawer"
+        android:theme="@style/NavigationMenuItemTextAppearance"
+        android:background="@color/darkGray"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        />
+</android.support.v4.widget.DrawerLayout>

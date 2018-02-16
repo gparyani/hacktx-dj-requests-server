@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    android:background="@color/black">
 
 
 
@@ -24,7 +25,10 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_bar_header"
         app:menu="@menu/activity_main_drawer"
-        app:theme="@style/NavigationMenuItemTextAppearance"
+        android:theme="@style/NavigationMenuItemTextAppearance"
+        android:background="@color/darkGray"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
         />
 
 

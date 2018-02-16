@@ -47,7 +47,6 @@ public class MyEventsItemFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         option = -1;
-        hosting = getArguments().getBoolean("hosting");
         itemPos = getArguments().getInt("pos");
         eventNm = getArguments().getString("eventNm");
         remove = false;
@@ -60,6 +59,7 @@ public class MyEventsItemFragment extends DialogFragment {
 
         final EventObject eventObject = new EventObject(eventNm, eventNm.toLowerCase(), eventHost, startTime, endTime, key, hostUser);
 
+        hosting = (hostUser.equals(FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
 
 
         final String[] choices;

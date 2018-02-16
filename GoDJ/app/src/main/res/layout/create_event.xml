@@ -5,6 +5,7 @@
     android:paddingTop="40dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:background="@color/black"
     >
 
     <TextView
@@ -14,6 +15,7 @@
         android:textAppearance="?android:textAppearanceLarge"
         android:textStyle="bold"
         android:text="Event Name: "
+        android:textColor="@color/white"
         android:paddingBottom="10dp"
         />
 
@@ -24,7 +26,8 @@
         android:layout_height="wrap_content"
         android:hint="Enter Event Name"
         android:textColorHint="@color/gray"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:textCursorDrawable="@drawable/black_cursor"
         android:inputType="text"
         android:maxLines="1"
@@ -39,6 +42,7 @@
         android:textAppearance="?android:textAppearanceLarge"
         android:textStyle="bold"
         android:text="Host Name: "
+        android:textColor="@color/white"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         />
@@ -51,7 +55,8 @@
         android:hint="Enter Host Name"
         android:textColorHint="@color/gray"
         android:inputType="text"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:textCursorDrawable="@drawable/black_cursor"
         android:maxLines="1" />
 
@@ -63,6 +68,7 @@
         android:textAppearance="?android:textAppearanceLarge"
         android:textStyle="bold"
         android:text="Date of Event: "
+        android:textColor="@color/white"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         />
@@ -88,6 +94,7 @@
                 android:textAppearance="?android:textAppearanceLarge"
                 android:textStyle="bold"
                 android:text="Start Time:"
+                android:textColor="@color/white"
                 android:layout_marginTop="5dp"
                 />
             <EditText
@@ -98,7 +105,8 @@
                 android:layout_gravity="center_horizontal"
                 android:hint="00:00"
                 android:textColorHint="@color/gray"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/white"
                 android:textAlignment="center"
                 android:focusable="false"
                 android:layout_below="@+id/event_date_et"
@@ -119,6 +127,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="7dp"
                 android:text="End Time:"
+                android:textColor="@color/white"
                 />
             <EditText
                 android:id="@+id/event_end_et"
@@ -130,7 +139,8 @@
                 android:hint="00:00"
                 android:textColorHint="@color/gray"
                 android:focusable="false"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/white"
                 android:layout_below="@+id/event_date_et"
                 />
 
@@ -158,7 +168,8 @@
         android:textColorHint="@color/gray"
         android:hint="MM-DD-YYYY"
         android:layout_below="@+id/event_date_tv_oncreateevent"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:textCursorDrawable="@drawable/black_cursor"
         android:layout_alignParentStart="true" />
 

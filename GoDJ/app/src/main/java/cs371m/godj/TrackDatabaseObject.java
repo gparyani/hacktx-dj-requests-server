@@ -10,17 +10,25 @@ public class TrackDatabaseObject {
     private String artistName;
     private String albumName;
     private String trackURI;
+
+
+
+
+
+    private String imageURL;
     private int priority;
+
 
    public TrackDatabaseObject() {
 
    }
 
-    public TrackDatabaseObject(String track, String artist, String album, String uri, int pri) {
+    public TrackDatabaseObject(String track, String artist, String album, String uri, String url, int pri) {
         trackName = track;
         artistName = artist;
         albumName = album;
         trackURI = uri;
+        imageURL = url;
         priority = pri;
     }
 
@@ -30,6 +38,9 @@ public class TrackDatabaseObject {
     }
     public String getAlbumName() { return albumName; }
     public String getTrackURI(){ return trackURI; }
+    public String getImageURL() {
+        return imageURL;
+    }
     public int getPriority() {
         return priority;
     }
@@ -47,6 +58,9 @@ public class TrackDatabaseObject {
     }
     public void setTrackURI(String uri){
         trackURI = uri;
+    }
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
     public void setPriority(int pri) {
         priority = pri;

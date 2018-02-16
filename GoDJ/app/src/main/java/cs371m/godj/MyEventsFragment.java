@@ -77,7 +77,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
         savedHeader.setText("No events saved");
         savedHeader.setTextSize(20);
-        savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        savedHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         savedHeader.setPadding(0, 0, 0, 50);
         savedHeader.setGravity(0x01);
         savedHeader.setTypeface(savedHeader.getTypeface(), 1);
@@ -86,7 +86,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
         attendingEventHeader.setText("You are not attending an event");
         attendingEventHeader.setTextSize(20);
-        attendingEventHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        attendingEventHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         attendingEventHeader.setPadding(0, 0, 0, 50);
         attendingEventHeader.setGravity(0x01);
         attendingEventHeader.setTypeface(attendingEventHeader.getTypeface(), 1);
@@ -95,7 +95,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
 
         hostHeader.setText("Not hosting any events");
         hostHeader.setTextSize(20);
-        hostHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        hostHeader.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         hostHeader.setPadding(0, 0, 0, 50);
         hostHeader.setGravity(0x01);
         hostHeader.setTypeface(hostHeader.getTypeface(), 1);
@@ -151,7 +151,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
                                 b.putString("hostUser", hostUser);
-                                b.putBoolean("hosting", false);
                                 b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
                                 eiof.show(getFragmentManager(), "options");
@@ -209,7 +208,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                 b.putString("key", key);
                                 b.putInt("pos", pos);
                                 b.putString("hostUser", hostUser);
-                                b.putBoolean("hosting", true);
                                 b.putBoolean("currentEvent", false);
                                 eiof.setArguments(b);
 
@@ -287,7 +285,6 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
                                                     b.putString("key", key);
                                                     b.putInt("pos", pos);
                                                     b.putString("hostUser", hostUser);
-                                                    b.putBoolean("hosting", hostUser.equals(userName));
                                                     b.putBoolean("currentEvent", true);
                                                     eiof.setArguments(b);
                                                     eiof.show(getFragmentManager(), "options");
@@ -327,7 +324,7 @@ public class MyEventsFragment extends Fragment implements MyEventsItemFragment.M
             savedAdapter.notifyDataSetChanged();
 
         } else if(option == MyEventsItemFragment.DELETE_CANCEL || (currentEvent && option == 1)) {
-            if(hosting && !currentEvent) {
+            if(hosting) {
                 final EventObject eventObject = hostedEvents.get(pos);
                 final int position = pos;
                 AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());

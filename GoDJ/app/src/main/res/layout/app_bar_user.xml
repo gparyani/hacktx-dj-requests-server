@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".UserMainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             android:id="@+id/toolbar2"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" >
+             >
             <EditText
                 android:id="@+id/searchTerm"
                 android:hint="Search song, artist...,"
@@ -29,7 +29,7 @@
                 android:inputType="text"
                 android:imeOptions="actionSearch"
                 android:textColor="@android:color/white"
-                android:imeActionLabel="Fetch"
+                android:imeActionLabel="Search"
                 android:backgroundTint="@color/white"
                 android:textCursorDrawable="@drawable/white_cursor"
                 />
@@ -38,6 +38,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+
 
 </android.support.design.widget.CoordinatorLayout>

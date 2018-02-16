@@ -1,6 +1,7 @@
 package cs371m.godj;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,11 @@ public class EventItemAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private List<EventObject> events;
+    Context c;
 
-    public EventItemAdapter(Context c) {
-        inflater = LayoutInflater.from(c);
+    public EventItemAdapter(Context context) {
+        inflater = LayoutInflater.from(context);
+        c = context;
 
     }
 
@@ -75,6 +78,12 @@ public class EventItemAdapter extends BaseAdapter {
         TextView eventDate = (TextView) view.findViewById(R.id.event_item_date);
         TextView eventTime = (TextView) view.findViewById(R.id.event_item_time);
         TextView key = (TextView) view.findViewById(R.id.event_item_key);
+
+        eventNm.setTextColor(ContextCompat.getColor(c, R.color.white));
+        eventDate.setTextColor(ContextCompat.getColor(c, R.color.gray));
+        eventHost.setTextColor(ContextCompat.getColor(c, R.color.gray));
+        eventDate.setTextColor(ContextCompat.getColor(c, R.color.gray));
+        eventTime.setTextColor(ContextCompat.getColor(c, R.color.gray));
 
 
 

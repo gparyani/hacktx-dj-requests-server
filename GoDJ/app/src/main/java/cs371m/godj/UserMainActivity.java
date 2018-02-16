@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.spotify.sdk.android.player.Metadata;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +47,14 @@ import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
 /*TODO: MIGHT WANT TO ADD API KEY*/
-public class UserMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+
+
+public class UserMainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener{
+
 
     private List<Track> trackList;
     private List<Artist> artistList;
@@ -84,6 +91,9 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     protected ActionBarDrawerToggle toggle;
     protected String userName;
 
+
+
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +106,12 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         toolbar.setTitle(""); // MIGHT JUST CHANGE THEME IN STYLE XML INSTEAD
 
         setSupportActionBar(toolbar);
+
+
+
+
+
+
 
         userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
@@ -317,6 +333,13 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
     }
 
 
+
+
+
+
+
+
+
     // from witchel class code
     // We have logged in or out, update all items that display user name
     protected void updateUserDisplay() {
@@ -351,22 +374,45 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             if (user != null) {
                 FirebaseAuth.getInstance().signOut(); // Will call updateUserDisplay via callback
                 Intent startLoginScreen = new Intent(this, MainActivity.class);
-                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); //was clear task
                 finish();
                 startActivity(startLoginScreen);
                 return true;
             } else {
                 Intent startLoginScreen = new Intent(this, MainActivity.class);
-                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startLoginScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 finish();
                 startActivity(startLoginScreen);
                 return true;
             }
-        } else if(id != R.id.song_search){
+        } else if(id == R.id.my_events) {
+            getSupportFragmentManager().popBackStack();
             Intent goHome = new Intent(this, HomePage.class);
             goHome.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             goHome.putExtra("menuItemID", id);
             startActivity(goHome);
+        } else if(id == R.id.user_playing) {
+            if(MainActivity.mPlayer.getPlaybackState().isActiveDevice) {
+
+                getSupportFragmentManager().popBackStack();
+
+                Intent showTrackPage = new Intent(getApplicationContext(), TrackPageActivity.class);
+
+                Metadata.Track track = MainActivity.mPlayer.getMetadata().currentTrack;
+
+                showTrackPage.putExtra("trackName", track.name);
+                showTrackPage.putExtra("artistName", track.artistName);
+                showTrackPage.putExtra("imageURL", track.albumCoverWebUrl);
+                showTrackPage.putExtra("albumName", track.albumName);
+                showTrackPage.putExtra("trackURI", track.uri);
+
+                startActivity(showTrackPage);
+            }
+        } else if(id == R.id.host_event) {
+
+        } else if(id == R.id.find_event) {
+            /*TODO: FIX MENU OPTIONS FOR SEARCH PAGE AND NOW PLAYING PAGE*/
+
         } else {
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
             drawer.closeDrawer(GravityCompat.START);
@@ -375,6 +421,22 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
+
+    // adapted from witchel class code
+    protected void toggleHamburgerToBack() {
+        toggle.setDrawerIndicatorEnabled(false);
+        toggle.setHomeAsUpIndicator(getDrawerToggleDelegate().getThemeUpIndicator());
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+                if(backStackCount > 0) {
+                    getSupportFragmentManager().popBackStack();
+                }
+            }
+        });
+
+    }
 
 
     private class AlbumSelected implements Runnable {
@@ -475,6 +537,8 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         String searchTerm = et.getText().toString();
         userSearchInput = searchTerm;
 
+        System.out.println(searchTerm);
+
         trackList.clear();
         artistList.clear();
         albumList.clear();
@@ -487,16 +551,13 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         artistItemAdapter.notifyDataSetChanged();
         albumItemAdapter.notifyDataSetChanged();
 
-        SpotifyApi api = new SpotifyApi();
-        SpotifyService spotify = api.getService();
+
 
         HashMap<String, Object> options = new HashMap<>();
         int limit = 50;
-        options.put(spotify.LIMIT, limit);
+        options.put(MainActivity.spotify.LIMIT, limit);
 
-        // Most (but not all) of the Spotify Web API endpoints require authorisation.
-        // If you know you'll only use the ones that don't require authorisation you can skip this step
-        //api.setAccessToken("myAccessToken");
+
 
         textView.setVisibility(View.INVISIBLE);
         spotifyItemAdapter.notifyDataSetChanged();
@@ -504,7 +565,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
         artistItemAdapter.notifyDataSetChanged();
 
 
-        spotify.searchTracks(searchTerm, options, new Callback<TracksPager>() {
+        MainActivity.spotify.searchTracks(searchTerm, options, new Callback<TracksPager>() {
             @Override
             public void success(TracksPager tracksPager, Response response) {
                 trackList = tracksPager.tracks.items;
@@ -524,7 +585,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-        spotify.searchArtists(searchTerm, options, new Callback<ArtistsPager>() {
+        MainActivity.spotify.searchArtists(searchTerm, options, new Callback<ArtistsPager>() {
             @Override
             public void success(ArtistsPager artistsPager, Response response) {
                 artistList = artistsPager.artists.items;
@@ -544,7 +605,7 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             }
         });
 
-        spotify.searchAlbums(searchTerm, new Callback<AlbumsPager>() {
+        MainActivity.spotify.searchAlbums(searchTerm, new Callback<AlbumsPager>() {
             @Override
             public void success(AlbumsPager albumsPager, Response response) {
                 albumList = albumsPager.albums.items;
@@ -600,4 +661,5 @@ public class UserMainActivity extends AppCompatActivity implements NavigationVie
             clearSearch = false;
         }
     }
+
 }

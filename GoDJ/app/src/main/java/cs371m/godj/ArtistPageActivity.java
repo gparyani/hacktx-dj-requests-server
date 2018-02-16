@@ -18,8 +18,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import kaaes.spotify.webapi.android.SpotifyApi;
-import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Album;
 import kaaes.spotify.webapi.android.models.AlbumSimple;
 import kaaes.spotify.webapi.android.models.Artist;
@@ -33,6 +31,8 @@ import kaaes.spotify.webapi.android.models.Tracks;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static cs371m.godj.MainActivity.spotify;
 
 
 /**
@@ -277,8 +277,8 @@ public class ArtistPageActivity extends AppCompatActivity {
                     TextView tv = (TextView) view.findViewById(R.id.album_id);
                     String albumID = tv.getText().toString();
 
-                    SpotifyApi api = new SpotifyApi();
-                    SpotifyService spotify = api.getService();
+
+
 
                     spotify.getAlbum(albumID, new Callback<Album>() {
                         @Override
@@ -334,8 +334,6 @@ public class ArtistPageActivity extends AppCompatActivity {
         }
         artistName.setText(intent.getStringExtra("artistName"));
 
-        SpotifyApi api = new SpotifyApi();
-        SpotifyService spotify = api.getService();
 
         spotify.getArtistTopTrack(artistID, "US", new Callback<Tracks>() {
             @Override

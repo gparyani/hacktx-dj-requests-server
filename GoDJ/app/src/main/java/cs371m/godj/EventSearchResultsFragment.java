@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ public class EventSearchResultsFragment extends Fragment {
         header = new TextView(getActivity());
         header.setText("No Events Found");
         header.setTypeface(header.getTypeface(), 1);
+        header.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         header.setTextSize(20);
         header.setGravity(0x01);
         listView.addHeaderView(header, null, false);

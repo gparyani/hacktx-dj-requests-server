@@ -17,12 +17,12 @@
         android:textColorHint="@color/gray"
         android:layout_marginTop="75dp"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/white"
         android:textSize="20sp"
         android:inputType="text"
         android:imeOptions="actionSearch"
-        android:textColor="@android:color/black"
-        android:imeActionLabel="Fetch"
+        android:textColor="@android:color/white"
+        android:imeActionLabel="Search"
         />
 
     <Button
@@ -45,6 +45,7 @@
         android:textStyle="bold"
         android:paddingBottom="30dp"
         android:text="OR"
+        android:textColor="@color/white"
         />
 
 
@@ -59,7 +60,8 @@
         android:inputType="date"
         android:ems="10"
         android:focusable="false"
-        android:backgroundTint="@color/black"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/white"
         android:layout_below="@+id/or"
         />
     <Button

@@ -22,6 +22,10 @@ public class TrackItemOptionsFragment extends DialogFragment {
     private int thisOption;
     private boolean hosting;
     private boolean selectedOption;
+    private String name;
+    private String artist;
+    private String image;
+    private String album;
 
     public final static int PLAY_UPVOTE = 0;
     public final static int REMOVE_SAVE = 1;
@@ -33,8 +37,11 @@ public class TrackItemOptionsFragment extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((ShowSongRequest) getActivity().getSupportFragmentManager().
-                findFragmentByTag("showSongRequests")).handleDialogClose(pos, thisOption, hosting, selectedOption);
+        if((getActivity().getSupportFragmentManager().
+                findFragmentByTag("showSongRequests")) != null) {
+            ((ShowSongRequest) getActivity().getSupportFragmentManager().
+                    findFragmentByTag("showSongRequests")).handleDialogClose(pos, thisOption, hosting, selectedOption);
+        }
     }
 
     @Override
@@ -43,6 +50,10 @@ public class TrackItemOptionsFragment extends DialogFragment {
         selectedOption = false;
         final String uri = getArguments().getString("uri");
         final String eventKey = getArguments().getString("eventKey");
+        name = getArguments().getString("trackName");
+        artist = getArguments().getString("artistName");
+        album = getArguments().getString("albumName");
+        image = getArguments().getString("imageURL");
         hosting = getArguments().getBoolean("hosting");
         AlertDialog.Builder builder;
         if(hosting) {
@@ -56,6 +67,20 @@ public class TrackItemOptionsFragment extends DialogFragment {
                             // The 'which' argument contains the index position
                             // of the selected item
                             if (which == PLAY_UPVOTE) {
+
+//                                getFragmentManager().popBackStack();
+//                                Intent showTrackPage = new Intent(getContext(), TrackPageActivity.class);
+//
+//                                showTrackPage.putExtra("trackName", name);
+//                                showTrackPage.putExtra("artistName", artist);
+//                                showTrackPage.putExtra("imageURL", image);
+//                                showTrackPage.putExtra("albumName", album);
+//                                showTrackPage.putExtra("trackURI", uri);
+//
+//
+//
+//                                startActivity(showTrackPage);
+
                                 try {
                                     Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
                                     intent.setData(Uri.parse(uri));

@@ -20,12 +20,17 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.spotify.sdk.android.player.Metadata;
 
 /**
  * Created by Jasmine on 12/1/2016.
  */
 
 public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+
+
+
 
     protected Menu drawerMenu;
     protected ActionBarDrawerToggle toggle;
@@ -40,6 +45,10 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         setContentView(R.layout.home_page_events_layout);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -149,6 +158,11 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
 
 
+
+
+
+
+
     // from witchel class code
     // We have logged in or out, update all items that display user name
     protected void updateUserDisplay() {
@@ -247,6 +261,23 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             ft.addToBackStack(null);
             ft.commit();
 
+        } else if(id == R.id.user_playing) {
+            if(MainActivity.mPlayer.getPlaybackState().isActiveDevice) {
+
+                getSupportFragmentManager().popBackStack();
+
+                Intent showTrackPage = new Intent(getApplicationContext(), TrackPageActivity.class);
+
+                Metadata.Track track = MainActivity.mPlayer.getMetadata().currentTrack;
+
+                showTrackPage.putExtra("trackName", track.name);
+                showTrackPage.putExtra("artistName", track.artistName);
+                showTrackPage.putExtra("imageURL", track.albumCoverWebUrl);
+                showTrackPage.putExtra("albumName", track.albumName);
+                showTrackPage.putExtra("trackURI", track.uri);
+
+                startActivity(showTrackPage);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -261,5 +292,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         b.putString("userName", userName);
         ft.add(R.id.main_frame, mef);
         ft.commit();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainActivity.mPlayer.destroy(); // TODO: might cause a crash but working for now
     }
 }
